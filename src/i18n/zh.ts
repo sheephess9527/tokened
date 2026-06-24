@@ -1,6 +1,6 @@
 import type { Locale } from './en'
 
-export const zh: Locale = {
+export const zh = {
   brand: 'tokened.uk',
   nav: {
     features: '功能',
@@ -123,11 +123,15 @@ export const zh: Locale = {
     },
   },
   pricing: {
-    title: '简单透明的定价',
-    subtitle: '免费起步，随 Prompt 规模扩展。',
+    title: '定价',
+    subtitle: 'Token 计算器现已免费可用。付费方案仍在筹备中。',
+    disclaimer:
+      '开发者版与企业版尚未开放，卡片背后没有支付或注册功能。加入等待名单可优先获取内测资格。',
     tiers: {
       free: {
         name: '免费版',
+        status: 'live' as const,
+        statusLabel: '已上线',
         price: '¥0',
         period: '永久免费',
         features: [
@@ -136,32 +140,35 @@ export const zh: Locale = {
           '中 / EN 双语界面',
           '中文 Token 膨胀率分析',
         ],
-        cta: '立即开始',
+        cta: '立即体验',
       },
       developer: {
         name: '开发者版',
-        price: '¥139',
-        period: '/ 月',
+        status: 'planned' as const,
+        statusLabel: '即将推出',
+        price: '待定',
+        period: '',
         features: [
-          '无限次 Prompt 优化',
-          'PIPL & GDPR 审计报告',
-          'API 接入 & Webhook',
-          '优先模型价格更新',
+          'Prompt 优化（规划中）',
+          'PIPL & GDPR 审计报告（规划中）',
+          'API 接入 & Webhook（规划中）',
+          '优先模型价格更新（规划中）',
         ],
-        cta: '加入候补',
-        badge: '热门',
+        cta: '加入等待名单',
       },
       enterprise: {
         name: '企业版',
+        status: 'planned' as const,
+        statusLabel: '即将推出',
         price: '定制',
-        period: '',
+        period: '请联系我们',
         features: [
-          'Tokened Gateway 代理',
-          'SSO & 团队工作区',
-          '自定义合规规则',
-          '专属支持与 SLA',
+          'Tokened Gateway 代理（规划中）',
+          'SSO & 团队工作区（规划中）',
+          '自定义合规规则（规划中）',
+          '专属支持与 SLA（规划中）',
         ],
-        cta: '联系销售',
+        cta: '联系我们',
       },
     },
   },
@@ -193,4 +200,4 @@ export const zh: Locale = {
     terms: '服务条款',
     roadmap: '路线图',
   },
-}
+} satisfies Locale

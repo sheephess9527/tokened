@@ -18,7 +18,11 @@
 .subtitle {
   text-align: center;
   color: var(--text-muted);
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
+  max-width: 560px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
 }
 
 .grid {
@@ -38,13 +42,17 @@
   flex-direction: column;
 }
 
-.cardFeatured {
-  border-color: rgba(124, 58, 237, 0.5);
-  box-shadow: 0 0 40px rgba(124, 58, 237, 0.15);
-  transform: scale(1.02);
+.cardLive {
+  border-color: rgba(16, 185, 129, 0.4);
+  box-shadow: 0 0 32px rgba(16, 185, 129, 0.1);
 }
 
-.badge {
+.cardPlanned {
+  opacity: 0.85;
+}
+
+.badgeLive,
+.badgePlanned {
   position: absolute;
   top: -0.6rem;
   right: 1rem;
@@ -52,9 +60,18 @@
   font-weight: 700;
   padding: 0.25rem 0.6rem;
   border-radius: 4px;
-  background: var(--accent);
-  color: white;
   text-transform: uppercase;
+}
+
+.badgeLive {
+  background: var(--success);
+  color: var(--bg);
+}
+
+.badgePlanned {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
 }
 
 .card h3 {
@@ -137,12 +154,23 @@
   transform: translateY(-1px);
 }
 
+.disclaimer {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 1rem 1.25rem;
+  border-radius: 8px;
+  border: 1px dashed var(--border);
+  background: rgba(255, 255, 255, 0.02);
+}
+
 @media (max-width: 900px) {
   .grid {
     grid-template-columns: 1fr;
-  }
-
-  .cardFeatured {
-    transform: none;
   }
 }

@@ -121,11 +121,15 @@ export const en = {
     },
   },
   pricing: {
-    title: 'Simple, transparent pricing',
-    subtitle: 'Start free. Scale when your prompts do.',
+    title: 'Pricing',
+    subtitle: 'The token calculator is free and live today. Paid plans are on the roadmap.',
+    disclaimer:
+      'Developer and Enterprise tiers are not available yet — no payment or signup behind these cards. Join the waitlist to get early access.',
     tiers: {
       free: {
         name: 'Free',
+        status: 'live' as const,
+        statusLabel: 'Available now',
         price: '$0',
         period: 'forever',
         features: [
@@ -134,32 +138,35 @@ export const en = {
           'EN / 中文 UI',
           'Chinese token inflation insights',
         ],
-        cta: 'Get Started',
+        cta: 'Try it now',
       },
       developer: {
         name: 'Developer',
-        price: '$19',
-        period: '/ month',
+        status: 'planned' as const,
+        statusLabel: 'Coming soon',
+        price: 'TBD',
+        period: '',
         features: [
-          'Unlimited prompt optimization',
-          'PIPL & GDPR audit reports',
-          'API access & webhooks',
-          'Priority model price updates',
+          'Prompt optimization (planned)',
+          'PIPL & GDPR audit reports (planned)',
+          'API access & webhooks (planned)',
+          'Priority model price updates (planned)',
         ],
-        cta: 'Join Waitlist',
-        badge: 'Popular',
+        cta: 'Join waitlist',
       },
       enterprise: {
         name: 'Enterprise',
+        status: 'planned' as const,
+        statusLabel: 'Coming soon',
         price: 'Custom',
-        period: '',
+        period: 'contact us',
         features: [
-          'Tokened Gateway proxy',
-          'SSO & team workspaces',
-          'Custom compliance rules',
-          'Dedicated support & SLA',
+          'Tokened Gateway proxy (planned)',
+          'SSO & team workspaces (planned)',
+          'Custom compliance rules (planned)',
+          'Dedicated support & SLA (planned)',
         ],
-        cta: 'Contact Sales',
+        cta: 'Contact us',
       },
     },
   },
@@ -254,15 +261,17 @@ export type Locale = {
   pricing: {
     title: string
     subtitle: string
+    disclaimer: string
     tiers: Record<
       string,
       {
         name: string
+        status: 'live' | 'planned'
+        statusLabel: string
         price: string
         period: string
         features: string[]
         cta: string
-        badge?: string
       }
     >
   }
