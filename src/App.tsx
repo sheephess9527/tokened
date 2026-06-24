@@ -10,6 +10,7 @@ import { Docs } from './components/Docs'
 import { Resources } from './components/Resources'
 import { Roadmap } from './components/Roadmap'
 import { Pricing } from './components/Pricing'
+import { WaitlistSection } from './components/WaitlistSection'
 import { FAQ } from './components/FAQ'
 import { Legal } from './components/Legal'
 import { Footer } from './components/Footer'
@@ -33,6 +34,7 @@ function App() {
         <Resources />
         <Roadmap />
         <Pricing />
+        <WaitlistSection />
         <FAQ />
         <Legal />
       </main>

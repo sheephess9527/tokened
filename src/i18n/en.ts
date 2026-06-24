@@ -185,6 +185,39 @@ export const en = {
       estimate: 'Estimate',
     },
     empty: 'Start typing to see live token analysis.',
+    loading: 'Analyzing tokens…',
+  },
+  gatewayBeta: {
+    badge: 'Beta applications open',
+    title: 'Tokened Gateway — drop-in LLM proxy',
+    subtitle:
+      'Swap your OpenAI base URL to api.tokened.uk and get caching, smart routing, and compliance interception. Currently in development — apply for early beta access.',
+    features: [
+      'Compatible with OpenAI SDK — change one env variable',
+      'Edge cache for identical prompts (est. up to 40% savings)',
+      'PII detection before data reaches US-hosted models',
+      'Route to GPT, Claude, DeepSeek, or Qwen by cost policy',
+    ],
+    code: 'OPENAI_BASE_URL=https://api.tokened.uk/v1',
+    note: 'Gateway is not live yet. Join the waitlist to be first in line when the beta opens.',
+  },
+  waitlist: {
+    title: 'Join the waitlist',
+    subtitle:
+      'Get notified when Developer tools and Gateway beta launch. Opens your email client with a pre-filled application — no backend signup required.',
+    email: 'Work email',
+    interest: 'I am interested in',
+    interests: {
+      developer: 'Developer plan (prompt optimization & API)',
+      gateway: 'Gateway beta (api.tokened.uk proxy)',
+      enterprise: 'Enterprise (SSO, teams, custom SLA)',
+    },
+    message: 'Tell us about your use case (optional)',
+    messagePlaceholder: 'e.g. We process 50k prompts/day and need cost visibility…',
+    submit: 'Submit application',
+    success:
+      'Opening your email client… Complete the send to join the waitlist. If it does not open, email hello@tokened.uk directly.',
+    privacy: 'We only use your email to contact you about Tokened. No spam, ever.',
   },
   saas: {
     title: 'Planned: production-grade LLM infrastructure',
@@ -313,6 +346,7 @@ export const en = {
     faq: 'FAQ',
     resources: 'Guides',
     integration: 'Integration',
+    waitlist: 'Waitlist',
   },
 }
 
@@ -387,6 +421,27 @@ export type Locale = {
     currencies: Record<string, string>
     accuracy: Record<string, string>
     empty: string
+    loading: string
+  }
+  gatewayBeta: {
+    badge: string
+    title: string
+    subtitle: string
+    features: string[]
+    code: string
+    note: string
+  }
+  waitlist: {
+    title: string
+    subtitle: string
+    email: string
+    interest: string
+    interests: Record<string, string>
+    message: string
+    messagePlaceholder: string
+    submit: string
+    success: string
+    privacy: string
   }
   saas: {
     title: string
@@ -449,5 +504,6 @@ export type Locale = {
     faq: string
     resources: string
     integration: string
+    waitlist: string
   }
 }

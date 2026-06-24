@@ -1,19 +1,14 @@
 import { useMemo, useState } from 'react'
 import { useI18n } from '../i18n'
 import { useAnimatedNumber } from '../hooks/useAnimatedNumber'
-import { MAILTO_BETA, MAILTO_ENTERPRISE } from '../lib/contact'
+import { useTokenAnalysis } from '../hooks/useTokenAnalysis'
 import type { Currency } from '../lib/currency'
 import {
   chineseInflationRate,
   estimateCosts,
   findBestValue,
 } from '../lib/pricing'
-import {
-  countTokens,
-  hasChinese,
-  tokenizeToSpans,
-  type TokenizerId,
-} from '../lib/tokenizer'
+import { hasChinese, type TokenizerId } from '../lib/tokenizer'
 import { CostChart } from './CostChart'
 import { TokenHighlight } from './TokenHighlight'
 import styles from './TokenEditor.module.css'
@@ -37,25 +32,10 @@ export function TokenEditor() {
   const [currency, setCurrency] = useState<Currency>('USD')
   const [showBlocks, setShowBlocks] = useState(true)
 
-  const tokenCount = useMemo(
-    () => countTokens(prompt, tokenizer),
-    [prompt, tokenizer],
-  )
+  const { tokenCount, openAiBaseline, chineseEfficient, spans, loading } =
+    useTokenAnalysis(prompt, tokenizer, showBlocks)
+
   const animatedTokens = useAnimatedNumber(tokenCount)
-
-  const openAiBaseline = useMemo(
-    () => countTokens(prompt, 'cl100k_base'),
-    [prompt],
-  )
-  const chineseEfficient = useMemo(
-    () => countTokens(prompt, 'chinese_estimate'),
-    [prompt],
-  )
-
-  const spans = useMemo(
-    () => (showBlocks ? tokenizeToSpans(prompt, tokenizer) : []),
-    [prompt, tokenizer, showBlocks],
-  )
 
   const costs = useMemo(
     () => estimateCosts(openAiBaseline, currency),
@@ -81,10 +61,10 @@ export function TokenEditor() {
           <button type="button" className={styles.ctaPrimary} onClick={scrollToTool}>
             {t.hero.ctaTry}
           </button>
-          <a href={MAILTO_BETA} className={styles.ctaSecondary}>
+          <a href="#waitlist" className={styles.ctaSecondary}>
             {t.hero.ctaBeta}
           </a>
-          <a href={MAILTO_ENTERPRISE} className={styles.ctaGhost}>
+          <a href="#waitlist" className={styles.ctaGhost}>
             {t.hero.ctaEnterprise}
           </a>
         </div>
@@ -142,7 +122,9 @@ export function TokenEditor() {
             </div>
           </div>
 
-          {!prompt ? (
+          {loading && prompt ? (
+            <p className={styles.loading}>{t.editor.loading}</p>
+          ) : !prompt ? (
             <p className={styles.empty}>{t.editor.empty}</p>
           ) : (
             <>

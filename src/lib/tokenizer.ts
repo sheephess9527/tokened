@@ -1,6 +1,4 @@
 import * as cl100k from 'gpt-tokenizer/encoding/cl100k_base'
-import * as o200k from 'gpt-tokenizer/encoding/o200k_base'
-import * as p50k from 'gpt-tokenizer/encoding/p50k_base'
 
 export type TokenizerId =
   | 'cl100k_base'
@@ -18,13 +16,40 @@ interface EncodingApi {
   decode: (tokens: Iterable<number>) => string
 }
 
-const ENCODINGS: Record<
-  Exclude<TokenizerId, 'chinese_estimate'>,
-  EncodingApi
+const encodingCache = new Map<TokenizerId, EncodingApi>()
+encodingCache.set('cl100k_base', cl100k)
+
+const lazyLoaders: Record<
+  Exclude<TokenizerId, 'cl100k_base' | 'chinese_estimate'>,
+  () => Promise<EncodingApi>
 > = {
-  cl100k_base: cl100k,
-  o200k_base: o200k,
-  p50k_base: p50k,
+  o200k_base: async () => {
+    const mod = await import('gpt-tokenizer/encoding/o200k_base')
+    return mod
+  },
+  p50k_base: async () => {
+    const mod = await import('gpt-tokenizer/encoding/p50k_base')
+    return mod
+  },
+}
+
+export async function loadEncoding(
+  tokenizerId: Exclude<TokenizerId, 'chinese_estimate'>,
+): Promise<EncodingApi> {
+  const cached = encodingCache.get(tokenizerId)
+  if (cached) return cached
+
+  const loader = lazyLoaders[tokenizerId as keyof typeof lazyLoaders]
+  if (!loader) return cl100k
+
+  const encoding = await loader()
+  encodingCache.set(tokenizerId, encoding)
+  return encoding
+}
+
+/** Preload default tokenizer on idle */
+export function preloadDefaultEncoding() {
+  void loadEncoding('cl100k_base')
 }
 
 const CHINESE_CHAR_RE = /[\u4e00-\u9fff\u3400-\u4dbf]/
@@ -38,21 +63,20 @@ export function hasChinese(text: string): boolean {
   return CHINESE_CHAR_RE.test(text)
 }
 
-function getEncoding(tokenizerId: Exclude<TokenizerId, 'chinese_estimate'>) {
-  return ENCODINGS[tokenizerId]
-}
-
-export function countTokens(text: string, tokenizerId: TokenizerId): number {
+export async function countTokens(
+  text: string,
+  tokenizerId: TokenizerId,
+): Promise<number> {
   if (!text) return 0
 
   if (tokenizerId === 'chinese_estimate') {
     return estimateChineseEfficientTokens(text)
   }
 
-  return getEncoding(tokenizerId).encode(text).length
+  const encoding = await loadEncoding(tokenizerId)
+  return encoding.encode(text).length
 }
 
-/** Approximate DeepSeek/Qwen-style efficiency for Chinese-heavy text */
 export function estimateChineseEfficientTokens(text: string): number {
   if (!text) return 0
 
@@ -65,17 +89,17 @@ export function estimateChineseEfficientTokens(text: string): number {
   return chineseEfficient + nonChineseTokens
 }
 
-export function tokenizeToSpans(
+export async function tokenizeToSpans(
   text: string,
   tokenizerId: TokenizerId,
-): TokenSpan[] {
+): Promise<TokenSpan[]> {
   if (!text) return []
 
   if (tokenizerId === 'chinese_estimate') {
     return approximateChineseSpans(text)
   }
 
-  const encoding = getEncoding(tokenizerId)
+  const encoding = await loadEncoding(tokenizerId)
   const tokenIds = encoding.encode(text)
 
   return tokenIds.map((id, index) => ({

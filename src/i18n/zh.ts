@@ -187,6 +187,39 @@ export const zh = {
       estimate: '估算',
     },
     empty: '开始输入即可查看实时 Token 分析。',
+    loading: '正在分析 Token…',
+  },
+  gatewayBeta: {
+    badge: 'Beta 申请开放',
+    title: 'Tokened Gateway — 即插即用 LLM 代理',
+    subtitle:
+      '将 OpenAI Base URL 替换为 api.tokened.uk，即享缓存、智能路由与合规拦截。目前正在开发中 — 申请早期 Beta 资格。',
+    features: [
+      '兼容 OpenAI SDK — 只需修改一个环境变量',
+      '相同 Prompt 边缘缓存（预估最高省 40%）',
+      '数据到达美国模型前自动 PII 检测',
+      '按成本策略路由至 GPT、Claude、DeepSeek 或 Qwen',
+    ],
+    code: 'OPENAI_BASE_URL=https://api.tokened.uk/v1',
+    note: 'Gateway 尚未上线。加入等待名单，Beta 开放时第一时间通知你。',
+  },
+  waitlist: {
+    title: '加入等待名单',
+    subtitle:
+      '开发者工具与 Gateway Beta 上线时第一时间通知你。提交后将打开邮件客户端并预填申请内容 — 无需后端注册。',
+    email: '工作邮箱',
+    interest: '我感兴趣的是',
+    interests: {
+      developer: '开发者版（Prompt 优化 & API）',
+      gateway: 'Gateway Beta（api.tokened.uk 代理）',
+      enterprise: '企业版（SSO、团队、定制 SLA）',
+    },
+    message: '介绍你的使用场景（可选）',
+    messagePlaceholder: '例如：我们每天处理 5 万次 Prompt，需要成本可视化…',
+    submit: '提交申请',
+    success:
+      '正在打开邮件客户端… 请完成发送以加入等待名单。如未自动打开，请直接发邮件至 hello@tokened.uk。',
+    privacy: '我们仅用你的邮箱联系 Tokened 相关事宜，绝不发送垃圾邮件。',
   },
   saas: {
     title: '规划中：生产级 LLM 基础设施',
@@ -315,5 +348,6 @@ export const zh = {
     faq: '常见问题',
     resources: '指南',
     integration: '接入',
+    waitlist: '等待名单',
   },
 } satisfies Locale

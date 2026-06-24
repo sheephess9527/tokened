@@ -27,6 +27,7 @@ export function Footer() {
             <a href="#docs">{t.footer.integration}</a>
             <a href="#resources">{t.footer.resources}</a>
             <a href="#roadmap">{t.footer.roadmap}</a>
+            <a href="#waitlist">{t.footer.waitlist}</a>
             <a href="#faq">{t.footer.faq}</a>
             <a href="#privacy">{t.footer.privacy}</a>
             <a href="#terms">{t.footer.terms}</a>

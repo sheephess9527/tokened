@@ -1,5 +1,5 @@
 import { useI18n } from '../i18n'
-import { MAILTO_BETA } from '../lib/contact'
+
 import styles from './PostDemoCTA.module.css'
 
 export function PostDemoCTA() {
@@ -12,13 +12,13 @@ export function PostDemoCTA() {
         <h2>{t.postDemo.title}</h2>
         <p>{t.postDemo.desc}</p>
         <div className={styles.actions}>
-          <a href={MAILTO_BETA} className={styles.primary} target="_blank" rel="noopener noreferrer">
+          <a href="#waitlist" className={styles.primary}>
             {t.postDemo.ctaBeta}
           </a>
           <a href="#pricing" className={styles.secondary}>
             {t.postDemo.ctaPricing}
           </a>
-          <a href="#roadmap" className={styles.ghost}>
+          <a href="#gateway-beta" className={styles.ghost}>
             {t.postDemo.ctaGateway}
           </a>
         </div>

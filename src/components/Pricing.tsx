@@ -1,5 +1,4 @@
 import { useI18n } from '../i18n'
-import { MAILTO_BETA } from '../lib/contact'
 import styles from './Pricing.module.css'
 
 export function Pricing() {
@@ -34,12 +33,7 @@ export function Pricing() {
           <h3>{waitlist.title}</h3>
           <p>{waitlist.desc}</p>
           <div className={styles.waitlistActions}>
-            <a
-              href={MAILTO_BETA}
-              className={styles.ctaSecondary}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a href="#waitlist" className={styles.ctaSecondary}>
               {waitlist.cta}
             </a>
             <a href="#roadmap" className={styles.roadmapLink}>
