@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useI18n } from '../i18n'
 import { useAnimatedNumber } from '../hooks/useAnimatedNumber'
+import { MAILTO_BETA, MAILTO_ENTERPRISE } from '../lib/contact'
 import type { Currency } from '../lib/currency'
 import {
   chineseInflationRate,
@@ -13,6 +14,7 @@ import {
   tokenizeToSpans,
   type TokenizerId,
 } from '../lib/tokenizer'
+import { CostChart } from './CostChart'
 import { TokenHighlight } from './TokenHighlight'
 import styles from './TokenEditor.module.css'
 
@@ -63,12 +65,29 @@ export function TokenEditor() {
   const inflation = chineseInflationRate(openAiBaseline, chineseEfficient)
   const showInflation = hasChinese(prompt) && inflation !== null && inflation > 0
 
+  const scrollToTool = () => {
+    document.getElementById('prompt-input')?.focus()
+    document.getElementById('tool')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
   return (
     <section className={styles.section} id="tool">
       <div className={styles.hero}>
         <h1>{t.hero.title}</h1>
         <p className={styles.subtitle}>{t.hero.subtitle}</p>
         <p className={styles.tagline}>{t.hero.tagline}</p>
+
+        <div className={styles.ctas}>
+          <button type="button" className={styles.ctaPrimary} onClick={scrollToTool}>
+            {t.hero.ctaTry}
+          </button>
+          <a href={MAILTO_BETA} className={styles.ctaSecondary}>
+            {t.hero.ctaBeta}
+          </a>
+          <a href={MAILTO_ENTERPRISE} className={styles.ctaGhost}>
+            {t.hero.ctaEnterprise}
+          </a>
+        </div>
       </div>
 
       <div className={styles.editor}>
@@ -96,17 +115,6 @@ export function TokenEditor() {
             placeholder={t.editor.inputPlaceholder}
             spellCheck={false}
           />
-
-          <div className={styles.actions}>
-            <button type="button" className={styles.btnGhost} disabled title={t.editor.comingSoon}>
-              {t.editor.detectPii}
-              <span className={styles.badgeSoon}>{t.editor.comingSoon}</span>
-            </button>
-            <button type="button" className={styles.btnPrimary} disabled title={t.editor.comingSoon}>
-              {t.editor.optimize}
-              <span className={styles.badgeSoon}>{t.editor.comingSoon}</span>
-            </button>
-          </div>
         </div>
 
         <div className={styles.pane}>
@@ -167,6 +175,8 @@ export function TokenEditor() {
                   </p>
                 </div>
               )}
+
+              <CostChart estimates={costs} label={t.editor.costChart} />
 
               {showBlocks && (
                 <div className={styles.highlightBox}>

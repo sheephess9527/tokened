@@ -10,7 +10,7 @@ export function SaasPitch() {
   ]
 
   return (
-    <section className={styles.section} id="saas">
+    <section className={styles.section} id="features">
       <div className={styles.inner}>
         <h2>{t.saas.title}</h2>
         <p className={styles.subtitle}>{t.saas.subtitle}</p>
@@ -18,6 +18,9 @@ export function SaasPitch() {
           {features.map((f) => (
             <article key={f.title} className={styles.card}>
               <div className={styles.glow} />
+              <span className={styles.icon} aria-hidden="true">
+                {f.icon}
+              </span>
               <h3>{f.title}</h3>
               <p>{f.desc}</p>
             </article>

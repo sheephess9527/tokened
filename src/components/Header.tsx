@@ -16,7 +16,9 @@ export function Header() {
         </a>
 
         <nav className={styles.nav}>
-          <a href="#docs">{t.nav.docs}</a>
+          <a href="#features">{t.nav.features}</a>
+          <a href="#tool">{t.nav.demo}</a>
+          <a href="#docs">{t.nav.integration}</a>
           <a href="#pricing">{t.nav.pricing}</a>
           <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
             {t.nav.github}

@@ -32,6 +32,66 @@
   font-size: 0.9rem;
   color: var(--accent-secondary);
   font-family: var(--font-mono);
+  margin-bottom: 1.75rem;
+}
+
+.ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.ctaPrimary,
+.ctaSecondary,
+.ctaGhost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.5rem;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s, border-color 0.2s;
+  border: none;
+  font-family: inherit;
+}
+
+.ctaPrimary {
+  background: linear-gradient(135deg, var(--accent) 0%, #5b21b6 100%);
+  color: white;
+  box-shadow: 0 6px 24px rgba(124, 58, 237, 0.4);
+}
+
+.ctaPrimary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 32px rgba(124, 58, 237, 0.5);
+}
+
+.ctaSecondary {
+  background: rgba(6, 182, 212, 0.12);
+  color: var(--accent-secondary);
+  border: 1px solid rgba(6, 182, 212, 0.4);
+}
+
+.ctaSecondary:hover {
+  background: rgba(6, 182, 212, 0.22);
+  transform: translateY(-1px);
+}
+
+.ctaGhost {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
+.ctaGhost:hover {
+  color: var(--text);
+  border-color: var(--text-muted);
+  transform: translateY(-1px);
 }
 
 .editor {

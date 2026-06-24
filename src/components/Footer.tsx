@@ -1,4 +1,5 @@
 import { useI18n } from '../i18n'
+import { CONTACT_EMAIL, MAILTO_CONTACT } from '../lib/contact'
 import styles from './Footer.module.css'
 
 export function Footer() {
@@ -8,11 +9,33 @@ export function Footer() {
   return (
     <footer className={styles.footer}>
       <div className={styles.inner}>
-        <span className={styles.brand}>{t.brand}</span>
-        <span className={styles.tagline}>{t.footer.tagline}</span>
-        <span className={styles.rights}>
-          © {year} tokened.uk. {t.footer.rights}
-        </span>
+        <div className={styles.top}>
+          <div className={styles.brandBlock}>
+            <span className={styles.brand}>{t.brand}</span>
+            <span className={styles.tagline}>{t.footer.tagline}</span>
+          </div>
+
+          <div className={styles.contact}>
+            <p className={styles.contactLabel}>{t.footer.contact}</p>
+            <a href={MAILTO_CONTACT} className={styles.email}>
+              {CONTACT_EMAIL}
+            </a>
+          </div>
+
+          <nav className={styles.links}>
+            <a href="#roadmap">{t.footer.roadmap}</a>
+            <a href="#privacy">{t.footer.privacy}</a>
+            <a href="#terms">{t.footer.terms}</a>
+          </nav>
+        </div>
+
+        <p className={styles.about}>{t.footer.about}</p>
+
+        <div className={styles.bottom}>
+          <span className={styles.rights}>
+            © {year} tokened.uk. {t.footer.rights}
+          </span>
+        </div>
       </div>
     </footer>
   )

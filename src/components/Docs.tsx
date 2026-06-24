@@ -9,6 +9,7 @@ export function Docs() {
       <div className={styles.inner}>
         <h2>{t.docs.title}</h2>
         <p className={styles.subtitle}>{t.docs.subtitle}</p>
+        <p className={styles.intro}>{t.docs.intro}</p>
 
         <div className={styles.grid}>
           <article className={styles.card}>
@@ -28,14 +29,6 @@ export function Docs() {
             </pre>
             <pre className={styles.code}>
               <code>{`import tiktoken\nenc = tiktoken.get_encoding("cl100k_base")\nlen(enc.encode(prompt))`}</code>
-            </pre>
-          </article>
-
-          <article className={`${styles.card} ${styles.cardWide}`}>
-            <h3>{t.docs.gateway.title}</h3>
-            <p>{t.docs.gateway.desc}</p>
-            <pre className={styles.code}>
-              <code>{`OPENAI_BASE_URL=https://api.tokened.uk/v1`}</code>
             </pre>
           </article>
         </div>

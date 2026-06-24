@@ -103,13 +103,17 @@
 
 .cta,
 .ctaPrimary {
+  display: block;
   width: 100%;
   padding: 0.75rem 1rem;
   border-radius: 8px;
   font-weight: 600;
   font-size: 0.9rem;
+  text-align: center;
+  text-decoration: none;
   cursor: pointer;
   transition: all 0.2s;
+  box-sizing: border-box;
 }
 
 .cta {
