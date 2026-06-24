@@ -1,0 +1,11 @@
+name = "tokened-gateway"
+main = "src/index.ts"
+compatibility_date = "2024-06-01"
+
+[vars]
+OPENAI_BASE_URL = "https://api.openai.com"
+CACHE_TTL_SECONDS = "3600"
+PII_BLOCK = "false"
+
+# Route to api.tokened.uk after deploying (configure in Cloudflare dashboard):
+# routes = [{ pattern = "api.tokened.uk/*", zone_name = "tokened.uk" }]

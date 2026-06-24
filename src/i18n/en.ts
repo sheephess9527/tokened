@@ -6,8 +6,20 @@ export const en = {
     features: 'Features',
     pricing: 'Pricing',
     faq: 'FAQ',
+    blog: 'Guides',
     integration: 'Integration',
     github: 'GitHub',
+  },
+  blog: {
+    title: 'Guides & Insights',
+    subtitle: 'Practical LLM token knowledge for developers and teams.',
+    indexDescription:
+      'Articles on Chinese token costs, prompt caching, GDPR/PIPL compliance, and LLM API optimization.',
+    backHome: 'Back to home',
+    backBlog: 'Back to guides',
+    readMore: 'Read article',
+    tryTool: 'Try the free token analyzer on your own prompts.',
+    tryToolBtn: 'Open token tool',
   },
   trust: {
     items: [
@@ -204,7 +216,7 @@ export const en = {
   waitlist: {
     title: 'Join the waitlist',
     subtitle:
-      'Get notified when Developer tools and Gateway beta launch. Opens your email client with a pre-filled application — no backend signup required.',
+      'Get notified when Developer tools and Gateway beta launch. Submits via Formspree when configured, otherwise opens your email client.',
     email: 'Work email',
     interest: 'I am interested in',
     interests: {
@@ -215,8 +227,13 @@ export const en = {
     message: 'Tell us about your use case (optional)',
     messagePlaceholder: 'e.g. We process 50k prompts/day and need cost visibility…',
     submit: 'Submit application',
-    success:
-      'Opening your email client… Complete the send to join the waitlist. If it does not open, email hello@tokened.uk directly.',
+    submitting: 'Submitting…',
+    successFormspree: 'You are on the list! We will email you when beta opens.',
+    successMailto:
+      'Opening your email client… Complete the send to join. If it does not open, email hello@tokened.uk directly.',
+    mailtoHint:
+      'Tip: set VITE_FORMSPREE_ENDPOINT in .env for direct form submission without email client.',
+    error: 'Submission failed. Please try again or email hello@tokened.uk.',
     privacy: 'We only use your email to contact you about Tokened. No spam, ever.',
   },
   saas: {
@@ -347,6 +364,7 @@ export const en = {
     resources: 'Guides',
     integration: 'Integration',
     waitlist: 'Waitlist',
+    blog: 'Guides',
   },
 }
 
@@ -358,8 +376,19 @@ export type Locale = {
     features: string
     pricing: string
     faq: string
+    blog: string
     integration: string
     github: string
+  }
+  blog: {
+    title: string
+    subtitle: string
+    indexDescription: string
+    backHome: string
+    backBlog: string
+    readMore: string
+    tryTool: string
+    tryToolBtn: string
   }
   trust: { items: string[] }
   stats: {
@@ -440,7 +469,11 @@ export type Locale = {
     message: string
     messagePlaceholder: string
     submit: string
-    success: string
+    submitting: string
+    successFormspree: string
+    successMailto: string
+    mailtoHint: string
+    error: string
     privacy: string
   }
   saas: {
@@ -505,5 +538,6 @@ export type Locale = {
     resources: string
     integration: string
     waitlist: string
+    blog: string
   }
 }

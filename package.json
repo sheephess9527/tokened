@@ -8,7 +8,10 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "pages:build": "npm run build"
+    "pages:build": "npm run build",
+    "gateway:install": "cd workers/gateway && npm install",
+    "gateway:dev": "cd workers/gateway && npm run dev",
+    "gateway:deploy": "cd workers/gateway && npm run deploy"
   },
   "engines": {
     "node": ">=20"
@@ -16,7 +19,8 @@
   "dependencies": {
     "gpt-tokenizer": "^3.4.0",
     "react": "^19.2.7",
-    "react-dom": "^19.2.7"
+    "react-dom": "^19.2.7",
+    "react-router-dom": "^7.18.0"
   },
   "devDependencies": {
     "@types/node": "^24.13.2",

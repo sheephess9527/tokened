@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { useI18n } from '../i18n'
 import { LanguageSwitcher } from './LanguageSwitcher'
 import styles from './Header.module.css'
@@ -10,17 +11,18 @@ export function Header() {
   return (
     <header className={styles.header}>
       <div className={styles.inner}>
-        <a href="#" className={styles.logo}>
+        <Link to="/" className={styles.logo}>
           <span className={styles.logoMark}>◆</span>
           {t.brand}
-        </a>
+        </Link>
 
         <nav className={styles.nav}>
-          <a href="#tool">{t.nav.demo}</a>
-          <a href="#how">{t.nav.howItWorks}</a>
-          <a href="#features">{t.nav.features}</a>
-          <a href="#pricing">{t.nav.pricing}</a>
-          <a href="#faq">{t.nav.faq}</a>
+          <a href="/#tool">{t.nav.demo}</a>
+          <a href="/#how">{t.nav.howItWorks}</a>
+          <a href="/#features">{t.nav.features}</a>
+          <Link to="/blog">{t.nav.blog}</Link>
+          <a href="/#pricing">{t.nav.pricing}</a>
+          <a href="/#faq">{t.nav.faq}</a>
           <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className={styles.github}>
             {t.nav.github}
           </a>

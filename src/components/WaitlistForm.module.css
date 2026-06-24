@@ -70,6 +70,28 @@
   line-height: 1.5;
 }
 
+.hint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  padding: 0.75rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed var(--border);
+}
+
+.error {
+  font-size: 0.85rem;
+  color: #f87171;
+  text-align: center;
+}
+
+.submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
 .success {
   text-align: center;
   padding: 2rem 1rem;

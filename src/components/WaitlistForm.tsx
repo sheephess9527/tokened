@@ -4,6 +4,7 @@ import {
   buildWaitlistMailto,
   type WaitlistInterest,
 } from '../lib/contact'
+import { hasFormspree, submitWaitlist } from '../lib/formspree'
 import styles from './WaitlistForm.module.css'
 
 interface WaitlistFormProps {
@@ -16,21 +17,50 @@ export function WaitlistForm({ defaultInterest = 'developer' }: WaitlistFormProp
   const [interest, setInterest] = useState<WaitlistInterest>(defaultInterest)
   const [message, setMessage] = useState('')
   const [submitted, setSubmitted] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const interests: WaitlistInterest[] = ['developer', 'gateway', 'enterprise']
+  const useFormspree = hasFormspree()
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    if (!email.trim()) return
+    if (!email.trim() || submitting) return
 
-    const href = buildWaitlistMailto(
-      email.trim(),
-      interest,
-      t.waitlist.interests[interest],
-      message,
-    )
-    window.location.href = href
-    setSubmitted(true)
+    setSubmitting(true)
+    setError(null)
+
+    const interestLabel = t.waitlist.interests[interest]
+    const subject =
+      interest === 'gateway'
+        ? 'Tokened Gateway Beta Application'
+        : interest === 'enterprise'
+          ? 'Tokened Enterprise Inquiry'
+          : 'Tokened Developer Waitlist'
+
+    try {
+      if (useFormspree) {
+        await submitWaitlist({
+          email: email.trim(),
+          interest: interestLabel,
+          message: message.trim(),
+          subject,
+        })
+        setSubmitted(true)
+      } else {
+        window.location.href = buildWaitlistMailto(
+          email.trim(),
+          interest,
+          interestLabel,
+          message,
+        )
+        setSubmitted(true)
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t.waitlist.error)
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   if (submitted) {
@@ -39,7 +69,7 @@ export function WaitlistForm({ defaultInterest = 'developer' }: WaitlistFormProp
         <span className={styles.successIcon} aria-hidden="true">
           ✓
         </span>
-        <p>{t.waitlist.success}</p>
+        <p>{useFormspree ? t.waitlist.successFormspree : t.waitlist.successMailto}</p>
         <p className={styles.successEmail}>{email}</p>
       </div>
     )
@@ -47,6 +77,10 @@ export function WaitlistForm({ defaultInterest = 'developer' }: WaitlistFormProp
 
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
+      {!useFormspree && (
+        <p className={styles.hint}>{t.waitlist.mailtoHint}</p>
+      )}
+
       <label className={styles.field}>
         <span>{t.waitlist.email}</span>
         <input
@@ -83,8 +117,10 @@ export function WaitlistForm({ defaultInterest = 'developer' }: WaitlistFormProp
         />
       </label>
 
-      <button type="submit" className={styles.submit}>
-        {t.waitlist.submit}
+      {error && <p className={styles.error}>{error}</p>}
+
+      <button type="submit" className={styles.submit} disabled={submitting}>
+        {submitting ? t.waitlist.submitting : t.waitlist.submit}
       </button>
       <p className={styles.privacy}>{t.waitlist.privacy}</p>
     </form>

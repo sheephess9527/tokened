@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { useI18n } from '../i18n'
 import { CONTACT_EMAIL, MAILTO_CONTACT } from '../lib/contact'
 import styles from './Footer.module.css'
@@ -25,7 +26,7 @@ export function Footer() {
           <nav className={styles.links}>
             <a href="#how">{t.footer.howItWorks}</a>
             <a href="#docs">{t.footer.integration}</a>
-            <a href="#resources">{t.footer.resources}</a>
+            <Link to="/blog">{t.footer.blog}</Link>
             <a href="#roadmap">{t.footer.roadmap}</a>
             <a href="#waitlist">{t.footer.waitlist}</a>
             <a href="#faq">{t.footer.faq}</a>

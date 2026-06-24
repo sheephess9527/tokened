@@ -8,8 +8,20 @@ export const zh = {
     features: '功能',
     pricing: '定价',
     faq: '问答',
+    blog: '指南',
     integration: '接入',
     github: 'GitHub',
+  },
+  blog: {
+    title: '指南与洞察',
+    subtitle: '面向开发者与团队的实用 LLM Token 知识。',
+    indexDescription:
+      '关于中文 Token 成本、Prompt 缓存、GDPR/PIPL 合规与 LLM API 优化的文章。',
+    backHome: '返回首页',
+    backBlog: '返回指南列表',
+    readMore: '阅读全文',
+    tryTool: '用免费 Token 分析器试试你自己的 Prompt。',
+    tryToolBtn: '打开分析工具',
   },
   trust: {
     items: [
@@ -206,7 +218,7 @@ export const zh = {
   waitlist: {
     title: '加入等待名单',
     subtitle:
-      '开发者工具与 Gateway Beta 上线时第一时间通知你。提交后将打开邮件客户端并预填申请内容 — 无需后端注册。',
+      '开发者工具与 Gateway Beta 上线时第一时间通知你。配置 Formspree 后直接提交，否则打开邮件客户端。',
     email: '工作邮箱',
     interest: '我感兴趣的是',
     interests: {
@@ -217,8 +229,13 @@ export const zh = {
     message: '介绍你的使用场景（可选）',
     messagePlaceholder: '例如：我们每天处理 5 万次 Prompt，需要成本可视化…',
     submit: '提交申请',
-    success:
-      '正在打开邮件客户端… 请完成发送以加入等待名单。如未自动打开，请直接发邮件至 hello@tokened.uk。',
+    submitting: '提交中…',
+    successFormspree: '已加入等待名单！Beta 开放时我们将邮件通知你。',
+    successMailto:
+      '正在打开邮件客户端… 请完成发送以加入。如未自动打开，请发邮件至 hello@tokened.uk。',
+    mailtoHint:
+      '提示：在 .env 中设置 VITE_FORMSPREE_ENDPOINT 可直接提交表单，无需邮件客户端。',
+    error: '提交失败，请重试或直接发邮件至 hello@tokened.uk。',
     privacy: '我们仅用你的邮箱联系 Tokened 相关事宜，绝不发送垃圾邮件。',
   },
   saas: {
@@ -349,5 +366,6 @@ export const zh = {
     resources: '指南',
     integration: '接入',
     waitlist: '等待名单',
+    blog: '指南',
   },
 } satisfies Locale
