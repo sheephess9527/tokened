@@ -3,16 +3,151 @@ import type { Locale } from './en'
 export const zh = {
   brand: 'tokened.uk',
   nav: {
-    features: '功能',
     demo: '演示',
-    integration: '接入',
+    howItWorks: '原理',
+    features: '功能',
     pricing: '定价',
+    faq: '问答',
+    integration: '接入',
     github: 'GitHub',
   },
+  trust: {
+    items: [
+      '100% 浏览器本地运行 — Prompt 不上传',
+      '无需注册或 API Key',
+      'OpenAI 精确分词器（gpt-tokenizer）',
+      'GDPR & PIPL 合规友好设计',
+    ],
+  },
+  stats: {
+    title: '为什么 LLM Token 计算很重要',
+    items: [
+      {
+        value: '6+',
+        label: '模型对比',
+        desc: 'GPT-4o、Claude、Gemini、DeepSeek、Qwen 等同屏比价。',
+      },
+      {
+        value: '100%',
+        label: '本地处理',
+        desc: '分词在浏览器完成，服务器不存储任何 Prompt。',
+      },
+      {
+        value: '45%',
+        label: '中文节省空间',
+        desc: '相比 OpenAI cl100k_base，中文高效模型典型可少 45% Token。',
+      },
+      {
+        value: '¥0',
+        label: '免费起步',
+        desc: '完整 Demo 永久免费。付费方案筹备中 — 加入等待名单。',
+      },
+    ],
+  },
+  howItWorks: {
+    title: '工作原理',
+    subtitle: '三步完成。无需注册。数据不离开你的设备。',
+    steps: {
+      step1: {
+        num: '1',
+        title: '粘贴 LLM Prompt',
+        desc: '支持系统提示词、RAG 上下文、对话模板 — 英文、中文或混合均可。',
+      },
+      step2: {
+        num: '2',
+        title: '查看 Token 分解',
+        desc: '实时分词色块、Token 总数、中文膨胀率（相对 OpenAI 基线）。',
+      },
+      step3: {
+        num: '3',
+        title: '对比模型成本',
+        desc: '美元 / 英镑 / 人民币即时估价，一眼找到最省钱的模型。',
+      },
+    },
+  },
+  postDemo: {
+    title: '想用到生产环境？',
+    desc: '免费分析器现已可用。Tokened Gateway（缓存、路由、合规代理）在路线图中 — 加入等待名单获取 Beta 资格。',
+    ctaBeta: '加入 Beta 等待名单',
+    ctaPricing: '查看定价',
+    ctaGateway: '查看 Gateway 规划',
+  },
+  useCases: {
+    title: '谁在用 Tokened？',
+    subtitle: 'Token 可视化如何在真实场景中省钱、降风险。',
+    cases: {
+      c1: {
+        stat: '最高省 45% Token',
+        title: '中文产品团队',
+        desc: '上线前对比 OpenAI vs DeepSeek/Qwen。同一段中文在 cl100k_base 上可能多花 2 倍 Token。',
+      },
+      c2: {
+        stat: '上线前成本审计',
+        title: '创业团队 & 独立开发者',
+        desc: '用真实 Prompt 估算月 API 账单，避免上线后账单「惊喜」。',
+      },
+      c3: {
+        stat: 'GDPR & PIPL 友好',
+        title: '欧盟 / 英国 / 中国团队',
+        desc: 'Prompt 发往美国模型前先本地审计。PII 预检功能将在下一版本推出。',
+      },
+    },
+  },
+  resources: {
+    title: '指南与洞察',
+    subtitle: '实用的 LLM Token 知识 — 更多文章持续更新。',
+    articles: {
+      a1: {
+        title: '为什么中文 Prompt 在 OpenAI 上更费 Token？',
+        desc: 'OpenAI cl100k_base 每个汉字约 1–3 个 Token。DeepSeek 和 Qwen 词表更高效 — 同一段中文通常可少 40–60% Token。',
+        readTime: '3 分钟阅读',
+      },
+      a2: {
+        title: 'Prompt 缓存如何削减 API 支出',
+        desc: '每次请求重复发送相同系统 Prompt 是纯浪费。边缘缓存可去重 — 对话密集型应用预估最高省 40%。',
+        readTime: '4 分钟阅读',
+      },
+      a3: {
+        title: 'GDPR & PIPL：为什么本地 Token 分析很重要',
+        desc: '含个人信息的 Prompt 发往美国托管模型有合规风险。本地分词意味着数据不离开浏览器。',
+        readTime: '3 分钟阅读',
+      },
+    },
+  },
+  faq: {
+    title: '常见问题',
+    subtitle: '关于 LLM Token、隐私与产品路线的常见疑问。',
+    items: [
+      {
+        q: '我的 Prompt 会发送到你们服务器吗？',
+        a: '不会。所有 Token 计算在浏览器本地通过 gpt-tokenizer 完成。我们不存储、记录或传输你的 Prompt。',
+      },
+      {
+        q: 'Token 计数准确吗？',
+        a: 'OpenAI 模型（cl100k_base、o200k_base）为精确值。Claude、Gemini、DeepSeek、Qwen 为基于公开分词行为的估算 — 请以服务商账单为准。',
+      },
+      {
+        q: 'Tokened 和加密货币 Token 有关吗？',
+        a: '无关。Tokened 专指大模型 API Token — OpenAI、Anthropic 等用于计量和计费的文本处理单位。',
+      },
+      {
+        q: 'Tokened Gateway 什么时候上线？',
+        a: 'Gateway（api.tokened.uk）在路线图第三阶段。加入 Beta 等待名单可在代理内测开放时第一时间收到通知。',
+      },
+      {
+        q: '开发者版现在能购买吗？',
+        a: '还不能。目前仅免费本地分析器可用。开发者版与企业版仍在规划中，价格待定。加入等待名单可优先获取内测资格。',
+      },
+      {
+        q: '如何在应用中集成分词？',
+        a: '使用 npm install gpt-tokenizer（TypeScript）或 pip install tiktoken（Python）。见「接入」区块的复制粘贴示例。',
+      },
+    ],
+  },
   hero: {
-    title: '每一枚 Token 都是成本。',
+    title: '每一枚 LLM Token 都是成本。',
     subtitle:
-      '实时分析 Prompt 在各模型下的真实消耗，降低 LLM API 成本，满足 GDPR 与 PIPL 合规要求。',
+      '实时分析 LLM Prompt 在各模型下的真实消耗，降低 API 成本，满足 GDPR 与 PIPL 合规要求。',
     tagline: '在下方粘贴 Prompt — 即刻查看分词、费用与节省空间。100% 本地计算。',
     ctaTry: '立即体验 Token 分析',
     ctaBeta: '加入 Beta 等待名单',
@@ -54,8 +189,8 @@ export const zh = {
     empty: '开始输入即可查看实时 Token 分析。',
   },
   saas: {
-    title: '企业级大模型成本与合规',
-    subtitle: '从免费工具无缝升级到生产级基础设施。',
+    title: '规划中：生产级 LLM 基础设施',
+    subtitle: '路线图功能 — 为超越免费工具、需要规模化部署的团队提供缓存、路由与合规代理。',
     features: {
       cache: {
         title: 'AI 缓存代理',
@@ -176,5 +311,9 @@ export const zh = {
     privacy: '隐私政策',
     terms: '服务条款',
     roadmap: '路线图',
+    howItWorks: '工作原理',
+    faq: '常见问题',
+    resources: '指南',
+    integration: '接入',
   },
 } satisfies Locale

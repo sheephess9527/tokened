@@ -1,16 +1,151 @@
 export const en = {
   brand: 'tokened.uk',
   nav: {
-    features: 'Features',
     demo: 'Demo',
-    integration: 'Integration',
+    howItWorks: 'How it works',
+    features: 'Features',
     pricing: 'Pricing',
+    faq: 'FAQ',
+    integration: 'Integration',
     github: 'GitHub',
   },
+  trust: {
+    items: [
+      '100% browser-local — prompts never uploaded',
+      'No account or API key required',
+      'OpenAI-accurate tokenizers (gpt-tokenizer)',
+      'GDPR & PIPL aware by design',
+    ],
+  },
+  stats: {
+    title: 'Why LLM token math matters',
+    items: [
+      {
+        value: '6+',
+        label: 'Models compared',
+        desc: 'GPT-4o, Claude, Gemini, DeepSeek, Qwen and more side by side.',
+      },
+      {
+        value: '100%',
+        label: 'Local processing',
+        desc: 'Token counting runs in your browser. Zero server-side prompt storage.',
+      },
+      {
+        value: '45%',
+        label: 'Chinese savings',
+        desc: 'Typical token reduction vs OpenAI cl100k_base when using Chinese-efficient models.',
+      },
+      {
+        value: '$0',
+        label: 'To get started',
+        desc: 'Full demo free forever. Paid plans coming — join the waitlist.',
+      },
+    ],
+  },
+  howItWorks: {
+    title: 'How it works',
+    subtitle: 'Three steps. No signup. Your prompt stays on your device.',
+    steps: {
+      step1: {
+        num: '1',
+        title: 'Paste your LLM prompt',
+        desc: 'Drop in any system prompt, RAG context, or chat template — English, 中文, or mixed.',
+      },
+      step2: {
+        num: '2',
+        title: 'See token breakdown',
+        desc: 'Watch real-time token blocks, total count, and Chinese inflation vs OpenAI baseline.',
+      },
+      step3: {
+        num: '3',
+        title: 'Compare model costs',
+        desc: 'Instant per-call cost estimates in USD, GBP, or CNY. Pick the most efficient model.',
+      },
+    },
+  },
+  postDemo: {
+    title: 'Ready to use this in production?',
+    desc: 'The free analyzer is live today. Tokened Gateway — caching, routing, and compliance proxy — is on the roadmap. Join the waitlist for beta access.',
+    ctaBeta: 'Join beta waitlist',
+    ctaPricing: 'View pricing',
+    ctaGateway: 'See Gateway roadmap',
+  },
+  useCases: {
+    title: 'Who uses Tokened?',
+    subtitle: 'Real scenarios where token visibility saves money and reduces risk.',
+    cases: {
+      c1: {
+        stat: 'Up to 45% fewer tokens',
+        title: 'Chinese product teams',
+        desc: 'Compare OpenAI vs DeepSeek/Qwen before committing to a model. One Chinese prompt can cost 2× the tokens on cl100k_base.',
+      },
+      c2: {
+        stat: 'Pre-launch cost audit',
+        title: 'Startups & indie devs',
+        desc: 'Estimate monthly API spend from your actual prompts before you ship — no surprises on the billing dashboard.',
+      },
+      c3: {
+        stat: 'GDPR & PIPL ready',
+        title: 'EU / UK / China teams',
+        desc: 'Audit prompts locally before they hit a US-hosted model. Planned PII pre-check coming in the next release.',
+      },
+    },
+  },
+  resources: {
+    title: 'Guides & insights',
+    subtitle: 'Practical LLM token knowledge — more articles coming soon.',
+    articles: {
+      a1: {
+        title: 'Why Chinese prompts cost more on OpenAI',
+        desc: 'OpenAI cl100k_base treats each Chinese character as 1–3 tokens. DeepSeek and Qwen use more efficient vocabularies — often 40–60% fewer tokens for the same text.',
+        readTime: '3 min read',
+      },
+      a2: {
+        title: 'How prompt caching can cut API spend',
+        desc: 'Identical system prompts resent on every request are pure waste. Edge caching deduplicates them — we estimate up to 40% savings for chat-heavy apps.',
+        readTime: '4 min read',
+      },
+      a3: {
+        title: 'GDPR & PIPL: why local token analysis matters',
+        desc: 'Sending prompts with PII to US-hosted models raises compliance risk. Counting tokens locally means your data never leaves the browser.',
+        readTime: '3 min read',
+      },
+    },
+  },
+  faq: {
+    title: 'FAQ',
+    subtitle: 'Common questions about LLM tokens, privacy, and our roadmap.',
+    items: [
+      {
+        q: 'Is my prompt sent to your servers?',
+        a: 'No. All token counting runs locally in your browser using the gpt-tokenizer library. We do not store, log, or transmit your prompts.',
+      },
+      {
+        q: 'How accurate are the token counts?',
+        a: 'OpenAI models (cl100k_base, o200k_base) are exact. Claude, Gemini, DeepSeek, and Qwen counts are estimates based on published tokenizer behaviour — always verify against your provider billing.',
+      },
+      {
+        q: 'Is Tokened related to cryptocurrency tokens?',
+        a: 'No. Tokened is exclusively about LLM API tokens — the units OpenAI, Anthropic, and others use to measure and charge for text processing.',
+      },
+      {
+        q: 'When will Tokened Gateway launch?',
+        a: 'Gateway (api.tokened.uk) is in Phase 3 of our roadmap. Join the beta waitlist to get notified when the proxy beta opens.',
+      },
+      {
+        q: 'Is the Developer plan available to buy?',
+        a: 'Not yet. Only the free local analyzer is live. Developer and Enterprise tiers are planned — pricing TBD. Join the waitlist for early access.',
+      },
+      {
+        q: 'How do I integrate token counting in my app?',
+        a: 'Use npm install gpt-tokenizer (TypeScript) or pip install tiktoken (Python). See the Integration section for copy-paste examples.',
+      },
+    ],
+  },
   hero: {
-    title: 'Every Token Counts.',
+    title: 'Every LLM Token Counts.',
     subtitle:
-      'Real-time prompt token analysis across models. Cut LLM API costs. Stay GDPR & PIPL ready.',
+      'Real-time LLM prompt token analysis across models. Cut API costs. Stay GDPR & PIPL ready.',
     tagline: 'Paste a prompt below — see tokens, costs, and savings instantly. 100% local.',
     ctaTry: 'Try Token Analysis',
     ctaBeta: 'Join Beta Waitlist',
@@ -52,8 +187,8 @@ export const en = {
     empty: 'Start typing to see live token analysis.',
   },
   saas: {
-    title: 'Enterprise-grade LLM cost & compliance',
-    subtitle: 'Scale from free tools to production-grade infrastructure.',
+    title: 'Planned: production-grade LLM infrastructure',
+    subtitle: 'On the roadmap — caching, routing, and compliance proxy for teams scaling beyond the free tool.',
     features: {
       cache: {
         title: 'AI Cache Proxy',
@@ -174,17 +309,55 @@ export const en = {
     privacy: 'Privacy Policy',
     terms: 'Terms of Service',
     roadmap: 'Roadmap',
+    howItWorks: 'How it works',
+    faq: 'FAQ',
+    resources: 'Guides',
+    integration: 'Integration',
   },
 }
 
 export type Locale = {
   brand: string
   nav: {
-    features: string
     demo: string
-    integration: string
+    howItWorks: string
+    features: string
     pricing: string
+    faq: string
+    integration: string
     github: string
+  }
+  trust: { items: string[] }
+  stats: {
+    title: string
+    items: { value: string; label: string; desc: string }[]
+  }
+  howItWorks: {
+    title: string
+    subtitle: string
+    steps: Record<string, { num: string; title: string; desc: string }>
+  }
+  postDemo: {
+    title: string
+    desc: string
+    ctaBeta: string
+    ctaPricing: string
+    ctaGateway: string
+  }
+  useCases: {
+    title: string
+    subtitle: string
+    cases: Record<string, { stat: string; title: string; desc: string }>
+  }
+  resources: {
+    title: string
+    subtitle: string
+    articles: Record<string, { title: string; desc: string; readTime: string }>
+  }
+  faq: {
+    title: string
+    subtitle: string
+    items: { q: string; a: string }[]
   }
   hero: {
     title: string
@@ -272,5 +445,9 @@ export type Locale = {
     privacy: string
     terms: string
     roadmap: string
+    howItWorks: string
+    faq: string
+    resources: string
+    integration: string
   }
 }
