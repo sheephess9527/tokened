@@ -102,72 +102,49 @@ export const en = {
       },
       phase2: {
         label: 'Next',
-        title: 'Privacy audit & prompt optimization',
+        title: 'Developer plan',
+        pricingNote: 'Pricing TBD — join the waitlist for early access',
         items: [
           'PIPL & GDPR PII pre-check',
           'One-click prompt slimming',
-          'Beta API access for registered users',
+          'API access & webhooks',
+          'Priority model price updates',
         ],
       },
       phase3: {
         label: 'Future',
-        title: 'Tokened Gateway',
+        title: 'Enterprise & Tokened Gateway',
+        pricingNote: 'Custom pricing — contact us for enterprise',
         items: [
           'Drop-in OpenAI base URL proxy (api.tokened.uk)',
           'Edge caching & smart model routing',
-          'Team workspaces & compliance policies',
+          'SSO & team workspaces',
+          'Custom compliance rules & dedicated SLA',
         ],
       },
     },
   },
   pricing: {
     title: 'Pricing',
-    subtitle: 'The token calculator is free and live today. Paid plans are on the roadmap.',
-    disclaimer:
-      'Developer and Enterprise tiers are not available yet — no payment or signup behind these cards. Join the waitlist to get early access.',
-    tiers: {
-      free: {
-        name: 'Free',
-        status: 'live' as const,
-        statusLabel: 'Available now',
-        price: '$0',
-        period: 'forever',
-        features: [
-          'Unlimited local token counting',
-          'Multi-model cost comparison',
-          'EN / 中文 UI',
-          'Chinese token inflation insights',
-        ],
-        cta: 'Try it now',
-      },
-      developer: {
-        name: 'Developer',
-        status: 'planned' as const,
-        statusLabel: 'Coming soon',
-        price: 'TBD',
-        period: '',
-        features: [
-          'Prompt optimization (planned)',
-          'PIPL & GDPR audit reports (planned)',
-          'API access & webhooks (planned)',
-          'Priority model price updates (planned)',
-        ],
-        cta: 'Join waitlist',
-      },
-      enterprise: {
-        name: 'Enterprise',
-        status: 'planned' as const,
-        statusLabel: 'Coming soon',
-        price: 'Custom',
-        period: 'contact us',
-        features: [
-          'Tokened Gateway proxy (planned)',
-          'SSO & team workspaces (planned)',
-          'Custom compliance rules (planned)',
-          'Dedicated support & SLA (planned)',
-        ],
-        cta: 'Contact us',
-      },
+    subtitle: '100% free, no account required. All token analysis runs locally in your browser.',
+    free: {
+      name: 'Free',
+      statusLabel: 'Available now',
+      price: '$0',
+      period: 'forever',
+      features: [
+        'Unlimited local token counting',
+        'Multi-model cost comparison',
+        'EN / 中文 UI',
+        'Chinese token inflation insights',
+      ],
+      cta: 'Try it now',
+    },
+    waitlist: {
+      title: 'Want paid features early?',
+      desc: 'Developer and Enterprise plans are on the roadmap — not available to purchase yet. Join the waitlist and we will notify you when they launch.',
+      cta: 'Join waitlist',
+      roadmapLink: 'See the full roadmap →',
     },
   },
   legal: {
@@ -255,25 +232,31 @@ export type Locale = {
     subtitle: string
     phases: Record<
       string,
-      { label: string; title: string; items: string[] }
+      {
+        label: string
+        title: string
+        pricingNote?: string
+        items: string[]
+      }
     >
   }
   pricing: {
     title: string
     subtitle: string
-    disclaimer: string
-    tiers: Record<
-      string,
-      {
-        name: string
-        status: 'live' | 'planned'
-        statusLabel: string
-        price: string
-        period: string
-        features: string[]
-        cta: string
-      }
-    >
+    free: {
+      name: string
+      statusLabel: string
+      price: string
+      period: string
+      features: string[]
+      cta: string
+    }
+    waitlist: {
+      title: string
+      desc: string
+      cta: string
+      roadmapLink: string
+    }
   }
   legal: {
     privacyTitle: string

@@ -58,7 +58,15 @@
 
 .card h3 {
   font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.pricingNote {
+  font-size: 0.8rem;
+  color: var(--accent-secondary);
+  font-family: var(--font-mono);
   margin-bottom: 1rem;
+  line-height: 1.5;
 }
 
 .card ul {

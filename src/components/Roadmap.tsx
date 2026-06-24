@@ -23,6 +23,9 @@ export function Roadmap() {
             >
               <span className={styles.label}>{phase.label}</span>
               <h3>{phase.title}</h3>
+              {phase.pricingNote && (
+                <p className={styles.pricingNote}>{phase.pricingNote}</p>
+              )}
               <ul>
                 {phase.items.map((item) => (
                   <li key={item}>{item}</li>

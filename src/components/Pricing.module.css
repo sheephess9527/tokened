@@ -5,7 +5,7 @@
 }
 
 .inner {
-  max-width: 1100px;
+  max-width: 480px;
   margin: 0 auto;
 }
 
@@ -18,41 +18,22 @@
 .subtitle {
   text-align: center;
   color: var(--text-muted);
-  margin-bottom: 2rem;
-  max-width: 560px;
-  margin-left: auto;
-  margin-right: auto;
+  margin-bottom: 2.5rem;
   line-height: 1.6;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-  align-items: stretch;
 }
 
 .card {
   position: relative;
-  padding: 2rem 1.5rem;
+  padding: 2rem 1.75rem;
   border-radius: 12px;
-  border: 1px solid var(--border);
+  border: 1px solid rgba(16, 185, 129, 0.4);
   background: var(--bg-elevated);
+  box-shadow: 0 0 32px rgba(16, 185, 129, 0.1);
   display: flex;
   flex-direction: column;
 }
 
-.cardLive {
-  border-color: rgba(16, 185, 129, 0.4);
-  box-shadow: 0 0 32px rgba(16, 185, 129, 0.1);
-}
-
-.cardPlanned {
-  opacity: 0.85;
-}
-
-.badgeLive,
-.badgePlanned {
+.badgeLive {
   position: absolute;
   top: -0.6rem;
   right: 1rem;
@@ -61,17 +42,8 @@
   padding: 0.25rem 0.6rem;
   border-radius: 4px;
   text-transform: uppercase;
-}
-
-.badgeLive {
   background: var(--success);
   color: var(--bg);
-}
-
-.badgePlanned {
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--text-muted);
-  border: 1px solid var(--border);
 }
 
 .card h3 {
@@ -118,11 +90,10 @@
   font-size: 0.75rem;
 }
 
-.cta,
-.ctaPrimary {
+.ctaPrimary,
+.ctaSecondary {
   display: block;
-  width: 100%;
-  padding: 0.75rem 1rem;
+  padding: 0.85rem 1rem;
   border-radius: 8px;
   font-weight: 600;
   font-size: 0.9rem;
@@ -131,16 +102,6 @@
   cursor: pointer;
   transition: all 0.2s;
   box-sizing: border-box;
-}
-
-.cta {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text);
-}
-
-.cta:hover {
-  border-color: var(--text-muted);
 }
 
 .ctaPrimary {
@@ -154,23 +115,53 @@
   transform: translateY(-1px);
 }
 
-.disclaimer {
+.waitlist {
   margin-top: 2rem;
-  text-align: center;
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  line-height: 1.6;
-  max-width: 640px;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 1rem 1.25rem;
-  border-radius: 8px;
+  padding: 1.5rem;
+  border-radius: 12px;
   border: 1px dashed var(--border);
   background: rgba(255, 255, 255, 0.02);
+  text-align: center;
 }
 
-@media (max-width: 900px) {
-  .grid {
-    grid-template-columns: 1fr;
-  }
+.waitlist h3 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.waitlist p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+}
+
+.waitlistActions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.ctaSecondary {
+  width: 100%;
+  background: rgba(6, 182, 212, 0.12);
+  color: var(--accent-secondary);
+  border: 1px solid rgba(6, 182, 212, 0.35);
+}
+
+.ctaSecondary:hover {
+  background: rgba(6, 182, 212, 0.22);
+  transform: translateY(-1px);
+}
+
+.roadmapLink {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.roadmapLink:hover {
+  color: var(--accent);
 }
