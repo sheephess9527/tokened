@@ -1,4 +1,4 @@
-export const CONTACT_EMAIL = 'hztbc001@gmail.com'
+export const CONTACT_EMAIL = 'hello@tokened.uk'
 
 export function mailto(subject: string, body?: string): string {
   const params = new URLSearchParams({ subject })
