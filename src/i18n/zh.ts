@@ -187,11 +187,20 @@ export const zh = {
     analysisLabel: 'Token 分析',
     tokenizer: '分词器',
     tokenizers: {
-      cl100k_base: 'OpenAI (cl100k_base)',
-      o200k_base: 'OpenAI (o200k_base)',
-      p50k_base: 'OpenAI 旧版 (p50k_base)',
+      o200k_base: 'OpenAI o200k — GPT-5.x / GPT-4o',
+      cl100k_base: 'OpenAI cl100k — GPT-4 / 旧版',
+      p50k_base: 'OpenAI p50k — 更早模型',
       chinese_estimate: '中文高效估算',
     },
+    samplePrompt: `你是一名技术助手。请用简洁的中文总结以下技术文档，并估算单次 API 调用的 Token 成本。
+
+---
+## API Gateway 架构
+
+网关在 Cloudflare Workers 边缘运行，代理 OpenAI 兼容请求，缓存相同 Prompt，并在数据到达美国托管模型前拦截 PII。缓存命中时典型延迟低于 50ms。
+
+Core components: routing layer, edge cache, and compliance interception. Mixed 中英文 prompts often cost 2× more tokens on OpenAI cl100k_base than on DeepSeek or Qwen3.7.
+---`,
     totalTokens: 'Token 总数',
     chars: '字符数',
     showBlocks: '显示分词',

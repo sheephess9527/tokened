@@ -53,7 +53,7 @@ export async function loadEncoding(
 
 /** Preload default tokenizer on idle */
 export function preloadDefaultEncoding() {
-  void loadEncoding('cl100k_base')
+  void loadEncoding('o200k_base')
 }
 
 const CHINESE_CHAR_RE = /[\u4e00-\u9fff\u3400-\u4dbf]/
