@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import {
   countTokens,
+  isOpenAiEncoding,
   tokenizeToSpans,
   type TokenSpan,
   type TokenizerId,
@@ -8,7 +9,10 @@ import {
 
 interface TokenAnalysisResult {
   tokenCount: number
+  /** cl100k count — used for Chinese inflation comparison */
   openAiBaseline: number
+  /** Active OpenAI encoding count, or cl100k when Chinese estimate is selected */
+  pricingBaseline: number
   chineseEfficient: number
   spans: TokenSpan[]
   loading: boolean
@@ -22,6 +26,7 @@ export function useTokenAnalysis(
   const [result, setResult] = useState<TokenAnalysisResult>({
     tokenCount: 0,
     openAiBaseline: 0,
+    pricingBaseline: 0,
     chineseEfficient: 0,
     spans: [],
     loading: true,
@@ -44,7 +49,17 @@ export function useTokenAnalysis(
         ])
 
       if (!cancelled) {
-        setResult({ tokenCount, openAiBaseline, chineseEfficient, spans, loading: false })
+        const pricingBaseline = isOpenAiEncoding(tokenizerId)
+          ? tokenCount
+          : openAiBaseline
+        setResult({
+          tokenCount,
+          openAiBaseline,
+          pricingBaseline,
+          chineseEfficient,
+          spans,
+          loading: false,
+        })
       }
     }
 
