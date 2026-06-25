@@ -48,9 +48,9 @@ export const en = {
     title: 'Why LLM token math matters',
     items: [
       {
-        value: '6+',
+        value: '9',
         label: 'Models compared',
-        desc: 'GPT-4o, Claude, Gemini, DeepSeek, Qwen and more side by side.',
+        desc: 'GPT-5.4, Claude 4.6, Gemini 3.5, DeepSeek-V4, Qwen3.7 and more side by side.',
       },
       {
         value: '100%',

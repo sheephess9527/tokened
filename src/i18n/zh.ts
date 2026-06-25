@@ -50,9 +50,9 @@ export const zh = {
     title: '为什么 LLM Token 计算很重要',
     items: [
       {
-        value: '6+',
+        value: '9',
         label: '模型对比',
-        desc: 'GPT-4o、Claude、Gemini、DeepSeek、Qwen 等同屏比价。',
+        desc: 'GPT-5.4、Claude 4.6、Gemini 3.5、DeepSeek-V4、Qwen3.7 等同屏比价。',
       },
       {
         value: '100%',
