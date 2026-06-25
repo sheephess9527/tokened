@@ -2,7 +2,22 @@ import type { Locale } from './en'
 
 export const zh = {
   brand: 'tokened.uk',
+  common: {
+    copy: '复制',
+    copied: '已复制',
+    backToTop: '回到顶部',
+  },
+  contact: {
+    title: '联系我们',
+    subtitle:
+      '对 Beta 资格、Gateway 或企业方案感兴趣？直接发邮件即可，无需表单或第三方配置。',
+    emailHint: '点击邮箱地址即可打开邮件客户端。',
+    ctaBeta: '加入 Beta 等待名单',
+    ctaGateway: 'Gateway Beta',
+    ctaEnterprise: '企业咨询',
+  },
   nav: {
+    menu: '菜单',
     demo: '演示',
     howItWorks: '原理',
     features: '功能',
@@ -200,6 +215,8 @@ export const zh = {
     },
     empty: '开始输入即可查看实时 Token 分析。',
     loading: '正在分析 Token…',
+    clear: '清空',
+    loadSample: '加载示例',
   },
   gatewayBeta: {
     badge: 'Beta 申请开放',

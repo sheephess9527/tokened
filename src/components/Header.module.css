@@ -26,12 +26,70 @@
   color: var(--text);
   text-decoration: none;
   letter-spacing: -0.02em;
+  z-index: 102;
 }
 
 .logoMark {
   color: var(--accent);
   font-size: 0.9rem;
   filter: drop-shadow(0 0 6px rgba(124, 58, 237, 0.6));
+}
+
+.menuBtn {
+  display: none;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-elevated);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  z-index: 102;
+}
+
+.menuIcon,
+.menuIcon::before,
+.menuIcon::after {
+  display: block;
+  width: 1.1rem;
+  height: 2px;
+  background: var(--text);
+  border-radius: 1px;
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+.menuIcon {
+  position: relative;
+}
+
+.menuIcon::before,
+.menuIcon::after {
+  content: '';
+  position: absolute;
+  left: 0;
+}
+
+.menuIcon::before {
+  top: -6px;
+}
+
+.menuIcon::after {
+  top: 6px;
+}
+
+.menuIcon[data-open='true'] {
+  background: transparent;
+}
+
+.menuIcon[data-open='true']::before {
+  top: 0;
+  transform: rotate(45deg);
+}
+
+.menuIcon[data-open='true']::after {
+  top: 0;
+  transform: rotate(-45deg);
 }
 
 .nav {
@@ -56,6 +114,10 @@
   color: var(--text);
 }
 
+.backdrop {
+  display: none;
+}
+
 @media (min-width: 900px) {
   .nav a.github {
     display: inline;
@@ -63,14 +125,56 @@
 }
 
 @media (max-width: 768px) {
-  .inner {
-    flex-wrap: wrap;
+  .menuBtn {
+    display: flex;
   }
 
   .nav {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: min(280px, 85vw);
+    height: 100vh;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    padding: 5rem 1.5rem 2rem;
+    background: var(--bg-elevated);
+    border-left: 1px solid var(--border);
+    transform: translateX(100%);
+    transition: transform 0.25s ease;
+    z-index: 101;
+    overflow-y: auto;
+  }
+
+  .navOpen {
+    transform: translateX(0);
+  }
+
+  .nav a {
     width: 100%;
-    justify-content: flex-start;
-    flex-wrap: wrap;
-    gap: 0.6rem 0.9rem;
+    padding: 0.85rem 0;
+    font-size: 0.95rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav a.github {
+    display: block;
+    border-bottom: none;
+  }
+
+  .nav > :last-child {
+    margin-top: 1rem;
+    padding-top: 0.5rem;
+  }
+
+  .backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    border: none;
+    background: rgba(0, 0, 0, 0.5);
+    cursor: pointer;
   }
 }

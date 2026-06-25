@@ -1,6 +1,21 @@
 export const en = {
   brand: 'tokened.uk',
+  common: {
+    copy: 'Copy',
+    copied: 'Copied',
+    backToTop: 'Back to top',
+  },
+  contact: {
+    title: 'Get in touch',
+    subtitle:
+      'Interested in beta access, Gateway, or enterprise plans? Email us — no forms or third-party setup required.',
+    emailHint: 'Click the address to open your email client.',
+    ctaBeta: 'Join Beta Waitlist',
+    ctaGateway: 'Gateway Beta',
+    ctaEnterprise: 'Enterprise Inquiry',
+  },
   nav: {
+    menu: 'Menu',
     demo: 'Demo',
     howItWorks: 'How it works',
     features: 'Features',
@@ -198,6 +213,8 @@ export const en = {
     },
     empty: 'Start typing to see live token analysis.',
     loading: 'Analyzing tokens…',
+    clear: 'Clear',
+    loadSample: 'Load sample',
   },
   gatewayBeta: {
     badge: 'Beta applications open',
@@ -370,7 +387,21 @@ export const en = {
 
 export type Locale = {
   brand: string
+  common: {
+    copy: string
+    copied: string
+    backToTop: string
+  }
+  contact: {
+    title: string
+    subtitle: string
+    emailHint: string
+    ctaBeta: string
+    ctaGateway: string
+    ctaEnterprise: string
+  }
   nav: {
+    menu: string
     demo: string
     howItWorks: string
     features: string
@@ -451,6 +482,8 @@ export type Locale = {
     accuracy: Record<string, string>
     empty: string
     loading: string
+    clear: string
+    loadSample: string
   }
   gatewayBeta: {
     badge: string

@@ -74,17 +74,33 @@ export function TokenEditor() {
         <div className={styles.pane}>
           <div className={styles.paneHeader}>
             <label htmlFor="prompt-input">{t.editor.inputLabel}</label>
-            <select
-              value={tokenizer}
-              onChange={(e) => setTokenizer(e.target.value as TokenizerId)}
-              aria-label={t.editor.tokenizer}
-            >
-              {TOKENIZER_OPTIONS.map((id) => (
-                <option key={id} value={id}>
-                  {t.editor.tokenizers[id]}
-                </option>
-              ))}
-            </select>
+            <div className={styles.paneActions}>
+              <button
+                type="button"
+                className={styles.btnAction}
+                onClick={() => setPrompt('')}
+              >
+                {t.editor.clear}
+              </button>
+              <button
+                type="button"
+                className={styles.btnAction}
+                onClick={() => setPrompt(SAMPLE_PROMPT)}
+              >
+                {t.editor.loadSample}
+              </button>
+              <select
+                value={tokenizer}
+                onChange={(e) => setTokenizer(e.target.value as TokenizerId)}
+                aria-label={t.editor.tokenizer}
+              >
+                {TOKENIZER_OPTIONS.map((id) => (
+                  <option key={id} value={id}>
+                    {t.editor.tokenizers[id]}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
           <textarea

@@ -1,5 +1,6 @@
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { getArticle } from '../data/articles'
+import { BackToTop } from '../components/BackToTop'
 import { Header } from '../components/Header'
 import { Footer } from '../components/Footer'
 import { usePageMeta } from '../hooks/usePageMeta'
@@ -43,13 +44,14 @@ export function BlogArticle() {
 
           <div className={styles.ctaBox}>
             <p>{t.blog.tryTool}</p>
-            <Link to="/#tool" className={styles.ctaBtn}>
+            <a href="/#tool" className={styles.ctaBtn}>
               {t.blog.tryToolBtn}
-            </Link>
+            </a>
           </div>
         </article>
       </main>
       <Footer />
+      <BackToTop />
     </>
   )
 }

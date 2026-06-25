@@ -15,11 +15,15 @@ import { FAQ } from '../components/FAQ'
 import { Legal } from '../components/Legal'
 import { Footer } from '../components/Footer'
 import { SeoJsonLd } from '../components/SeoJsonLd'
+import { BackToTop } from '../components/BackToTop'
+import { useHashScroll } from '../hooks/useHashScroll'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { useI18n } from '../i18n'
 
 export function LandingPage() {
   const { lang } = useI18n()
+
+  useHashScroll()
 
   usePageMeta({
     title:
@@ -53,6 +57,7 @@ export function LandingPage() {
         <Legal />
       </main>
       <Footer />
+      <BackToTop />
     </>
   )
 }

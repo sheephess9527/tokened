@@ -18,9 +18,6 @@ export function PostDemoCTA() {
           <a href="#pricing" className={styles.secondary}>
             {t.postDemo.ctaPricing}
           </a>
-          <a href="#gateway-beta" className={styles.ghost}>
-            {t.postDemo.ctaGateway}
-          </a>
         </div>
       </div>
     </section>

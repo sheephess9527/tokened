@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { ARTICLES } from '../data/articles'
+import { BackToTop } from '../components/BackToTop'
 import { Header } from '../components/Header'
 import { Footer } from '../components/Footer'
 import { usePageMeta } from '../hooks/usePageMeta'
@@ -44,6 +45,7 @@ export function BlogIndex() {
         </div>
       </main>
       <Footer />
+      <BackToTop />
     </>
   )
 }
