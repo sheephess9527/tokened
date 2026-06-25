@@ -185,20 +185,11 @@ export const en = {
     analysisLabel: 'Token Analysis',
     tokenizer: 'Tokenizer',
     tokenizers: {
-      o200k_base: 'OpenAI o200k — GPT-5.x / GPT-4o',
-      cl100k_base: 'OpenAI cl100k — GPT-4 / legacy',
-      p50k_base: 'OpenAI p50k — legacy models',
+      cl100k_base: 'OpenAI (cl100k_base)',
+      o200k_base: 'OpenAI (o200k_base)',
+      p50k_base: 'OpenAI Legacy (p50k_base)',
       chinese_estimate: 'Chinese-efficient estimate',
     },
-    samplePrompt: `You are a helpful assistant. Summarize the following technical document in concise Chinese and estimate API cost per call.
-
----
-## API Gateway Architecture
-
-The gateway runs on Cloudflare Workers at the edge. It proxies OpenAI-compatible requests, caches identical prompts, and intercepts PII before data reaches US-hosted models. Typical latency is under 50ms for cache hits.
-
-核心组件包括：路由层、边缘缓存、合规检测模块。中文 Prompt 在 DeepSeek 与 Qwen 上通常比 OpenAI 基线少 40–60% Token。
----`,
     totalTokens: 'Total Tokens',
     chars: 'Characters',
     showBlocks: 'Show Token Blocks',
@@ -476,7 +467,6 @@ export type Locale = {
     analysisLabel: string
     tokenizer: string
     tokenizers: Record<string, string>
-    samplePrompt: string
     totalTokens: string
     chars: string
     showBlocks: string

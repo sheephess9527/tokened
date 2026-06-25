@@ -14,18 +14,21 @@ import { TokenHighlight } from './TokenHighlight'
 import styles from './TokenEditor.module.css'
 
 const TOKENIZER_OPTIONS: TokenizerId[] = [
-  'o200k_base',
   'cl100k_base',
+  'o200k_base',
   'p50k_base',
   'chinese_estimate',
 ]
 
 const CURRENCY_OPTIONS: Currency[] = ['USD', 'GBP', 'CNY']
 
+const SAMPLE_PROMPT =
+  'You are a helpful assistant. 请用简洁的中文总结以下技术文档，并估算 API 调用成本。'
+
 export function TokenEditor() {
   const { t } = useI18n()
-  const [prompt, setPrompt] = useState(t.editor.samplePrompt)
-  const [tokenizer, setTokenizer] = useState<TokenizerId>('o200k_base')
+  const [prompt, setPrompt] = useState(SAMPLE_PROMPT)
+  const [tokenizer, setTokenizer] = useState<TokenizerId>('cl100k_base')
   const [currency, setCurrency] = useState<Currency>('USD')
   const [showBlocks, setShowBlocks] = useState(true)
 
@@ -82,7 +85,7 @@ export function TokenEditor() {
               <button
                 type="button"
                 className={styles.btnAction}
-                onClick={() => setPrompt(t.editor.samplePrompt)}
+                onClick={() => setPrompt(SAMPLE_PROMPT)}
               >
                 {t.editor.loadSample}
               </button>
