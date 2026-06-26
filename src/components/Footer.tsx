@@ -24,14 +24,14 @@ export function Footer() {
           </div>
 
           <nav className={styles.links}>
-            <a href="#how">{t.footer.howItWorks}</a>
-            <a href="#docs">{t.footer.integration}</a>
+            <a href="/#how">{t.footer.howItWorks}</a>
+            <a href="/#docs">{t.footer.integration}</a>
             <Link to="/blog">{t.footer.blog}</Link>
-            <a href="#roadmap">{t.footer.roadmap}</a>
-            <a href="#waitlist">{t.footer.waitlist}</a>
-            <a href="#faq">{t.footer.faq}</a>
-            <a href="#privacy">{t.footer.privacy}</a>
-            <a href="#terms">{t.footer.terms}</a>
+            <a href="/#roadmap">{t.footer.roadmap}</a>
+            <a href="/#waitlist">{t.footer.waitlist}</a>
+            <a href="/#faq">{t.footer.faq}</a>
+            <a href="/#privacy">{t.footer.privacy}</a>
+            <a href="/#terms">{t.footer.terms}</a>
           </nav>
         </div>
 

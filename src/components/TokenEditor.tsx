@@ -8,7 +8,8 @@ import {
   estimateCosts,
   findBestValue,
 } from '../lib/pricing'
-import { hasChinese, type TokenizerId } from '../lib/tokenizer'
+import { hasChinese, isOpenAiEncoding, type TokenizerId } from '../lib/tokenizer'
+import type { ModelPricing } from '../lib/pricing'
 import { CostChart } from './CostChart'
 import { TokenHighlight } from './TokenHighlight'
 import styles from './TokenEditor.module.css'
@@ -21,6 +22,14 @@ const TOKENIZER_OPTIONS: TokenizerId[] = [
 ]
 
 const CURRENCY_OPTIONS: Currency[] = ['USD', 'GBP', 'CNY']
+
+function displayAccuracy(
+  model: ModelPricing,
+  tokenizer: TokenizerId,
+): 'exact' | 'estimate' {
+  if (!isOpenAiEncoding(tokenizer)) return 'estimate'
+  return model.provider === 'OpenAI' && model.accuracy === 'exact' ? 'exact' : 'estimate'
+}
 
 export function TokenEditor() {
   const { t } = useI18n()
@@ -184,6 +193,7 @@ export function TokenEditor() {
                 <ul className={styles.costList}>
                   {costs.map((est) => {
                     const isBest = best?.model.id === est.model.id
+                    const accuracy = displayAccuracy(est.model, tokenizer)
                     return (
                       <li
                         key={est.model.id}
@@ -201,12 +211,12 @@ export function TokenEditor() {
                           )}
                           <span
                             className={
-                              est.model.accuracy === 'exact'
+                              accuracy === 'exact'
                                 ? styles.accuracyExact
                                 : styles.accuracyEst
                             }
                           >
-                            {t.editor.accuracy[est.model.accuracy]}
+                            {t.editor.accuracy[accuracy]}
                           </span>
                         </div>
                       </li>
