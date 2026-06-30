@@ -1,5 +1,3 @@
-import * as cl100k from 'gpt-tokenizer/encoding/cl100k_base'
-
 export type TokenizerId =
   | 'cl100k_base'
   | 'o200k_base'
@@ -21,12 +19,15 @@ interface EncodingApi {
 }
 
 const encodingCache = new Map<TokenizerId, EncodingApi>()
-encodingCache.set('cl100k_base', cl100k)
 
 const lazyLoaders: Record<
-  Exclude<TokenizerId, 'cl100k_base' | 'chinese_estimate'>,
+  Exclude<TokenizerId, 'chinese_estimate'>,
   () => Promise<EncodingApi>
 > = {
+  cl100k_base: async () => {
+    const mod = await import('gpt-tokenizer/encoding/cl100k_base')
+    return mod
+  },
   o200k_base: async () => {
     const mod = await import('gpt-tokenizer/encoding/o200k_base')
     return mod
@@ -43,17 +44,23 @@ export async function loadEncoding(
   const cached = encodingCache.get(tokenizerId)
   if (cached) return cached
 
-  const loader = lazyLoaders[tokenizerId as keyof typeof lazyLoaders]
-  if (!loader) return cl100k
-
-  const encoding = await loader()
+  const encoding = await lazyLoaders[tokenizerId]()
   encodingCache.set(tokenizerId, encoding)
   return encoding
 }
 
-/** Preload default tokenizer on idle */
+/** Preload default + baseline tokenizers once the browser is idle */
 export function preloadDefaultEncoding() {
-  void loadEncoding('o200k_base')
+  const load = () => {
+    void loadEncoding('o200k_base')
+    void loadEncoding('cl100k_base')
+  }
+
+  if (typeof requestIdleCallback === 'function') {
+    requestIdleCallback(load)
+  } else {
+    setTimeout(load, 200)
+  }
 }
 
 const CHINESE_CHAR_RE = /[\u4e00-\u9fff\u3400-\u4dbf]/
@@ -81,10 +88,11 @@ export async function countTokens(
   return encoding.encode(text).length
 }
 
-export function estimateChineseEfficientTokens(text: string): number {
+export async function estimateChineseEfficientTokens(text: string): Promise<number> {
   if (!text) return 0
 
   const chineseCount = countChineseChars(text)
+  const cl100k = await loadEncoding('cl100k_base')
   const openAiCount = cl100k.encode(text).length
   if (chineseCount === 0) return openAiCount
 
@@ -112,7 +120,8 @@ export async function tokenizeToSpans(
   }))
 }
 
-function approximateChineseSpans(text: string): TokenSpan[] {
+async function approximateChineseSpans(text: string): Promise<TokenSpan[]> {
+  const cl100k = await loadEncoding('cl100k_base')
   const spans: TokenSpan[] = []
   let tokenIndex = 0
   let buffer = ''

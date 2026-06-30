@@ -36,6 +36,18 @@ npm run build
 npm run preview
 ```
 
+## Test
+
+```bash
+npm test
+```
+
+Unit tests cover the tokenizer, pricing, and currency conversion logic in `src/lib`.
+
+## Analytics (optional)
+
+Set `VITE_PLAUSIBLE_DOMAIN` in `.env` to enable cookieless [Plausible](https://plausible.io) analytics. Leave it empty to ship with zero third-party tracking.
+
 ## Roadmap
 
 - **Phase 1** (current): Local token counting + cost comparison

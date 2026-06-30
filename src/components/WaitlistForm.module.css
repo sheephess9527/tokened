@@ -10,6 +10,15 @@
   gap: 0.4rem;
 }
 
+.honeypot {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
 .field span {
   font-size: 0.8rem;
   font-weight: 600;

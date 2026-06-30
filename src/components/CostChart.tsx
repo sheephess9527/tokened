@@ -4,9 +4,10 @@ import styles from './CostChart.module.css'
 interface CostChartProps {
   estimates: CostEstimate[]
   label: string
+  updatedLabel?: string
 }
 
-export function CostChart({ estimates, label }: CostChartProps) {
+export function CostChart({ estimates, label, updatedLabel }: CostChartProps) {
   if (estimates.length === 0) return null
 
   const maxCost = Math.max(...estimates.map((e) => e.inputCostUsd), 0.000001)
@@ -14,6 +15,7 @@ export function CostChart({ estimates, label }: CostChartProps) {
   return (
     <div className={styles.chart}>
       <h4 className={styles.chartLabel}>{label}</h4>
+      {updatedLabel && <p className={styles.updated}>{updatedLabel}</p>}
       <div className={styles.bars}>
         {estimates.map((est) => {
           const width = Math.max((est.inputCostUsd / maxCost) * 100, 2)

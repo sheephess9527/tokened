@@ -7,6 +7,7 @@ import {
   chineseInflationRate,
   estimateCosts,
   findBestValue,
+  formatPricingSnapshotDate,
 } from '../lib/pricing'
 import { hasChinese, isOpenAiEncoding, type TokenizerId } from '../lib/tokenizer'
 import type { ModelPricing } from '../lib/pricing'
@@ -32,7 +33,7 @@ function displayAccuracy(
 }
 
 export function TokenEditor() {
-  const { t } = useI18n()
+  const { t, lang } = useI18n()
   const [prompt, setPrompt] = useState(t.editor.samplePrompt)
   const [tokenizer, setTokenizer] = useState<TokenizerId>('o200k_base')
   const [currency, setCurrency] = useState<Currency>('USD')
@@ -48,6 +49,10 @@ export function TokenEditor() {
     [pricingBaseline, currency],
   )
   const best = findBestValue(costs)
+  const pricesAsOf = t.editor.pricesAsOf.replace(
+    '{date}',
+    formatPricingSnapshotDate(lang),
+  )
   const inflation = chineseInflationRate(openAiBaseline, chineseEfficient)
   const showInflation = hasChinese(prompt) && inflation !== null && inflation > 0
 
@@ -180,7 +185,7 @@ export function TokenEditor() {
                 </div>
               )}
 
-              <CostChart estimates={costs} label={t.editor.costChart} />
+              <CostChart estimates={costs} label={t.editor.costChart} updatedLabel={pricesAsOf} />
 
               {showBlocks && (
                 <div className={styles.highlightBox}>

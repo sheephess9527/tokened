@@ -17,6 +17,8 @@ export interface ModelPricing {
  * USD per 1M tokens (input / output).
  * Snapshot: June 2026 — OpenAI, Anthropic, Google, DeepSeek, Alibaba official pricing.
  */
+export const PRICING_SNAPSHOT_DATE = '2026-06-01'
+
 export const MODELS: ModelPricing[] = [
   {
     id: 'gpt-5.4',
@@ -141,6 +143,13 @@ export function estimateCosts(
 export function findBestValue(estimates: CostEstimate[]): CostEstimate | null {
   if (estimates.length === 0) return null
   return estimates[0]
+}
+
+export function formatPricingSnapshotDate(lang: 'en' | 'zh'): string {
+  return new Intl.DateTimeFormat(lang === 'zh' ? 'zh-CN' : 'en-US', {
+    year: 'numeric',
+    month: 'long',
+  }).format(new Date(PRICING_SNAPSHOT_DATE))
 }
 
 export function chineseInflationRate(

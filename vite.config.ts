@@ -8,8 +8,9 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
-          if (id.includes('gpt-tokenizer')) {
-            return 'gpt-tokenizer'
+          const match = id.match(/gpt-tokenizer\/(?:esm\/)?encoding\/(\w+)/)
+          if (match) {
+            return `tokenizer-${match[1]}`
           }
         },
       },

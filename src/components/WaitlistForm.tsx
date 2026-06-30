@@ -16,6 +16,7 @@ export function WaitlistForm({ defaultInterest = 'developer' }: WaitlistFormProp
   const [email, setEmail] = useState('')
   const [interest, setInterest] = useState<WaitlistInterest>(defaultInterest)
   const [message, setMessage] = useState('')
+  const [company, setCompany] = useState('')
   const [submitted, setSubmitted] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -26,6 +27,12 @@ export function WaitlistForm({ defaultInterest = 'developer' }: WaitlistFormProp
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     if (!email.trim() || submitting) return
+
+    if (company.trim()) {
+      // Honeypot field filled in — silently treat as success without submitting.
+      setSubmitted(true)
+      return
+    }
 
     setSubmitting(true)
     setError(null)
@@ -80,6 +87,18 @@ export function WaitlistForm({ defaultInterest = 'developer' }: WaitlistFormProp
       {!useFormspree && (
         <p className={styles.hint}>{t.waitlist.mailtoHint}</p>
       )}
+
+      <label className={styles.honeypot} aria-hidden="true">
+        Company
+        <input
+          type="text"
+          name="company"
+          tabIndex={-1}
+          autoComplete="off"
+          value={company}
+          onChange={(e) => setCompany(e.target.value)}
+        />
+      </label>
 
       <label className={styles.field}>
         <span>{t.waitlist.email}</span>
