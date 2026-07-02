@@ -4,6 +4,8 @@ Global LLM token cost calculator, optimizer, and compliance platform.
 
 **Every Token Counts.** Optimize LLM prompts, reduce costs, and ensure compliance globally.
 
+> Working on this repo with Claude Code? See [`CLAUDE.md`](./CLAUDE.md) for architecture notes and gotchas — keep it updated alongside this file.
+
 ## MVP Features
 
 - Dual-pane interactive token editor with live highlighting
@@ -36,13 +38,14 @@ npm run build
 npm run preview
 ```
 
-## Test
+## Lint & Test
 
 ```bash
+npm run lint
 npm test
 ```
 
-Unit tests cover the tokenizer, pricing, and currency conversion logic in `src/lib`.
+Unit tests cover the tokenizer, pricing, and currency conversion logic in `src/lib`. CI (`.github/workflows/ci.yml`) runs lint, test, and build on every push/PR to `main`.
 
 ## Analytics (optional)
 
