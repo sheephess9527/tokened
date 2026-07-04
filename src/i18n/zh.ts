@@ -199,6 +199,8 @@ Core components: routing layer, edge cache, and compliance interception. Mixed �
     showBlocks: '显示分词',
     hideBlocks: '隐藏分词',
     estCost: '预估成本（单次调用）',
+    costDisclaimer:
+      '仅含输入 Token · 价格截至 2026 年 6 月 · 非 OpenAI 为估算值，请以服务商账单为准。',
     costChart: '成本对比',
     bestValue: '最省',
     chineseInflation: '中文 Token 膨胀率',

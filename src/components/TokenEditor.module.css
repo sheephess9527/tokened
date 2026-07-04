@@ -369,7 +369,15 @@
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--text-muted);
+  margin-bottom: 0.35rem;
+}
+
+.costDisclaimer {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  line-height: 1.5;
   margin-bottom: 0.75rem;
+  font-style: italic;
 }
 
 .costList {

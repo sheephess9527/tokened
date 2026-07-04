@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useI18n } from '../i18n'
 import { useAnimatedNumber } from '../hooks/useAnimatedNumber'
 import { useTokenAnalysis } from '../hooks/useTokenAnalysis'
@@ -35,9 +35,14 @@ function displayAccuracy(
 export function TokenEditor() {
   const { t } = useI18n()
   const [prompt, setPrompt] = useState(t.editor.samplePrompt)
+  const [usingSample, setUsingSample] = useState(true)
   const [tokenizer, setTokenizer] = useState<TokenizerId>('o200k_base')
   const [currency, setCurrency] = useState<Currency>('USD')
   const [showBlocks, setShowBlocks] = useState(true)
+
+  useEffect(() => {
+    if (usingSample) setPrompt(t.editor.samplePrompt)
+  }, [t.editor.samplePrompt, usingSample])
 
   const { tokenCount, openAiBaseline, pricingBaseline, chineseEfficient, spans, loading } =
     useTokenAnalysis(prompt, tokenizer, showBlocks)
@@ -85,14 +90,20 @@ export function TokenEditor() {
               <button
                 type="button"
                 className={styles.btnAction}
-                onClick={() => setPrompt('')}
+                onClick={() => {
+                  setPrompt('')
+                  setUsingSample(false)
+                }}
               >
                 {t.editor.clear}
               </button>
               <button
                 type="button"
                 className={styles.btnAction}
-                onClick={() => setPrompt(t.editor.samplePrompt)}
+                onClick={() => {
+                  setPrompt(t.editor.samplePrompt)
+                  setUsingSample(true)
+                }}
               >
                 {t.editor.loadSample}
               </button>
@@ -114,7 +125,10 @@ export function TokenEditor() {
             id="prompt-input"
             className={styles.textarea}
             value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
+            onChange={(e) => {
+              setPrompt(e.target.value)
+              setUsingSample(false)
+            }}
             placeholder={t.editor.inputPlaceholder}
             spellCheck={false}
           />
@@ -191,6 +205,7 @@ export function TokenEditor() {
 
               <div className={styles.costSection}>
                 <h3>{t.editor.estCost}</h3>
+                <p className={styles.costDisclaimer}>{t.editor.costDisclaimer}</p>
                 <ul className={styles.costList}>
                   {costs.map((est) => {
                     const isBest = best?.model.id === est.model.id

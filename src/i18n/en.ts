@@ -197,6 +197,8 @@ The gateway runs on Cloudflare Workers at the edge. It proxies OpenAI-compatible
     showBlocks: 'Show Token Blocks',
     hideBlocks: 'Hide Token Blocks',
     estCost: 'Estimated Cost (per call)',
+    costDisclaimer:
+      'Input tokens only · prices as of Jun 2026 · non-OpenAI counts are estimates — verify with your provider billing.',
     costChart: 'Cost comparison',
     bestValue: 'Best Value',
     chineseInflation: 'Chinese Token Inflation',
@@ -468,6 +470,7 @@ export type Locale = {
     showBlocks: string
     hideBlocks: string
     estCost: string
+    costDisclaimer: string
     costChart: string
     bestValue: string
     chineseInflation: string
