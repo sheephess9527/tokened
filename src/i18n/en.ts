@@ -114,23 +114,6 @@ export const en = {
   resources: {
     title: 'Guides & insights',
     subtitle: 'Practical LLM token knowledge — more articles coming soon.',
-    articles: {
-      a1: {
-        title: 'Why Chinese prompts cost more on OpenAI',
-        desc: 'OpenAI o200k/cl100k often assigns 1–3 tokens per Chinese character. DeepSeek-V4 and Qwen3.7 use more efficient vocabularies — often 40–60% fewer tokens for the same text.',
-        readTime: '3 min read',
-      },
-      a2: {
-        title: 'How prompt caching can cut API spend',
-        desc: 'Identical system prompts resent on every request are pure waste. Edge caching deduplicates them — we estimate up to 40% savings for chat-heavy apps.',
-        readTime: '4 min read',
-      },
-      a3: {
-        title: 'GDPR & PIPL: why local token analysis matters',
-        desc: 'Sending prompts with PII to US-hosted models raises compliance risk. Counting tokens locally means your data never leaves the browser.',
-        readTime: '3 min read',
-      },
-    },
   },
   faq: {
     title: 'FAQ',
@@ -219,43 +202,6 @@ The gateway runs on Cloudflare Workers at the edge. It proxies OpenAI-compatible
     loading: 'Analyzing tokens…',
     clear: 'Clear',
     loadSample: 'Load sample',
-  },
-  gatewayBeta: {
-    badge: 'Beta applications open',
-    title: 'Tokened Gateway — drop-in LLM proxy',
-    subtitle:
-      'Swap your OpenAI base URL to api.tokened.uk and get caching, smart routing, and compliance interception. Currently in development — apply for early beta access.',
-    features: [
-      'Compatible with OpenAI SDK — change one env variable',
-      'Edge cache for identical prompts (est. up to 40% savings)',
-      'PII detection before data reaches US-hosted models',
-      'Route to GPT-5, Claude 4.6, Gemini 3.5, DeepSeek-V4, or Qwen3.7 by cost policy',
-    ],
-    code: 'OPENAI_BASE_URL=https://api.tokened.uk/v1',
-    note: 'Gateway is not live yet. Join the waitlist to be first in line when the beta opens.',
-  },
-  waitlist: {
-    title: 'Join the waitlist',
-    subtitle:
-      'Get notified when Developer tools and Gateway beta launch. Submits via Formspree when configured, otherwise opens your email client.',
-    email: 'Work email',
-    interest: 'I am interested in',
-    interests: {
-      developer: 'Developer plan (prompt optimization & API)',
-      gateway: 'Gateway beta (api.tokened.uk proxy)',
-      enterprise: 'Enterprise (SSO, teams, custom SLA)',
-    },
-    message: 'Tell us about your use case (optional)',
-    messagePlaceholder: 'e.g. We process 50k prompts/day and need cost visibility…',
-    submit: 'Submit application',
-    submitting: 'Submitting…',
-    successFormspree: 'You are on the list! We will email you when beta opens.',
-    successMailto:
-      'Opening your email client… Complete the send to join. If it does not open, email hello@tokened.uk directly.',
-    mailtoHint:
-      'Tip: set VITE_FORMSPREE_ENDPOINT in .env for direct form submission without email client.',
-    error: 'Submission failed. Please try again or email hello@tokened.uk.',
-    privacy: 'We only use your email to contact you about Tokened. No spam, ever.',
   },
   saas: {
     title: 'Planned: production-grade LLM infrastructure',
@@ -443,7 +389,6 @@ export type Locale = {
   resources: {
     title: string
     subtitle: string
-    articles: Record<string, { title: string; desc: string; readTime: string }>
   }
   faq: {
     title: string
@@ -483,30 +428,6 @@ export type Locale = {
     loading: string
     clear: string
     loadSample: string
-  }
-  gatewayBeta: {
-    badge: string
-    title: string
-    subtitle: string
-    features: string[]
-    code: string
-    note: string
-  }
-  waitlist: {
-    title: string
-    subtitle: string
-    email: string
-    interest: string
-    interests: Record<string, string>
-    message: string
-    messagePlaceholder: string
-    submit: string
-    submitting: string
-    successFormspree: string
-    successMailto: string
-    mailtoHint: string
-    error: string
-    privacy: string
   }
   saas: {
     title: string

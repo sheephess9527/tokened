@@ -1,36 +1,9 @@
 export const CONTACT_EMAIL = 'hello@tokened.uk'
 
-export type WaitlistInterest = 'developer' | 'gateway' | 'enterprise'
-
 export function mailto(subject: string, body?: string): string {
   const params = new URLSearchParams({ subject })
   if (body) params.set('body', body)
   return `mailto:${CONTACT_EMAIL}?${params.toString()}`
-}
-
-export function buildWaitlistMailto(
-  email: string,
-  interest: WaitlistInterest,
-  interestLabel: string,
-  message?: string,
-): string {
-  const body = [
-    'Tokened Waitlist Application',
-    '',
-    `Email: ${email}`,
-    `Interest: ${interestLabel}`,
-    '',
-    message?.trim() || '(no additional message)',
-  ].join('\n')
-
-  const subject =
-    interest === 'gateway'
-      ? 'Tokened Gateway Beta Application'
-      : interest === 'enterprise'
-        ? 'Tokened Enterprise Inquiry'
-        : 'Tokened Developer Waitlist'
-
-  return mailto(subject, body)
 }
 
 export const MAILTO_BETA = mailto(

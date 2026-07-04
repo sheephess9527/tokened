@@ -116,23 +116,6 @@ export const zh = {
   resources: {
     title: '指南与洞察',
     subtitle: '实用的 LLM Token 知识 — 更多文章持续更新。',
-    articles: {
-      a1: {
-        title: '为什么中文 Prompt 在 OpenAI 上更费 Token？',
-        desc: 'OpenAI o200k/cl100k 每个汉字约 1–3 个 Token。DeepSeek-V4 与 Qwen3.7 词表更高效 — 同一段中文通常可少 40–60% Token。',
-        readTime: '3 分钟阅读',
-      },
-      a2: {
-        title: 'Prompt 缓存如何削减 API 支出',
-        desc: '每次请求重复发送相同系统 Prompt 是纯浪费。边缘缓存可去重 — 对话密集型应用预估最高省 40%。',
-        readTime: '4 分钟阅读',
-      },
-      a3: {
-        title: 'GDPR & PIPL：为什么本地 Token 分析很重要',
-        desc: '含个人信息的 Prompt 发往美国托管模型有合规风险。本地分词意味着数据不离开浏览器。',
-        readTime: '3 分钟阅读',
-      },
-    },
   },
   faq: {
     title: '常见问题',
@@ -221,43 +204,6 @@ export const zh = {
     loading: '正在分析 Token…',
     clear: '清空',
     loadSample: '加载示例',
-  },
-  gatewayBeta: {
-    badge: 'Beta 申请开放',
-    title: 'Tokened Gateway — 即插即用 LLM 代理',
-    subtitle:
-      '将 OpenAI Base URL 替换为 api.tokened.uk，即享缓存、智能路由与合规拦截。目前正在开发中 — 申请早期 Beta 资格。',
-    features: [
-      '兼容 OpenAI SDK — 只需修改一个环境变量',
-      '相同 Prompt 边缘缓存（预估最高省 40%）',
-      '数据到达美国模型前自动 PII 检测',
-      '按成本策略路由至 GPT-5、Claude 4.6、Gemini 3.5、DeepSeek-V4 或 Qwen3.7',
-    ],
-    code: 'OPENAI_BASE_URL=https://api.tokened.uk/v1',
-    note: 'Gateway 尚未上线。加入等待名单，Beta 开放时第一时间通知你。',
-  },
-  waitlist: {
-    title: '加入等待名单',
-    subtitle:
-      '开发者工具与 Gateway Beta 上线时第一时间通知你。配置 Formspree 后直接提交，否则打开邮件客户端。',
-    email: '工作邮箱',
-    interest: '我感兴趣的是',
-    interests: {
-      developer: '开发者版（Prompt 优化 & API）',
-      gateway: 'Gateway Beta（api.tokened.uk 代理）',
-      enterprise: '企业版（SSO、团队、定制 SLA）',
-    },
-    message: '介绍你的使用场景（可选）',
-    messagePlaceholder: '例如：我们每天处理 5 万次 Prompt，需要成本可视化…',
-    submit: '提交申请',
-    submitting: '提交中…',
-    successFormspree: '已加入等待名单！Beta 开放时我们将邮件通知你。',
-    successMailto:
-      '正在打开邮件客户端… 请完成发送以加入。如未自动打开，请发邮件至 hello@tokened.uk。',
-    mailtoHint:
-      '提示：在 .env 中设置 VITE_FORMSPREE_ENDPOINT 可直接提交表单，无需邮件客户端。',
-    error: '提交失败，请重试或直接发邮件至 hello@tokened.uk。',
-    privacy: '我们仅用你的邮箱联系 Tokened 相关事宜，绝不发送垃圾邮件。',
   },
   saas: {
     title: '规划中：生产级 LLM 基础设施',
