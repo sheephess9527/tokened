@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useI18n } from '../i18n'
 import { useAnimatedNumber } from '../hooks/useAnimatedNumber'
+import { useMediaQuery } from '../hooks/useMediaQuery'
 import { useTokenAnalysis } from '../hooks/useTokenAnalysis'
 import type { Currency } from '../lib/currency'
 import {
@@ -9,6 +10,7 @@ import {
   findBestValue,
 } from '../lib/pricing'
 import { MAILTO_ENTERPRISE } from '../lib/contact'
+import { clearSavedPrompt, loadSavedPrompt, savePrompt } from '../lib/promptStorage'
 import { hasChinese, isOpenAiEncoding, type TokenizerId } from '../lib/tokenizer'
 import type { ModelPricing } from '../lib/pricing'
 import { CostChart } from './CostChart'
@@ -23,6 +25,8 @@ const TOKENIZER_OPTIONS: TokenizerId[] = [
 ]
 
 const CURRENCY_OPTIONS: Currency[] = ['USD', 'GBP', 'CNY']
+const MOBILE_COST_PREVIEW = 3
+const MOBILE_BREAKPOINT = '(max-width: 900px)'
 
 function displayAccuracy(
   model: ModelPricing,
@@ -34,15 +38,31 @@ function displayAccuracy(
 
 export function TokenEditor() {
   const { t } = useI18n()
-  const [prompt, setPrompt] = useState(t.editor.samplePrompt)
-  const [usingSample, setUsingSample] = useState(true)
+  const [prompt, setPrompt] = useState(() => {
+    const saved = loadSavedPrompt()
+    return saved ?? t.editor.samplePrompt
+  })
+  const [usingSample, setUsingSample] = useState(() => loadSavedPrompt() === null)
   const [tokenizer, setTokenizer] = useState<TokenizerId>('o200k_base')
   const [currency, setCurrency] = useState<Currency>('USD')
   const [showBlocks, setShowBlocks] = useState(true)
+  const [costListExpanded, setCostListExpanded] = useState(false)
+  const isMobile = useMediaQuery(MOBILE_BREAKPOINT)
 
   useEffect(() => {
     if (usingSample) setPrompt(t.editor.samplePrompt)
   }, [t.editor.samplePrompt, usingSample])
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      if (usingSample) {
+        clearSavedPrompt()
+      } else {
+        savePrompt(prompt)
+      }
+    }, 300)
+    return () => window.clearTimeout(timer)
+  }, [prompt, usingSample])
 
   const { tokenCount, openAiBaseline, pricingBaseline, chineseEfficient, spans, loading } =
     useTokenAnalysis(prompt, tokenizer, showBlocks)
@@ -56,6 +76,9 @@ export function TokenEditor() {
   const best = findBestValue(costs)
   const inflation = chineseInflationRate(openAiBaseline, chineseEfficient)
   const showInflation = hasChinese(prompt) && inflation !== null && inflation > 0
+  const showCostToggle = isMobile && costs.length > MOBILE_COST_PREVIEW
+  const visibleCosts =
+    showCostToggle && !costListExpanded ? costs.slice(0, MOBILE_COST_PREVIEW) : costs
 
   const scrollToTool = () => {
     document.getElementById('prompt-input')?.focus()
@@ -93,6 +116,7 @@ export function TokenEditor() {
                 onClick={() => {
                   setPrompt('')
                   setUsingSample(false)
+                  clearSavedPrompt()
                 }}
               >
                 {t.editor.clear}
@@ -103,6 +127,7 @@ export function TokenEditor() {
                 onClick={() => {
                   setPrompt(t.editor.samplePrompt)
                   setUsingSample(true)
+                  clearSavedPrompt()
                 }}
               >
                 {t.editor.loadSample}
@@ -207,7 +232,7 @@ export function TokenEditor() {
                 <h3>{t.editor.estCost}</h3>
                 <p className={styles.costDisclaimer}>{t.editor.costDisclaimer}</p>
                 <ul className={styles.costList}>
-                  {costs.map((est) => {
+                  {visibleCosts.map((est) => {
                     const isBest = best?.model.id === est.model.id
                     const accuracy = displayAccuracy(est.model, tokenizer)
                     return (
@@ -239,6 +264,15 @@ export function TokenEditor() {
                     )
                   })}
                 </ul>
+                {showCostToggle && (
+                  <button
+                    type="button"
+                    className={styles.costToggle}
+                    onClick={() => setCostListExpanded((v) => !v)}
+                  >
+                    {costListExpanded ? t.editor.showFewerModels : t.editor.showAllModels}
+                  </button>
+                )}
               </div>
             </>
           )}

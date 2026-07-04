@@ -3,6 +3,7 @@ export const en = {
   common: {
     copy: 'Copy',
     copied: 'Copied',
+    copyFailed: 'Copy failed',
     backToTop: 'Back to top',
   },
   contact: {
@@ -202,6 +203,8 @@ The gateway runs on Cloudflare Workers at the edge. It proxies OpenAI-compatible
     loading: 'Analyzing tokens…',
     clear: 'Clear',
     loadSample: 'Load sample',
+    showAllModels: 'Show all models',
+    showFewerModels: 'Show fewer',
   },
   saas: {
     title: 'Planned: production-grade LLM infrastructure',
@@ -340,6 +343,7 @@ export type Locale = {
   common: {
     copy: string
     copied: string
+    copyFailed: string
     backToTop: string
   }
   contact: {
@@ -428,6 +432,8 @@ export type Locale = {
     loading: string
     clear: string
     loadSample: string
+    showAllModels: string
+    showFewerModels: string
   }
   saas: {
     title: string

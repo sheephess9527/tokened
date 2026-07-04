@@ -5,6 +5,7 @@ export const zh = {
   common: {
     copy: '复制',
     copied: '已复制',
+    copyFailed: '复制失败',
     backToTop: '回到顶部',
   },
   contact: {
@@ -204,6 +205,8 @@ export const zh = {
     loading: '正在分析 Token…',
     clear: '清空',
     loadSample: '加载示例',
+    showAllModels: '显示全部模型',
+    showFewerModels: '收起列表',
   },
   saas: {
     title: '规划中：生产级 LLM 基础设施',

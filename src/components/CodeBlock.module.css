@@ -42,3 +42,8 @@
   color: var(--accent);
   border-color: var(--accent);
 }
+
+.copyBtnFailed {
+  color: #f87171;
+  border-color: rgba(248, 113, 113, 0.5);
+}
