@@ -90,13 +90,6 @@ export const en = {
       },
     },
   },
-  postDemo: {
-    title: 'Ready to use this in production?',
-    desc: 'The free analyzer is live today. Tokened Gateway — caching, routing, and compliance proxy — is on the roadmap. Join the waitlist for beta access.',
-    ctaBeta: 'Join beta waitlist',
-    ctaPricing: 'View pricing',
-    ctaGateway: 'See Gateway roadmap',
-  },
   useCases: {
     title: 'Who uses Tokened?',
     subtitle: 'Real scenarios where token visibility saves money and reduces risk.',
@@ -439,13 +432,6 @@ export type Locale = {
     title: string
     subtitle: string
     steps: Record<string, { num: string; title: string; desc: string }>
-  }
-  postDemo: {
-    title: string
-    desc: string
-    ctaBeta: string
-    ctaPricing: string
-    ctaGateway: string
   }
   useCases: {
     title: string

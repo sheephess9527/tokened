@@ -92,13 +92,6 @@ export const zh = {
       },
     },
   },
-  postDemo: {
-    title: '想用到生产环境？',
-    desc: '免费分析器现已可用。Tokened Gateway（缓存、路由、合规代理）在路线图中 — 加入等待名单获取 Beta 资格。',
-    ctaBeta: '加入 Beta 等待名单',
-    ctaPricing: '查看定价',
-    ctaGateway: '查看 Gateway 规划',
-  },
   useCases: {
     title: '谁在用 Tokened？',
     subtitle: 'Token 可视化如何在真实场景中省钱、降风险。',

@@ -8,6 +8,7 @@ import {
   estimateCosts,
   findBestValue,
 } from '../lib/pricing'
+import { MAILTO_ENTERPRISE } from '../lib/contact'
 import { hasChinese, isOpenAiEncoding, type TokenizerId } from '../lib/tokenizer'
 import type { ModelPricing } from '../lib/pricing'
 import { CostChart } from './CostChart'
@@ -70,7 +71,7 @@ export function TokenEditor() {
           <a href="#waitlist" className={styles.ctaSecondary}>
             {t.hero.ctaBeta}
           </a>
-          <a href="#waitlist" className={styles.ctaGhost}>
+          <a href={MAILTO_ENTERPRISE} className={styles.ctaGhost}>
             {t.hero.ctaEnterprise}
           </a>
         </div>

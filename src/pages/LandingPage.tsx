@@ -1,7 +1,6 @@
 import { Header } from '../components/Header'
 import { TrustBar } from '../components/TrustBar'
 import { TokenEditor } from '../components/TokenEditor'
-import { PostDemoCTA } from '../components/PostDemoCTA'
 import { Stats } from '../components/Stats'
 import { HowItWorks } from '../components/HowItWorks'
 import { SaasPitch } from '../components/SaasPitch'
@@ -43,7 +42,6 @@ export function LandingPage() {
       <TrustBar />
       <main>
         <TokenEditor />
-        <PostDemoCTA />
         <Stats />
         <HowItWorks />
         <SaasPitch />
