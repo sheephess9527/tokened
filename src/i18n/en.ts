@@ -60,7 +60,7 @@ export const en = {
       {
         value: '45%',
         label: 'Chinese savings',
-        desc: 'Typical token reduction vs OpenAI cl100k_base when using Chinese-efficient models.',
+        desc: 'Typical token reduction vs OpenAI o200k when using DeepSeek-V4 / Qwen3.7.',
       },
       {
         value: '$0',
@@ -97,7 +97,7 @@ export const en = {
       c1: {
         stat: 'Up to 45% fewer tokens',
         title: 'Chinese product teams',
-        desc: 'Compare OpenAI vs DeepSeek/Qwen before committing to a model. One Chinese prompt can cost 2× the tokens on cl100k_base.',
+        desc: 'Compare GPT-5.4 vs DeepSeek-V4-Flash / Qwen3.7-Plus before committing. Chinese prompts often use 2× more tokens on OpenAI o200k than on Chinese-efficient models.',
       },
       c2: {
         stat: 'Pre-launch cost audit',
@@ -117,7 +117,7 @@ export const en = {
     articles: {
       a1: {
         title: 'Why Chinese prompts cost more on OpenAI',
-        desc: 'OpenAI cl100k_base treats each Chinese character as 1–3 tokens. DeepSeek and Qwen use more efficient vocabularies — often 40–60% fewer tokens for the same text.',
+        desc: 'OpenAI o200k/cl100k often assigns 1–3 tokens per Chinese character. DeepSeek-V4 and Qwen3.7 use more efficient vocabularies — often 40–60% fewer tokens for the same text.',
         readTime: '3 min read',
       },
       a2: {
@@ -142,7 +142,7 @@ export const en = {
       },
       {
         q: 'How accurate are the token counts?',
-        a: 'OpenAI models (cl100k_base, o200k_base) are exact. Claude, Gemini, DeepSeek, and Qwen counts are estimates based on published tokenizer behaviour — always verify against your provider billing.',
+        a: 'OpenAI counts are exact when using the matching tokenizer (o200k_base for GPT-5.x / GPT-4o, cl100k_base for legacy). Claude 4.6, Gemini 3.5, DeepSeek-V4, and Qwen3.7 costs use estimated token multipliers — always verify against your provider billing.',
       },
       {
         q: 'Is Tokened related to cryptocurrency tokens?',
@@ -190,7 +190,7 @@ export const en = {
 
 The gateway runs on Cloudflare Workers at the edge. It proxies OpenAI-compatible requests, caches identical prompts, and intercepts PII before data reaches US-hosted models. Typical latency is under 50ms for cache hits.
 
-核心组件包括：路由层、边缘缓存、合规检测模块。中文 Prompt 在 DeepSeek 与 Qwen 上通常比 OpenAI 基线少 40–60% Token。
+核心组件包括：路由层、边缘缓存、合规检测模块。中文 Prompt 在 DeepSeek-V4-Flash 与 Qwen3.7-Plus 上通常比 OpenAI o200k 基线少 40–60% Token。
 ---`,
     totalTokens: 'Total Tokens',
     chars: 'Characters',
@@ -203,7 +203,7 @@ The gateway runs on Cloudflare Workers at the edge. It proxies OpenAI-compatible
     bestValue: 'Best Value',
     chineseInflation: 'Chinese Token Inflation',
     chineseInflationHint:
-      'Same Chinese text often uses fewer tokens on DeepSeek/Qwen than on OpenAI cl100k_base.',
+      'Same Chinese text often uses fewer tokens on DeepSeek-V4 / Qwen3.7 than on OpenAI o200k_base.',
     inflationVsOpenAI: 'vs OpenAI baseline',
     currency: 'Currency',
     currencies: {
@@ -229,7 +229,7 @@ The gateway runs on Cloudflare Workers at the edge. It proxies OpenAI-compatible
       'Compatible with OpenAI SDK — change one env variable',
       'Edge cache for identical prompts (est. up to 40% savings)',
       'PII detection before data reaches US-hosted models',
-      'Route to GPT, Claude, DeepSeek, or Qwen by cost policy',
+      'Route to GPT-5, Claude 4.6, Gemini 3.5, DeepSeek-V4, or Qwen3.7 by cost policy',
     ],
     code: 'OPENAI_BASE_URL=https://api.tokened.uk/v1',
     note: 'Gateway is not live yet. Join the waitlist to be first in line when the beta opens.',
@@ -273,7 +273,7 @@ The gateway runs on Cloudflare Workers at the edge. It proxies OpenAI-compatible
       },
       routing: {
         title: 'Smart Model Routing',
-        desc: 'Route by cost, latency, or compliance policy across GPT, Claude, Gemini, DeepSeek, and Qwen.',
+        desc: 'Route by cost, latency, or compliance policy across GPT-5.4, Claude 4.6, Gemini 3.5, DeepSeek-V4, and Qwen3.7.',
         icon: '🔀',
       },
     },
@@ -300,7 +300,7 @@ The gateway runs on Cloudflare Workers at the edge. It proxies OpenAI-compatible
         title: 'Token calculator & cost dashboard',
         items: [
           'Real-time token highlighting (OpenAI tokenizers)',
-          'Multi-model cost comparison (GPT, Claude, Gemini, DeepSeek, Qwen)',
+          'Multi-model cost comparison (GPT-5.4, Claude 4.6, Gemini 3.5, DeepSeek-V4, Qwen3.7)',
           'Chinese token inflation insights',
           'USD / GBP / CNY support',
           'EN / 中文 bilingual UI',

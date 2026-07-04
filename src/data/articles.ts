@@ -19,8 +19,8 @@ export const ARTICLES: Article[] = [
       zh: '为什么中文 Prompt 在 OpenAI 上更费 Token？如何优化？',
     },
     description: {
-      en: 'Deep dive into Chinese token inflation on cl100k_base vs DeepSeek and Qwen. Real savings strategies for bilingual LLM apps.',
-      zh: '深度解析中文在 cl100k_base 上的 Token 膨胀，对比 DeepSeek/Qwen，并提供可落地的省钱策略。',
+      en: 'Deep dive into Chinese token inflation on OpenAI o200k vs DeepSeek-V4-Flash and Qwen3.7-Plus. Real savings strategies for bilingual LLM apps.',
+      zh: '深度解析中文在 OpenAI o200k 上的 Token 膨胀，对比 DeepSeek-V4 / Qwen3.7，并提供可落地的省钱策略。',
     },
     published: '2026-06-24',
     sections: [
@@ -31,8 +31,8 @@ export const ARTICLES: Article[] = [
         },
         paragraphs: [
           {
-            en: 'OpenAI models use the cl100k_base tokenizer, which was optimised primarily for English. A single Chinese character often consumes 1.5–3 tokens, while the same semantic content on DeepSeek-V3 or Qwen may use only 0.5–1 token per character.',
-            zh: 'OpenAI 模型使用主要为英文优化的 cl100k_base 分词器。一个汉字常常占用 1.5–3 个 Token，而相同语义在 DeepSeek-V3 或 Qwen 上可能只需 0.5–1 个 Token。',
+            en: 'GPT-5.x and GPT-4o use the o200k_base tokenizer (cl100k_base for older models) — both optimised primarily for English. A single Chinese character often consumes 1.5–3 tokens, while the same semantic content on DeepSeek-V4-Flash or Qwen3.7-Plus may use only 0.5–1 token per character.',
+            zh: 'GPT-5.x 与 GPT-4o 使用 o200k_base 分词器（旧版模型为 cl100k_base），主要为英文优化。一个汉字常常占用 1.5–3 个 Token，而相同语义在 DeepSeek-V4-Flash 或 Qwen3.7-Plus 上可能只需 0.5–1 个 Token。',
           },
           {
             en: 'For a bilingual product with 10,000 daily API calls, this difference can translate to hundreds of dollars per month — without changing your application logic at all.',
@@ -47,8 +47,8 @@ export const ARTICLES: Article[] = [
         },
         paragraphs: [
           {
-            en: '1. Audit prompts with a local tokenizer before shipping. 2. Move Chinese-heavy workloads to DeepSeek or Qwen where quality allows. 3. Trim system prompts — redundant instructions multiply across every call.',
-            zh: '1. 上线前用本地分词器审计 Prompt。2. 在质量允许时将中文密集任务迁移到 DeepSeek 或 Qwen。3. 精简系统 Prompt — 冗余指令会在每次调用中成倍放大。',
+            en: '1. Audit prompts with a local tokenizer before shipping. 2. Move Chinese-heavy workloads to DeepSeek-V4-Flash or Qwen3.7-Plus where quality allows. 3. Trim system prompts — redundant instructions multiply across every call.',
+            zh: '1. 上线前用本地分词器审计 Prompt。2. 在质量允许时将中文密集任务迁移到 DeepSeek-V4-Flash 或 Qwen3.7-Plus。3. 精简系统 Prompt — 冗余指令会在每次调用中成倍放大。',
           },
           {
             en: 'Tokened.uk runs entirely in your browser so you can compare models side-by-side without sending data to our servers.',

@@ -62,7 +62,7 @@ export const zh = {
       {
         value: '45%',
         label: '中文节省空间',
-        desc: '相比 OpenAI cl100k_base，中文高效模型典型可少 45% Token。',
+        desc: '相比 OpenAI o200k 基线，DeepSeek-V4 / Qwen3.7 典型可少 45% Token。',
       },
       {
         value: '¥0',
@@ -99,7 +99,7 @@ export const zh = {
       c1: {
         stat: '最高省 45% Token',
         title: '中文产品团队',
-        desc: '上线前对比 OpenAI vs DeepSeek/Qwen。同一段中文在 cl100k_base 上可能多花 2 倍 Token。',
+        desc: '上线前对比 GPT-5.4 vs DeepSeek-V4-Flash / Qwen3.7-Plus。同一段中文在 OpenAI o200k 上可能多花 2 倍 Token。',
       },
       c2: {
         stat: '上线前成本审计',
@@ -119,7 +119,7 @@ export const zh = {
     articles: {
       a1: {
         title: '为什么中文 Prompt 在 OpenAI 上更费 Token？',
-        desc: 'OpenAI cl100k_base 每个汉字约 1–3 个 Token。DeepSeek 和 Qwen 词表更高效 — 同一段中文通常可少 40–60% Token。',
+        desc: 'OpenAI o200k/cl100k 每个汉字约 1–3 个 Token。DeepSeek-V4 与 Qwen3.7 词表更高效 — 同一段中文通常可少 40–60% Token。',
         readTime: '3 分钟阅读',
       },
       a2: {
@@ -144,7 +144,7 @@ export const zh = {
       },
       {
         q: 'Token 计数准确吗？',
-        a: 'OpenAI 模型（cl100k_base、o200k_base）为精确值。Claude、Gemini、DeepSeek、Qwen 为基于公开分词行为的估算 — 请以服务商账单为准。',
+        a: 'OpenAI 在匹配分词器下为精确值（GPT-5.x / GPT-4o 用 o200k_base，旧版用 cl100k_base）。Claude 4.6、Gemini 3.5、DeepSeek-V4、Qwen3.7 的成本为估算倍数 — 请以服务商账单为准。',
       },
       {
         q: 'Tokened 和加密货币 Token 有关吗？',
@@ -192,7 +192,7 @@ export const zh = {
 
 网关在 Cloudflare Workers 边缘运行，代理 OpenAI 兼容请求，缓存相同 Prompt，并在数据到达美国托管模型前拦截 PII。缓存命中时典型延迟低于 50ms。
 
-Core components: routing layer, edge cache, and compliance interception. Mixed 中英文 prompts often cost 2× more tokens on OpenAI cl100k_base than on DeepSeek or Qwen3.7.
+核心组件包括：路由层、边缘缓存、合规检测模块。中文 Prompt 在 DeepSeek-V4-Flash 与 Qwen3.7-Plus 上通常比 OpenAI o200k 基线少 40–60% Token。
 ---`,
     totalTokens: 'Token 总数',
     chars: '字符数',
@@ -205,7 +205,7 @@ Core components: routing layer, edge cache, and compliance interception. Mixed �
     bestValue: '最省',
     chineseInflation: '中文 Token 膨胀率',
     chineseInflationHint:
-      '同一段中文在 DeepSeek/Qwen 上通常比 OpenAI cl100k_base 占用更少 Token。',
+      '同一段中文在 DeepSeek-V4 / Qwen3.7 上通常比 OpenAI o200k_base 占用更少 Token。',
     inflationVsOpenAI: '相对 OpenAI 基线',
     currency: '货币',
     currencies: {
@@ -231,7 +231,7 @@ Core components: routing layer, edge cache, and compliance interception. Mixed �
       '兼容 OpenAI SDK — 只需修改一个环境变量',
       '相同 Prompt 边缘缓存（预估最高省 40%）',
       '数据到达美国模型前自动 PII 检测',
-      '按成本策略路由至 GPT、Claude、DeepSeek 或 Qwen',
+      '按成本策略路由至 GPT-5、Claude 4.6、Gemini 3.5、DeepSeek-V4 或 Qwen3.7',
     ],
     code: 'OPENAI_BASE_URL=https://api.tokened.uk/v1',
     note: 'Gateway 尚未上线。加入等待名单，Beta 开放时第一时间通知你。',
@@ -275,7 +275,7 @@ Core components: routing layer, edge cache, and compliance interception. Mixed �
       },
       routing: {
         title: '智能模型路由',
-        desc: '按成本、延迟或合规策略，在 GPT、Claude、Gemini、DeepSeek、Qwen 间智能调度。',
+        desc: '按成本、延迟或合规策略，在 GPT-5.4、Claude 4.6、Gemini 3.5、DeepSeek-V4、Qwen3.7 间智能调度。',
         icon: '🔀',
       },
     },
@@ -302,7 +302,7 @@ Core components: routing layer, edge cache, and compliance interception. Mixed �
         title: 'Token 计算器 & 成本仪表盘',
         items: [
           '实时 Token 分词高亮（OpenAI 分词器）',
-          '多模型成本对比（GPT、Claude、Gemini、DeepSeek、Qwen）',
+          '多模型成本对比（GPT-5.4、Claude 4.6、Gemini 3.5、DeepSeek-V4、Qwen3.7）',
           '中文 Token 膨胀率分析',
           '美元 / 英镑 / 人民币支持',
           '中 / EN 双语界面',
