@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom'
 import { ARTICLES } from '../data/articles'
 import { useI18n } from '../i18n'
+import { LocalLink } from './LocalLink'
 import styles from './Resources.module.css'
 
 export function Resources() {
@@ -13,7 +13,7 @@ export function Resources() {
         <p className={styles.subtitle}>{t.resources.subtitle}</p>
         <div className={styles.grid}>
           {ARTICLES.map((article) => (
-            <Link
+            <LocalLink
               key={article.slug}
               to={`/blog/${article.slug}`}
               className={styles.card}
@@ -22,11 +22,11 @@ export function Resources() {
               <h3>{article.title[lang]}</h3>
               <p>{article.description[lang]}</p>
               <span className={styles.readMore}>{t.blog.readMore} →</span>
-            </Link>
+            </LocalLink>
           ))}
         </div>
         <div className={styles.viewAll}>
-          <Link to="/blog">{t.blog.title} →</Link>
+          <LocalLink to="/blog">{t.blog.title} →</LocalLink>
         </div>
       </div>
     </section>

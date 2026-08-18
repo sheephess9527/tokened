@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { useI18n } from '../i18n'
+import { stripLanguage } from '../i18n/paths'
+import { LocalLink } from './LocalLink'
 import { LanguageSwitcher } from './LanguageSwitcher'
 import styles from './Header.module.css'
 
@@ -38,10 +40,10 @@ export function Header() {
   return (
     <header className={styles.header}>
       <div className={styles.inner}>
-        <Link to="/" className={styles.logo} onClick={close}>
+        <LocalLink to="/" className={styles.logo} onClick={close}>
           <span className={styles.logoMark}>◆</span>
           {t.brand}
-        </Link>
+        </LocalLink>
 
         <button
           ref={menuBtnRef}
@@ -60,24 +62,24 @@ export function Header() {
           className={`${styles.nav} ${open ? styles.navOpen : ''}`}
           aria-label={t.brand}
         >
-          <Link to="/#tool" onClick={close}>
+          <LocalLink to="/#tool" onClick={close}>
             {t.nav.demo}
-          </Link>
-          <Link to="/#how" onClick={close}>
+          </LocalLink>
+          <LocalLink to="/#how" onClick={close}>
             {t.nav.howItWorks}
-          </Link>
-          <Link to="/#features" onClick={close}>
+          </LocalLink>
+          <LocalLink to="/#features" onClick={close}>
             {t.nav.features}
-          </Link>
-          <Link to="/blog" onClick={close} aria-current={pathname.startsWith('/blog') ? 'page' : undefined}>
+          </LocalLink>
+          <LocalLink to="/blog" onClick={close} aria-current={stripLanguage(pathname).startsWith('/blog') ? 'page' : undefined}>
             {t.nav.blog}
-          </Link>
-          <Link to="/#pricing" onClick={close}>
+          </LocalLink>
+          <LocalLink to="/#pricing" onClick={close}>
             {t.nav.pricing}
-          </Link>
-          <Link to="/#faq" onClick={close}>
+          </LocalLink>
+          <LocalLink to="/#faq" onClick={close}>
             {t.nav.faq}
-          </Link>
+          </LocalLink>
           <a
             href={GITHUB_URL}
             target="_blank"

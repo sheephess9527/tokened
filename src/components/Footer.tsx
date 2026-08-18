@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom'
 import { useI18n } from '../i18n'
+import { LocalLink } from './LocalLink'
 import { CONTACT_EMAIL, MAILTO_CONTACT } from '../lib/contact'
 import styles from './Footer.module.css'
 
@@ -24,14 +24,14 @@ export function Footer() {
           </div>
 
           <nav className={styles.links}>
-            <Link to="/#how">{t.footer.howItWorks}</Link>
-            <Link to="/#docs">{t.footer.integration}</Link>
-            <Link to="/blog">{t.footer.blog}</Link>
-            <Link to="/#roadmap">{t.footer.roadmap}</Link>
-            <Link to="/#waitlist">{t.footer.waitlist}</Link>
-            <Link to="/#faq">{t.footer.faq}</Link>
-            <Link to="/#privacy">{t.footer.privacy}</Link>
-            <Link to="/#terms">{t.footer.terms}</Link>
+            <LocalLink to="/#how">{t.footer.howItWorks}</LocalLink>
+            <LocalLink to="/#docs">{t.footer.integration}</LocalLink>
+            <LocalLink to="/blog">{t.footer.blog}</LocalLink>
+            <LocalLink to="/#roadmap">{t.footer.roadmap}</LocalLink>
+            <LocalLink to="/#waitlist">{t.footer.waitlist}</LocalLink>
+            <LocalLink to="/#faq">{t.footer.faq}</LocalLink>
+            <LocalLink to="/#privacy">{t.footer.privacy}</LocalLink>
+            <LocalLink to="/#terms">{t.footer.terms}</LocalLink>
           </nav>
         </div>
 

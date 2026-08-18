@@ -1,6 +1,9 @@
 import type { Article } from '../data/articles'
 import type { Language } from '../i18n'
+import { localizePath } from '../i18n/paths'
 import { absoluteUrl, OG_IMAGE, SITE_NAME, SITE_URL } from './site'
+
+const localUrl = (path: string, lang: Language) => absoluteUrl(localizePath(path, lang))
 
 const localeCode = (lang: Language) => (lang === 'zh' ? 'zh-CN' : 'en')
 
@@ -19,7 +22,7 @@ export function webApplicationSchema(lang: Language, description: string) {
     '@type': 'WebApplication',
     '@id': `${SITE_URL}/#app`,
     name: SITE_NAME,
-    url: `${SITE_URL}/`,
+    url: localUrl('/', lang),
     applicationCategory: 'DeveloperApplication',
     operatingSystem: 'Any',
     browserRequirements: 'Requires JavaScript',
@@ -33,7 +36,6 @@ export function webApplicationSchema(lang: Language, description: string) {
 export function faqSchema(items: { q: string; a: string }[]) {
   return {
     '@type': 'FAQPage',
-    '@id': `${SITE_URL}/#faq`,
     mainEntity: items.map((item) => ({
       '@type': 'Question',
       name: item.q,
@@ -42,20 +44,23 @@ export function faqSchema(items: { q: string; a: string }[]) {
   }
 }
 
-export function breadcrumbSchema(trail: { name: string; path: string }[]) {
+export function breadcrumbSchema(
+  trail: { name: string; path: string }[],
+  lang: Language,
+) {
   return {
     '@type': 'BreadcrumbList',
     itemListElement: trail.map((crumb, index) => ({
       '@type': 'ListItem',
       position: index + 1,
       name: crumb.name,
-      item: absoluteUrl(crumb.path),
+      item: localUrl(crumb.path, lang),
     })),
   }
 }
 
 export function blogPostingSchema(article: Article, lang: Language) {
-  const url = absoluteUrl(`/blog/${article.slug}`)
+  const url = localUrl(`/blog/${article.slug}`, lang)
   return {
     '@type': 'BlogPosting',
     '@id': `${url}#article`,
@@ -75,15 +80,15 @@ export function blogPostingSchema(article: Article, lang: Language) {
 export function blogIndexSchema(articles: Article[], lang: Language, name: string) {
   return {
     '@type': 'Blog',
-    '@id': `${SITE_URL}/blog#blog`,
+    '@id': `${localUrl('/blog', lang)}#blog`,
     name,
-    url: absoluteUrl('/blog'),
+    url: localUrl('/blog', lang),
     inLanguage: localeCode(lang),
     publisher: { '@id': `${SITE_URL}/#organization` },
     blogPost: articles.map((article) => ({
       '@type': 'BlogPosting',
       headline: article.title[lang],
-      url: absoluteUrl(`/blog/${article.slug}`),
+      url: localUrl(`/blog/${article.slug}`, lang),
       datePublished: article.published,
     })),
   }

@@ -22,6 +22,8 @@ const chunkGroups = {
 const SITE_TITLE = 'Tokened — Guides & Insights'
 const SITE_DESCRIPTION =
   'LLM token efficiency, prompt cost control and compliance notes from tokened.uk.'
+const SITE_TITLE_ZH = 'Tokened — 指南与洞察'
+const SITE_DESCRIPTION_ZH = '来自 tokened.uk 的 LLM Token 效率、成本控制与合规实践笔记。'
 
 function escapeXml(value: string): string {
   return value
@@ -36,46 +38,67 @@ function rfc822(date: string): string {
   return new Date(`${date}T00:00:00Z`).toUTCString()
 }
 
+const HREFLANG = { en: 'en', zh: 'zh-Hans' } as const
+const localized = (path: string, lang: 'en' | 'zh') =>
+  lang === 'en' ? path : path === '/' ? '/zh' : `/zh${path}`
+
 function sitemapXml(): string {
   const today = new Date().toISOString().slice(0, 10)
-  const urls = [
-    { loc: `${SITE_URL}/`, lastmod: today, changefreq: 'weekly', priority: '1.0' },
-    { loc: `${SITE_URL}/blog`, lastmod: today, changefreq: 'weekly', priority: '0.8' },
+  const pages = [
+    { path: '/', lastmod: today, changefreq: 'weekly', priority: '1.0' },
+    { path: '/blog', lastmod: today, changefreq: 'weekly', priority: '0.8' },
     ...ARTICLES.map((article) => ({
-      loc: `${SITE_URL}/blog/${article.slug}`,
+      path: `/blog/${article.slug}`,
       lastmod: article.published,
       changefreq: 'monthly',
       priority: '0.7',
     })),
   ]
 
-  const body = urls
-    .map(
-      (url) =>
-        `  <url>\n    <loc>${url.loc}</loc>\n    <lastmod>${url.lastmod}</lastmod>\n` +
-        `    <changefreq>${url.changefreq}</changefreq>\n    <priority>${url.priority}</priority>\n  </url>`,
+  // Each URL declares both translations, so neither language competes with the
+  // other for the same query.
+  const body = pages
+    .flatMap((page) =>
+      (['en', 'zh'] as const).map((lang) => {
+        const alternates = (['en', 'zh'] as const)
+          .map(
+            (other) =>
+              `    <xhtml:link rel="alternate" hreflang="${HREFLANG[other]}" href="${SITE_URL}${localized(page.path, other)}" />`,
+          )
+          .join('\n')
+
+        return (
+          `  <url>\n    <loc>${SITE_URL}${localized(page.path, lang)}</loc>\n` +
+          `    <lastmod>${page.lastmod}</lastmod>\n    <changefreq>${page.changefreq}</changefreq>\n` +
+          `    <priority>${page.priority}</priority>\n${alternates}\n  </url>`
+        )
+      }),
     )
     .join('\n')
 
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}\n</urlset>\n`
+  return (
+    `<?xml version="1.0" encoding="UTF-8"?>\n` +
+    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n` +
+    `${body}\n</urlset>\n`
+  )
 }
 
-function feedXml(): string {
+function feedXml(lang: 'en' | 'zh'): string {
   const items = ARTICLES.map((article) => {
-    const url = `${SITE_URL}/blog/${article.slug}`
+    const url = `${SITE_URL}${localized(`/blog/${article.slug}`, lang)}`
     const body = article.sections
       .map(
         (section) =>
-          `<h2>${escapeXml(section.heading.en)}</h2>` +
-          section.paragraphs.map((p) => `<p>${escapeXml(p.en)}</p>`).join(''),
+          `<h2>${escapeXml(section.heading[lang])}</h2>` +
+          section.paragraphs.map((p) => `<p>${escapeXml(p[lang])}</p>`).join(''),
       )
       .join('')
 
     return (
-      `    <item>\n      <title>${escapeXml(article.title.en)}</title>\n` +
+      `    <item>\n      <title>${escapeXml(article.title[lang])}</title>\n` +
       `      <link>${url}</link>\n      <guid isPermaLink="true">${url}</guid>\n` +
       `      <pubDate>${rfc822(article.published)}</pubDate>\n` +
-      `      <description>${escapeXml(article.description.en)}</description>\n` +
+      `      <description>${escapeXml(article.description[lang])}</description>\n` +
       `      <content:encoded><![CDATA[${body}]]></content:encoded>\n    </item>`
     )
   }).join('\n')
@@ -85,14 +108,15 @@ function feedXml(): string {
     ARTICLES[0]?.published ?? new Date().toISOString().slice(0, 10),
   )
 
+  const self = lang === 'en' ? '/feed.xml' : '/zh/feed.xml'
   return (
     `<?xml version="1.0" encoding="UTF-8"?>\n` +
     `<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">\n` +
-    `  <channel>\n    <title>${escapeXml(SITE_TITLE)}</title>\n` +
-    `    <link>${SITE_URL}/blog</link>\n` +
-    `    <description>${escapeXml(SITE_DESCRIPTION)}</description>\n` +
-    `    <language>en</language>\n    <lastBuildDate>${rfc822(latest)}</lastBuildDate>\n` +
-    `    <atom:link href="${SITE_URL}/feed.xml" rel="self" type="application/rss+xml" />\n` +
+    `  <channel>\n    <title>${escapeXml(lang === 'en' ? SITE_TITLE : SITE_TITLE_ZH)}</title>\n` +
+    `    <link>${SITE_URL}${localized('/blog', lang)}</link>\n` +
+    `    <description>${escapeXml(lang === 'en' ? SITE_DESCRIPTION : SITE_DESCRIPTION_ZH)}</description>\n` +
+    `    <language>${lang === 'en' ? 'en' : 'zh-CN'}</language>\n    <lastBuildDate>${rfc822(latest)}</lastBuildDate>\n` +
+    `    <atom:link href="${SITE_URL}${self}" rel="self" type="application/rss+xml" />\n` +
     `${items}\n  </channel>\n</rss>\n`
   )
 }
@@ -109,16 +133,19 @@ function seoAssets(): Plugin {
     applyToEnvironment: (environment) => environment.name === 'client',
     generateBundle() {
       this.emitFile({ type: 'asset', fileName: 'sitemap.xml', source: sitemapXml() })
-      this.emitFile({ type: 'asset', fileName: 'feed.xml', source: feedXml() })
+      this.emitFile({ type: 'asset', fileName: 'feed.xml', source: feedXml('en') })
+      this.emitFile({ type: 'asset', fileName: 'zh/feed.xml', source: feedXml('zh') })
     },
   }
 }
 
 /** Prerendered pages, which the prerender script writes after the build. */
 const PAGE_URLS = [
-  '/',
-  '/blog',
-  ...ARTICLES.map((article) => `/blog/${article.slug}`),
+  ...(['en', 'zh'] as const).flatMap((lang) => [
+    localized('/', lang),
+    localized('/blog', lang),
+    ...ARTICLES.map((article) => localized(`/blog/${article.slug}`, lang)),
+  ]),
   '/404.html',
 ]
 
@@ -145,6 +172,8 @@ function serviceWorker(): Plugin {
         ...assets.sort(),
         '/fonts/inter-latin.woff2',
         '/fonts/jetbrains-mono-latin.woff2',
+        '/site.webmanifest',
+        '/icon-192.png',
       ]
 
       const version = createHash('sha256')

@@ -3,15 +3,17 @@ import { renderToPipeableStream } from 'react-dom/server'
 import { StaticRouter } from 'react-router-dom'
 import App from './App'
 import { ARTICLES } from './data/articles'
+import { LANGUAGES } from './i18n'
+import { localizePath } from './i18n/paths'
 import { getRouteMeta } from './lib/routeMeta'
 import type { PageMeta } from './hooks/usePageMeta'
 
-/** Every path the build emits as static HTML, derived from the article list. */
-export const PRERENDER_PATHS: string[] = [
-  '/',
-  '/blog',
-  ...ARTICLES.map((article) => `/blog/${article.slug}`),
-]
+const NEUTRAL_PATHS = ['/', '/blog', ...ARTICLES.map((a) => `/blog/${a.slug}`)]
+
+/** Every path the build emits as static HTML — each route in each language. */
+export const PRERENDER_PATHS: string[] = LANGUAGES.flatMap((lang) =>
+  NEUTRAL_PATHS.map((path) => localizePath(path, lang)),
+)
 
 export interface RenderResult {
   html: string
@@ -38,7 +40,7 @@ export function render(url: string): Promise<RenderResult> {
     sink.on('finish', () => {
       resolve({
         html: Buffer.concat(chunks).toString('utf8'),
-        meta: getRouteMeta(url, 'en'),
+        meta: getRouteMeta(url),
       })
     })
 

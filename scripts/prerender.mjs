@@ -15,6 +15,7 @@ const DIST = join(ROOT, 'dist')
 const SSR_ENTRY = pathToFileURL(join(ROOT, 'dist-ssr/entry-server.js')).href
 
 const { render, PRERENDER_PATHS } = await import(SSR_ENTRY)
+const HREFLANG = { en: 'en', zh: 'zh-Hans' }
 
 const template = await readFile(join(DIST, 'index.html'), 'utf8')
 
@@ -30,12 +31,38 @@ function setTag(html, pattern, replacement) {
   return pattern.test(html) ? html.replace(pattern, replacement) : html
 }
 
+/**
+ * hreflang has to be in the served markup, not added by script: a crawler that
+ * never runs JavaScript is exactly the audience it exists for.
+ */
+function alternateLinks(alternates) {
+  if (!alternates) return ''
+  const links = Object.entries(alternates).map(
+    ([lang, path]) =>
+      `    <link rel="alternate" hreflang="${HREFLANG[lang]}" href="${SITE_URL}${path === '/' ? '/' : path}" />`,
+  )
+  if (alternates.en) {
+    links.push(
+      `    <link rel="alternate" hreflang="x-default" href="${SITE_URL}${alternates.en === '/' ? '/' : alternates.en}" />`,
+    )
+  }
+  return links.join('\n') + '\n'
+}
+
 function applyMeta(html, meta, url) {
   const title = escapeHtml(meta.title)
   const description = escapeHtml(meta.description ?? '')
   const robots = meta.noindex ? 'noindex, follow' : 'index, follow'
 
   let out = html
+  out = out.replace('<html lang="en">', `<html lang="${HREFLANG[meta.lang ?? 'en']}">`)
+  if (meta.lang === 'zh') {
+    out = out.replace('href="/feed.xml"', 'href="/zh/feed.xml"')
+  }
+  out = out.replace(
+    /<link rel="canonical" href="[^"]*" \/>\n/,
+    (match) => match + alternateLinks(meta.alternates),
+  )
   out = setTag(out, /<title>[\s\S]*?<\/title>/, `<title>${title}</title>`)
   out = setTag(
     out,
@@ -71,6 +98,11 @@ function applyMeta(html, meta, url) {
     out,
     /<meta property="og:type" content="[^"]*" \/>/,
     `<meta property="og:type" content="${meta.type ?? 'website'}" />`,
+  )
+  out = setTag(
+    out,
+    /<meta property="og:locale" content="[^"]*" \/>/,
+    `<meta property="og:locale" content="${meta.lang === 'zh' ? 'zh_CN' : 'en_GB'}" />`,
   )
   out = setTag(
     out,

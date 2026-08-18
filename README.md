@@ -37,10 +37,15 @@ Because every route is a real file there is no SPA catch-all in `_redirects`:
 an unknown path falls through to `404.html` and gets a 404 status instead of the
 landing page under a misleading 200.
 
-Pages are prerendered in English. A visitor whose browser is set to Chinese sees
-the English markup until hydration swaps it — the cost of serving both languages
-from one URL. Splitting them onto `/` and `/zh` with `hreflang` alternates would
-remove that, at the price of a URL change.
+**Language lives in the URL.** English is served from `/`, `/blog`, `/blog/:slug`
+and Chinese from the same paths under `/zh`. Both trees are prerendered, each
+with its own `<html lang>`, canonical and `hreflang` alternates, so neither
+translation competes with the other for the same query. `I18nProvider` derives
+the language from the location, which is also what makes hydration deterministic;
+`LocalLink` keeps every internal link in the language the reader is already in.
+A Chinese browser landing on the English root is redirected once to `/zh`, but
+only from the root and only until the visitor uses the switcher — a deep link
+from search always renders the URL that was requested.
 
 **Tokenization runs in a Web Worker.** `src/workers/tokenizer.worker.ts` owns the
 encoders; `src/lib/analysisClient.ts` is the main-thread client, with request ids
@@ -68,6 +73,9 @@ and cached on first use instead, so installing never downloads megabytes of
 vocabulary nobody asked for. Navigations are network-first so deploys land;
 hashed assets are cache-first. It does not call `skipWaiting()`, so a new build
 takes over on the next visit rather than swapping chunks under a running page.
+
+**It installs as an app.** `public/site.webmanifest` plus the service worker make
+the calculator installable and usable offline.
 
 **Fonts are self-hosted** under `public/fonts` (regenerate with
 `node scripts/fetch-fonts.mjs`). With no third-party origins left, `public/_headers`

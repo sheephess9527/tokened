@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
 import { getArticle } from '../data/articles'
 import { BackToTop } from '../components/BackToTop'
 import { Header } from '../components/Header'
@@ -6,6 +6,7 @@ import { Footer } from '../components/Footer'
 import { JsonLd } from '../components/JsonLd'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { useI18n } from '../i18n'
+import { LocalLink } from '../components/LocalLink'
 import { getRouteMeta } from '../lib/routeMeta'
 import {
   blogPostingSchema,
@@ -18,10 +19,11 @@ import styles from './Blog.module.css'
 
 export function BlogArticle() {
   const { slug } = useParams<{ slug: string }>()
+  const { pathname } = useLocation()
   const { lang, t } = useI18n()
   const article = slug ? getArticle(slug) : undefined
 
-  usePageMeta(getRouteMeta(`/blog/${slug ?? ''}`, lang))
+  usePageMeta(getRouteMeta(pathname))
 
   if (!article) return <NotFound />
 
@@ -35,15 +37,15 @@ export function BlogArticle() {
             { name: t.blog.backHome, path: '/' },
             { name: t.blog.title, path: '/blog' },
             { name: article.title[lang], path: `/blog/${article.slug}` },
-          ]),
+          ], lang),
         )}
       />
       <Header />
       <main id="main" className={styles.page}>
         <article className={styles.article}>
-          <Link to="/blog" className={styles.back}>
+          <LocalLink to="/blog" className={styles.back}>
             ← {t.blog.backBlog}
-          </Link>
+          </LocalLink>
           <span className={styles.meta}>
             {article.readTime[lang]} · {article.published}
           </span>
@@ -61,9 +63,9 @@ export function BlogArticle() {
 
           <div className={styles.ctaBox}>
             <p>{t.blog.tryTool}</p>
-            <Link to="/#tool" className={styles.ctaBtn}>
+            <LocalLink to="/#tool" className={styles.ctaBtn}>
               {t.blog.tryToolBtn}
-            </Link>
+            </LocalLink>
           </div>
         </article>
       </main>

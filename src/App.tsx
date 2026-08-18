@@ -24,25 +24,33 @@ interface AppProps {
 
 const browserRouter = (children: ReactNode) => <BrowserRouter>{children}</BrowserRouter>
 
-function App({ router = browserRouter }: AppProps) {
+// Every route is registered twice: bare for English and under /zh for Chinese.
+function LocalizedRoutes() {
   return (
+    <Routes>
+      {['', '/zh'].map((prefix) => (
+        <Route key={prefix || 'en'}>
+          <Route path={`${prefix}/`} element={<LandingPage />} />
+          <Route path={`${prefix}/blog`} element={<BlogIndex />} />
+          <Route path={`${prefix}/blog/:slug`} element={<BlogArticle />} />
+        </Route>
+      ))}
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  )
+}
+
+function App({ router = browserRouter }: AppProps) {
+  return router(
+    // Inside the router: the active language is derived from the location.
     <I18nProvider>
-      {router(
-        <>
-          <SkipLink />
-        <AppFallbackBoundary>
-          <Suspense fallback={<RouteLoading />}>
-            <Routes>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/blog" element={<BlogIndex />} />
-              <Route path="/blog/:slug" element={<BlogArticle />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Suspense>
-        </AppFallbackBoundary>
-        </>,
-      )}
-    </I18nProvider>
+      <SkipLink />
+      <AppFallbackBoundary>
+        <Suspense fallback={<RouteLoading />}>
+          <LocalizedRoutes />
+        </Suspense>
+      </AppFallbackBoundary>
+    </I18nProvider>,
   )
 }
 

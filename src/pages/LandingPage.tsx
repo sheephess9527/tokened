@@ -1,3 +1,4 @@
+import { useLocation } from 'react-router-dom'
 import { Header } from '../components/Header'
 import { TrustBar } from '../components/TrustBar'
 import { TokenEditor } from '../components/TokenEditor'
@@ -28,10 +29,11 @@ import {
 
 export function LandingPage() {
   const { lang, t } = useI18n()
+  const { pathname } = useLocation()
 
   useHashScroll()
 
-  const meta = getRouteMeta('/', lang)
+  const meta = getRouteMeta(pathname)
 
   usePageMeta(meta)
 
