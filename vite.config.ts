@@ -1,3 +1,6 @@
+import { createHash } from 'node:crypto'
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import { ARTICLES } from './src/data/articles.js'
@@ -111,9 +114,63 @@ function seoAssets(): Plugin {
   }
 }
 
+/** Prerendered pages, which the prerender script writes after the build. */
+const PAGE_URLS = [
+  '/',
+  '/blog',
+  ...ARTICLES.map((article) => `/blog/${article.slug}`),
+  '/404.html',
+]
+
+/**
+ * The BPE tables stay out of the precache and are cached on first use instead,
+ * so installing the worker never downloads megabytes of vocabulary a visitor
+ * may never ask for. Everything else in the bundle is small and always needed.
+ */
+const ENCODING_ASSET = /tokenizer-\w+_base-/
+
+function serviceWorker(): Plugin {
+  return {
+    name: 'tokened-service-worker',
+    apply: 'build',
+    applyToEnvironment: (environment) => environment.name === 'client',
+    generateBundle(_options, bundle) {
+      const assets = Object.values(bundle)
+        .filter((item) => /\.(js|css)$/.test(item.fileName))
+        .filter((item) => !ENCODING_ASSET.test(item.fileName))
+        .map((item) => `/${item.fileName}`)
+
+      const precache = [
+        ...PAGE_URLS,
+        ...assets.sort(),
+        '/fonts/inter-latin.woff2',
+        '/fonts/jetbrains-mono-latin.woff2',
+      ]
+
+      const version = createHash('sha256')
+        .update(precache.join('\n'))
+        .digest('hex')
+        .slice(0, 12)
+
+      const template = readFileSync(
+        fileURLToPath(new URL('./scripts/sw-template.js', import.meta.url)),
+        'utf8',
+      )
+
+      this.emitFile({
+        type: 'asset',
+        fileName: 'sw.js',
+        source: template
+          .replaceAll('__VERSION__', version)
+          .replaceAll('__PRECACHE__', JSON.stringify(precache, null, 2)),
+      })
+    },
+  }
+}
+
 // https://vite.dev/config/
 export default defineConfig(({ isSsrBuild }) => ({
-  plugins: [react(), seoAssets()],
+  plugins: [react(), seoAssets(), serviceWorker()],
   build: {
     // The SSR bundle only exists to be rendered by scripts/prerender.mjs.
     copyPublicDir: !isSsrBuild,

@@ -61,6 +61,14 @@ ships without them.
 `src/data/articles.ts`, so adding an article is enough to get it indexed and
 into the RSS feed.
 
+**A service worker keeps it usable offline.** `scripts/sw-template.js` is emitted
+with a precache list built from the real bundle — the prerendered pages, the CSS,
+the entry and route chunks, and the latin webfonts. The BPE tables are excluded
+and cached on first use instead, so installing never downloads megabytes of
+vocabulary nobody asked for. Navigations are network-first so deploys land;
+hashed assets are cache-first. It does not call `skipWaiting()`, so a new build
+takes over on the next visit rather than swapping chunks under a running page.
+
 **Fonts are self-hosted** under `public/fonts` (regenerate with
 `node scripts/fetch-fonts.mjs`). With no third-party origins left, `public/_headers`
 can enforce a Content-Security-Policy with `script-src 'self'` and no wildcards.

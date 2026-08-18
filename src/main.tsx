@@ -17,3 +17,11 @@ if (container.firstElementChild) {
 } else {
   createRoot(container).render(tree)
 }
+
+// Registered after load so it never competes with the first render. A failure
+// here is not worth surfacing — the site works fine without it.
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {})
+  })
+}
