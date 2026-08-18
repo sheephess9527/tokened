@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import {
   detectLanguage,
   getDictionary,
@@ -11,13 +11,20 @@ interface I18nProviderProps {
   children: ReactNode
 }
 
-export function I18nProvider({ children }: I18nProviderProps) {
-  const [lang, setLangState] = useState<Language>(detectLanguage)
+const HTML_LANG: Record<Language, string> = { en: 'en', zh: 'zh-CN' }
 
-  const setLang = (next: Language) => {
-    setLangState(next)
+export function I18nProvider({ children }: I18nProviderProps) {
+  const [lang, setLang] = useState<Language>(detectLanguage)
+
+  // Covers the detected language too — a zh visitor previously got Chinese
+  // copy served under `<html lang="en">` until they touched the switcher.
+  useEffect(() => {
+    document.documentElement.lang = HTML_LANG[lang]
+  }, [lang])
+
+  const selectLang = (next: Language) => {
+    setLang(next)
     persistLanguage(next)
-    document.documentElement.lang = next === 'zh' ? 'zh-CN' : 'en'
   }
 
   return (
@@ -25,7 +32,7 @@ export function I18nProvider({ children }: I18nProviderProps) {
       value={{
         lang,
         t: getDictionary(lang),
-        setLang,
+        setLang: selectLang,
       }}
     >
       {children}

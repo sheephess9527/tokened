@@ -115,7 +115,13 @@ export default {
     const upstreamUrl = `${upstream}${url.pathname}${url.search}`
 
     const useCache = request.headers.get('X-Tokened-Cache') !== 'false'
-    const cacheKey = useCache ? await sha256(`${upstreamUrl}:${rawBody}`) : null
+    const clientAuth = request.headers.get('Authorization')
+    // The credential is part of the cache identity: `caches.default` is shared
+    // across every caller, so keying on URL + body alone would serve one
+    // tenant's completion to another (and skip their upstream billing).
+    const cacheKey = useCache
+      ? await sha256(`${await sha256(clientAuth ?? env.OPENAI_API_KEY)}:${upstreamUrl}:${rawBody}`)
+      : null
 
     if (cacheKey) {
       const cache = caches.default
@@ -130,7 +136,6 @@ export default {
       }
     }
 
-    const clientAuth = request.headers.get('Authorization')
     const upstreamResponse = await fetch(upstreamUrl, {
       method: 'POST',
       headers: {
