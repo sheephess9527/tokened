@@ -1,73 +1,60 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { runAnalysis } from '../lib/analysisClient'
 import {
-  countTokens,
-  isOpenAiEncoding,
-  tokenizeToSpans,
-  type TokenSpan,
+  emptyAnalysis,
+  type AnalysisResult,
   type TokenizerId,
 } from '../lib/tokenizer'
 
-interface TokenAnalysisResult {
-  tokenCount: number
-  /** cl100k count — used for Chinese inflation comparison */
-  openAiBaseline: number
-  /** Active OpenAI encoding count, or cl100k when Chinese estimate is selected */
-  pricingBaseline: number
-  chineseEfficient: number
-  spans: TokenSpan[]
+/** Typing is far faster than tokenizing, so coalesce keystrokes. */
+const DEBOUNCE_MS = 140
+
+export interface TokenAnalysisState extends AnalysisResult {
+  /** No result has been produced yet — the panel has nothing to show. */
   loading: boolean
+  /** A newer result is on its way; the numbers below are one revision stale. */
+  stale: boolean
 }
 
 export function useTokenAnalysis(
   prompt: string,
   tokenizerId: TokenizerId,
   showBlocks: boolean,
-): TokenAnalysisResult {
-  const [result, setResult] = useState<TokenAnalysisResult>({
-    tokenCount: 0,
-    openAiBaseline: 0,
-    pricingBaseline: 0,
-    chineseEfficient: 0,
-    spans: [],
-    loading: true,
-  })
+): TokenAnalysisState {
+  const [result, setResult] = useState<AnalysisResult | null>(null)
+  const [stale, setStale] = useState(true)
+  const requestRef = useRef(0)
 
   useEffect(() => {
-    let cancelled = false
+    if (!prompt) {
+      requestRef.current++
+      setResult(emptyAnalysis())
+      setStale(false)
+      return
+    }
 
-    const run = async () => {
-      setResult((prev) => ({ ...prev, loading: true }))
+    setStale(true)
+    const requestId = ++requestRef.current
 
-      const [tokenCount, openAiBaseline, chineseEfficient, spans] =
-        await Promise.all([
-          countTokens(prompt, tokenizerId),
-          countTokens(prompt, 'cl100k_base'),
-          countTokens(prompt, 'chinese_estimate'),
-          showBlocks && prompt
-            ? tokenizeToSpans(prompt, tokenizerId)
-            : Promise.resolve([]),
-        ])
-
-      if (!cancelled) {
-        const pricingBaseline = isOpenAiEncoding(tokenizerId)
-          ? tokenCount
-          : openAiBaseline
-        setResult({
-          tokenCount,
-          openAiBaseline,
-          pricingBaseline,
-          chineseEfficient,
-          spans,
-          loading: false,
+    const timer = window.setTimeout(() => {
+      void runAnalysis({ text: prompt, tokenizerId, wantSpans: showBlocks })
+        .then((next) => {
+          if (requestRef.current !== requestId) return
+          setResult(next)
+          setStale(false)
         })
-      }
-    }
+        .catch(() => {
+          if (requestRef.current !== requestId) return
+          setStale(false)
+        })
+    }, DEBOUNCE_MS)
 
-    void run()
-    return () => {
-      cancelled = true
-    }
+    return () => window.clearTimeout(timer)
   }, [prompt, tokenizerId, showBlocks])
 
-  return result
+  return {
+    ...(result ?? emptyAnalysis()),
+    loading: result === null,
+    stale,
+  }
 }

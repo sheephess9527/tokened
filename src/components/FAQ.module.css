@@ -33,6 +33,12 @@
   overflow: hidden;
 }
 
+.heading {
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
 .question {
   width: 100%;
   display: flex;

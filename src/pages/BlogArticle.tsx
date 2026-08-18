@@ -1,10 +1,18 @@
-import { Link, Navigate, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { getArticle } from '../data/articles'
 import { BackToTop } from '../components/BackToTop'
 import { Header } from '../components/Header'
 import { Footer } from '../components/Footer'
+import { JsonLd } from '../components/JsonLd'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { useI18n } from '../i18n'
+import {
+  blogPostingSchema,
+  breadcrumbSchema,
+  graph,
+  organizationSchema,
+} from '../lib/structuredData'
+import { NotFound } from './NotFound'
 import styles from './Blog.module.css'
 
 export function BlogArticle() {
@@ -13,16 +21,31 @@ export function BlogArticle() {
   const article = slug ? getArticle(slug) : undefined
 
   usePageMeta({
-    title: article ? `${article.title[lang]} | Tokened` : 'Tokened',
-    description: article?.description[lang],
+    title: article ? `${article.title[lang]} | Tokened` : `${t.notFound.title} | Tokened`,
+    description: article?.description[lang] ?? t.notFound.desc,
+    path: article ? `/blog/${article.slug}` : undefined,
+    type: 'article',
+    lang,
+    noindex: !article,
   })
 
-  if (!article) return <Navigate to="/blog" replace />
+  if (!article) return <NotFound />
 
   return (
     <>
+      <JsonLd
+        data={graph(
+          organizationSchema(),
+          blogPostingSchema(article, lang),
+          breadcrumbSchema([
+            { name: t.blog.backHome, path: '/' },
+            { name: t.blog.title, path: '/blog' },
+            { name: article.title[lang], path: `/blog/${article.slug}` },
+          ]),
+        )}
+      />
       <Header />
-      <main className={styles.page}>
+      <main id="main" className={styles.page}>
         <article className={styles.article}>
           <Link to="/blog" className={styles.back}>
             ← {t.blog.backBlog}
@@ -44,9 +67,9 @@ export function BlogArticle() {
 
           <div className={styles.ctaBox}>
             <p>{t.blog.tryTool}</p>
-            <a href="/#tool" className={styles.ctaBtn}>
+            <Link to="/#tool" className={styles.ctaBtn}>
               {t.blog.tryToolBtn}
-            </a>
+            </Link>
           </div>
         </article>
       </main>

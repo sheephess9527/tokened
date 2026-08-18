@@ -13,34 +13,50 @@ import { WaitlistSection } from '../components/WaitlistSection'
 import { FAQ } from '../components/FAQ'
 import { Legal } from '../components/Legal'
 import { Footer } from '../components/Footer'
-import { SeoJsonLd } from '../components/SeoJsonLd'
+import { JsonLd } from '../components/JsonLd'
 import { BackToTop } from '../components/BackToTop'
 import { useHashScroll } from '../hooks/useHashScroll'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { useI18n } from '../i18n'
+import {
+  faqSchema,
+  graph,
+  organizationSchema,
+  webApplicationSchema,
+} from '../lib/structuredData'
 
 export function LandingPage() {
-  const { lang } = useI18n()
+  const { lang, t } = useI18n()
 
   useHashScroll()
+
+  const description =
+    lang === 'zh'
+      ? '实时 LLM Token 分析与成本优化，多模型对比，100% 浏览器本地运行。'
+      : 'Real-time LLM token analysis and cost optimization. Multi-model comparison. 100% browser-local.'
 
   usePageMeta({
     title:
       lang === 'zh'
         ? 'Tokened | LLM Token 优化与成本控制平台'
         : 'Tokened | LLM Token Analysis & Cost Optimization',
-    description:
-      lang === 'zh'
-        ? '实时 LLM Token 分析与成本优化，多模型对比，100% 浏览器本地运行。'
-        : 'Real-time LLM token analysis and cost optimization. Multi-model comparison. 100% browser-local.',
+    description,
+    path: '/',
+    lang,
   })
 
   return (
     <>
-      <SeoJsonLd />
+      <JsonLd
+        data={graph(
+          organizationSchema(),
+          webApplicationSchema(lang, description),
+          faqSchema(t.faq.items),
+        )}
+      />
       <Header />
       <TrustBar />
-      <main>
+      <main id="main">
         <TokenEditor />
         <Stats />
         <HowItWorks />

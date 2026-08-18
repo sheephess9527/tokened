@@ -112,35 +112,55 @@ export const MODELS: ModelPricing[] = [
 
 export interface CostEstimate {
   model: ModelPricing
+  /** Input tokens after applying the model's vocabulary multiplier. */
   tokens: number
-  inputCostUsd: number
+  /** Output tokens after applying the model's vocabulary multiplier. */
+  outputTokens: number
+  /** Input + output cost for a single call, in USD. */
+  costUsd: number
   formatted: string
 }
 
+/**
+ * Cost of one call per model, cheapest first.
+ *
+ * `outputTokens` is an absolute count rather than a ratio: completions are
+ * billed at 3–5x the input rate, so leaving them out understates real spend.
+ */
 export function estimateCosts(
-  baseTokens: number,
+  inputTokens: number,
   currency: Currency,
-  assumeOutputRatio = 0,
+  outputTokens = 0,
 ): CostEstimate[] {
   return MODELS.map((model) => {
-    const tokens = Math.round(baseTokens * model.tokenMultiplier)
-    const inputCostUsd = (tokens / 1_000_000) * model.inputPer1M
-    const outputCostUsd =
-      (tokens * assumeOutputRatio) / 1_000_000 * model.outputPer1M
-    const totalUsd = inputCostUsd + outputCostUsd
+    const scaledInput = Math.round(inputTokens * model.tokenMultiplier)
+    const scaledOutput = Math.round(outputTokens * model.tokenMultiplier)
+    const costUsd =
+      (scaledInput / 1_000_000) * model.inputPer1M +
+      (scaledOutput / 1_000_000) * model.outputPer1M
 
     return {
       model,
-      tokens,
-      inputCostUsd: totalUsd,
-      formatted: formatCost(totalUsd, currency),
+      tokens: scaledInput,
+      outputTokens: scaledOutput,
+      costUsd,
+      formatted: formatCost(costUsd, currency),
     }
-  }).sort((a, b) => a.inputCostUsd - b.inputCostUsd)
+  }).sort((a, b) => a.costUsd - b.costUsd)
 }
 
 export function findBestValue(estimates: CostEstimate[]): CostEstimate | null {
   if (estimates.length === 0) return null
   return estimates[0]
+}
+
+/** Spread between the cheapest and priciest model for the same prompt. */
+export function costSpread(estimates: CostEstimate[]): number | null {
+  if (estimates.length < 2) return null
+  const cheapest = estimates[0].costUsd
+  const priciest = estimates[estimates.length - 1].costUsd
+  if (cheapest <= 0) return null
+  return priciest / cheapest
 }
 
 export function chineseInflationRate(

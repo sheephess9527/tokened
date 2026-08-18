@@ -5,6 +5,16 @@ export const en = {
     copied: 'Copied',
     copyFailed: 'Copy failed',
     backToTop: 'Back to top',
+    skipToContent: 'Skip to main content',
+    loading: 'Loading…',
+    errorTitle: 'Something went wrong',
+    errorBody: 'This page hit an unexpected error. Reloading usually clears it.',
+    errorRetry: 'Reload page',
+  },
+  notFound: {
+    title: 'Page not found',
+    desc: 'That URL does not exist. The token calculator is one click away.',
+    cta: 'Back to the calculator',
   },
   contact: {
     title: 'Get in touch',
@@ -180,14 +190,14 @@ The gateway runs on Cloudflare Workers at the edge. It proxies OpenAI-compatible
     chars: 'Characters',
     showBlocks: 'Show Token Blocks',
     hideBlocks: 'Hide Token Blocks',
-    estCost: 'Estimated Cost (per call)',
+    estCost: 'Estimated Cost',
     costDisclaimer:
-      'Input tokens only · prices as of Jun 2026 · non-OpenAI counts are estimates — verify with your provider billing.',
+      'List prices as of Jun 2026 · non-OpenAI token counts are estimates — verify against your provider billing.',
     costChart: 'Cost comparison',
     bestValue: 'Best Value',
     chineseInflation: 'Chinese Token Inflation',
     chineseInflationHint:
-      'Same Chinese text often uses fewer tokens on DeepSeek-V4 / Qwen3.7 than on OpenAI o200k_base.',
+      'Same Chinese text often uses fewer tokens on DeepSeek-V4 / Qwen3.7 than on the selected OpenAI tokenizer.',
     inflationVsOpenAI: 'vs OpenAI baseline',
     currency: 'Currency',
     currencies: {
@@ -205,6 +215,18 @@ The gateway runs on Cloudflare Workers at the edge. It proxies OpenAI-compatible
     loadSample: 'Load sample',
     showAllModels: 'Show all models',
     showFewerModels: 'Show fewer',
+    updating: 'Updating…',
+    spansTruncated: 'Showing the first {n} token blocks of {total}.',
+    assumptions: 'Usage assumptions',
+    outputTokens: 'Output tokens per call',
+    outputTokensHint: 'Completions are billed at a higher rate — include them for a realistic figure.',
+    monthlyCalls: 'Calls per month',
+    perCall: 'per call',
+    perMonth: 'per month',
+    monthlyTotal: 'Projected monthly cost',
+    copySummary: 'Copy summary',
+    shareLink: 'Copy link',
+    linkCopied: 'Link copied',
   },
   saas: {
     title: 'Planned: production-grade LLM infrastructure',
@@ -345,6 +367,16 @@ export type Locale = {
     copied: string
     copyFailed: string
     backToTop: string
+    skipToContent: string
+    loading: string
+    errorTitle: string
+    errorBody: string
+    errorRetry: string
+  }
+  notFound: {
+    title: string
+    desc: string
+    cta: string
   }
   contact: {
     title: string
@@ -434,6 +466,18 @@ export type Locale = {
     loadSample: string
     showAllModels: string
     showFewerModels: string
+    updating: string
+    spansTruncated: string
+    assumptions: string
+    outputTokens: string
+    outputTokensHint: string
+    monthlyCalls: string
+    perCall: string
+    perMonth: string
+    monthlyTotal: string
+    copySummary: string
+    shareLink: string
+    linkCopied: string
   }
   saas: {
     title: string

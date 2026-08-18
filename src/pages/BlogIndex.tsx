@@ -3,22 +3,43 @@ import { ARTICLES } from '../data/articles'
 import { BackToTop } from '../components/BackToTop'
 import { Header } from '../components/Header'
 import { Footer } from '../components/Footer'
+import { JsonLd } from '../components/JsonLd'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { useI18n } from '../i18n'
+import {
+  blogIndexSchema,
+  breadcrumbSchema,
+  graph,
+  organizationSchema,
+} from '../lib/structuredData'
 import styles from './Blog.module.css'
 
 export function BlogIndex() {
   const { lang, t } = useI18n()
 
+  const title = lang === 'zh' ? '指南与洞察 | Tokened' : 'Guides & Insights | Tokened'
+
   usePageMeta({
-    title: lang === 'zh' ? '指南与洞察 | Tokened' : 'Guides & Insights | Tokened',
+    title,
     description: t.blog.indexDescription,
+    path: '/blog',
+    lang,
   })
 
   return (
     <>
+      <JsonLd
+        data={graph(
+          organizationSchema(),
+          blogIndexSchema(ARTICLES, lang, t.blog.title),
+          breadcrumbSchema([
+            { name: t.blog.backHome, path: '/' },
+            { name: t.blog.title, path: '/blog' },
+          ]),
+        )}
+      />
       <Header />
-      <main className={styles.page}>
+      <main id="main" className={styles.page}>
         <div className={styles.inner}>
           <Link to="/" className={styles.back}>
             ← {t.blog.backHome}

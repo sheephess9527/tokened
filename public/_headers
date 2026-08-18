@@ -2,3 +2,19 @@
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), camera=(), microphone=(), payment=()
+  Cross-Origin-Opener-Policy: same-origin
+
+# Hashed build output is immutable — cache it hard.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.svg
+  Cache-Control: public, max-age=604800
+
+/*.png
+  Cache-Control: public, max-age=604800
+
+# The SPA shell must always be revalidated so deploys take effect immediately.
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate
