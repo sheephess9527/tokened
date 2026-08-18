@@ -15,12 +15,12 @@ export const ARTICLES: Article[] = [
     slug: 'chinese-token-cost',
     readTime: { en: '5 min read', zh: '5 分钟阅读' },
     title: {
-      en: 'Why Chinese Prompts Cost More on OpenAI (And How to Fix It)',
-      zh: '为什么中文 Prompt 在 OpenAI 上更费 Token？如何优化？',
+      en: 'How Much Do Chinese Prompts Really Cost on OpenAI? (Measured)',
+      zh: '中文 Prompt 在 OpenAI 上到底多花多少 Token？（实测）',
     },
     description: {
-      en: 'Deep dive into Chinese token inflation on OpenAI o200k vs DeepSeek-V4-Flash and Qwen3.7-Plus. Real savings strategies for bilingual LLM apps.',
-      zh: '深度解析中文在 OpenAI o200k 上的 Token 膨胀，对比 DeepSeek-V4 / Qwen3.7，并提供可落地的省钱策略。',
+      en: 'Measured: cl100k_base spends ~1.10 tokens per Chinese character, o200k_base only ~0.64. Where the Chinese token penalty still bites, and where the real saving comes from today.',
+      zh: '实测：cl100k_base 每个汉字约 1.10 个 Token，o200k_base 只要 ~0.64。中文 Token 惩罚今天还剩多少，真正的省钱空间又在哪里。',
     },
     published: '2026-06-24',
     sections: [
@@ -31,12 +31,12 @@ export const ARTICLES: Article[] = [
         },
         paragraphs: [
           {
-            en: 'GPT-5.x and GPT-4o use the o200k_base tokenizer (cl100k_base for older models) — both optimised primarily for English. A single Chinese character often consumes 1.5–3 tokens, while the same semantic content on DeepSeek-V4-Flash or Qwen3.7-Plus may use only 0.5–1 token per character.',
-            zh: 'GPT-5.x 与 GPT-4o 使用 o200k_base 分词器（旧版模型为 cl100k_base），主要为英文优化。一个汉字常常占用 1.5–3 个 Token，而相同语义在 DeepSeek-V4-Flash 或 Qwen3.7-Plus 上可能只需 0.5–1 个 Token。',
+            en: 'The Chinese token penalty is real, but it is a cl100k_base problem. Measured on ordinary prose, cl100k_base — the tokenizer behind GPT-4-era deployments — spends about 1.10 tokens per Chinese character. o200k_base, used by GPT-5.x and GPT-4o, spends about 0.64. A CJK-optimised vocabulary such as DeepSeek-V4-Flash or Qwen3.7-Plus lands near 0.6.',
+            zh: '中文的 Token 惩罚确实存在，但它主要是 cl100k_base 的问题。在普通散文上实测，GPT-4 时代所用的 cl100k_base 每个汉字约需 1.10 个 Token；GPT-5.x 与 GPT-4o 使用的 o200k_base 约为 0.64；而 DeepSeek-V4-Flash、Qwen3.7-Plus 这类面向中文优化的词表大约在 0.6。',
           },
           {
-            en: 'For a bilingual product with 10,000 daily API calls, this difference can translate to hundreds of dollars per month — without changing your application logic at all.',
-            zh: '对于一个每天 1 万次 API 调用的双语产品，这种差异每月可能意味着数百美元的额外支出——而应用逻辑完全不用改。',
+            en: 'So switching a Chinese workload from GPT-4-era models to a CJK-optimised one still cuts roughly 40% of the token count, but moving from o200k_base saves only around 10%. English text is unaffected either way: no vocabulary gives you a discount on ASCII.',
+            zh: '因此，把中文任务从 GPT-4 时代的模型换到中文优化词表，仍能省下约 40% 的 Token；但如果你已经在用 o200k_base，这一项只剩 10% 左右。英文文本则完全不受影响——没有哪个词表能让 ASCII 变便宜。',
           },
         ],
       },
@@ -47,8 +47,8 @@ export const ARTICLES: Article[] = [
         },
         paragraphs: [
           {
-            en: '1. Audit prompts with a local tokenizer before shipping. 2. Move Chinese-heavy workloads to DeepSeek-V4-Flash or Qwen3.7-Plus where quality allows. 3. Trim system prompts — redundant instructions multiply across every call.',
-            zh: '1. 上线前用本地分词器审计 Prompt。2. 在质量允许时将中文密集任务迁移到 DeepSeek-V4-Flash 或 Qwen3.7-Plus。3. 精简系统 Prompt — 冗余指令会在每次调用中成倍放大。',
+            en: 'The bigger lever today is price per token, not token count. DeepSeek-V4-Flash lists at $0.14 per million input tokens against $2.50 for GPT-5.4 — roughly 18x, dwarfing any tokenizer difference. So: 1. Audit prompts with a local tokenizer before shipping, and check which encoding you are actually on. 2. Compare on total cost, not token count. 3. Trim system prompts — redundant instructions multiply across every call.',
+            zh: '今天更大的杠杆是单价，而不是 Token 数量。DeepSeek-V4-Flash 的输入价是每百万 Token $0.14，GPT-5.4 是 $2.50——约 18 倍差距，远超任何分词器差异。所以：1. 上线前用本地分词器审计 Prompt，并确认你实际用的是哪个编码。2. 用总成本而不是 Token 数量做对比。3. 精简系统 Prompt——冗余指令会在每次调用中成倍放大。',
           },
           {
             en: 'Tokened.uk runs entirely in your browser so you can compare models side-by-side without sending data to our servers.',

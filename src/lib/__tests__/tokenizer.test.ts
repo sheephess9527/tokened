@@ -5,8 +5,10 @@ import {
   countChineseChars,
   DEFAULT_ENCODING,
   emptyAnalysis,
+  CJK_EFFICIENT_TOKENS_PER_CHAR,
   estimateChineseEfficientTokens,
   hasChinese,
+  profileScripts,
   isOpenAiEncoding,
   loadEncoding,
 } from '../tokenizer'
@@ -28,22 +30,79 @@ describe('Chinese detection', () => {
   })
 })
 
+describe('profileScripts', () => {
+  it('counts non-CJK text exactly and CJK characters separately', async () => {
+    const encoding = await loadEncoding('o200k_base')
+    const profile = profileScripts('Hello world 中文测试', encoding)
+
+    expect(profile.chineseChars).toBe(4)
+    expect(profile.nonChineseTokens).toBe(encoding.encode('Hello world ').length)
+  })
+
+  it('reports no CJK characters for plain text, keeping its full token count', async () => {
+    const encoding = await loadEncoding('o200k_base')
+    const text = 'The quick brown fox jumps over the lazy dog.'
+    const profile = profileScripts(text, encoding)
+
+    expect(profile.chineseChars).toBe(0)
+    expect(profile.nonChineseTokens).toBe(encoding.encode(text).length)
+  })
+
+  it('is empty for empty text', async () => {
+    const encoding = await loadEncoding('o200k_base')
+    expect(profileScripts('', encoding)).toEqual({ chineseChars: 0, nonChineseTokens: 0 })
+  })
+})
+
 describe('estimateChineseEfficientTokens', () => {
-  it('is a no-op for text with no Chinese', () => {
-    expect(estimateChineseEfficientTokens('hello world', 42)).toBe(42)
+  it('leaves text with no CJK completely alone', () => {
+    expect(
+      estimateChineseEfficientTokens({ chineseChars: 0, nonChineseTokens: 42 }),
+    ).toBe(42)
   })
 
-  it('is zero for empty text regardless of the baseline', () => {
-    expect(estimateChineseEfficientTokens('', 99)).toBe(0)
+  it('is zero for empty text', () => {
+    expect(
+      estimateChineseEfficientTokens({ chineseChars: 0, nonChineseTokens: 0 }),
+    ).toBe(0)
   })
 
-  it('predicts fewer tokens than the OpenAI baseline for Chinese text', () => {
-    const text = '中文测试内容'.repeat(20)
-    expect(estimateChineseEfficientTokens(text, 200)).toBeLessThan(200)
+  it('prices CJK characters below one token each', () => {
+    const estimate = estimateChineseEfficientTokens({
+      chineseChars: 100,
+      nonChineseTokens: 0,
+    })
+    expect(estimate).toBe(Math.round(100 * CJK_EFFICIENT_TOKENS_PER_CHAR))
+    expect(estimate).toBeLessThan(100)
   })
 
-  it('never returns a negative count when the baseline is implausibly low', () => {
-    expect(estimateChineseEfficientTokens('中文', 0)).toBeGreaterThanOrEqual(0)
+  it('never discounts the non-CJK part of a mixed prompt', async () => {
+    // Regression: subtracting `chineseChars * 1.8` from the total used to eat
+    // real English tokens, so an English-heavy prompt reported huge savings.
+    const text = 'You are a helpful assistant. Summarize this document. 核心组件包括路由层'
+    const encoding = await loadEncoding('o200k_base')
+    const profile = profileScripts(text, encoding)
+    const estimate = estimateChineseEfficientTokens(profile)
+
+    expect(estimate).toBeGreaterThanOrEqual(profile.nonChineseTokens)
+  })
+
+  it('claims a saving only where the text is actually Chinese', async () => {
+    const encoding = await loadEncoding('o200k_base')
+    const english = 'You are a helpful assistant. Summarize this technical document.'
+    const chinese = '人工智能大模型的推理成本主要由输入和输出的词元数量决定'
+
+    const englishSaving =
+      1 -
+      estimateChineseEfficientTokens(profileScripts(english, encoding)) /
+        encoding.encode(english).length
+    const chineseSaving =
+      1 -
+      estimateChineseEfficientTokens(profileScripts(chinese, encoding)) /
+        encoding.encode(chinese).length
+
+    expect(englishSaving).toBe(0)
+    expect(chineseSaving).toBeGreaterThan(0)
   })
 })
 
@@ -88,13 +147,42 @@ describe('analyze', () => {
     expect(result.spans).toEqual([])
   })
 
+  it('exposes the script profile so pricing can be vocabulary-aware', async () => {
+    const result = await analyze({
+      text: 'Hello 中文',
+      tokenizerId: 'o200k_base',
+      wantSpans: false,
+    })
+    expect(result.chineseChars).toBe(2)
+    expect(result.nonChineseTokens).toBeGreaterThan(0)
+    // Encoding the runs separately loses merges across the CJK boundary, so
+    // this can equal the whole-text count on very short strings.
+    expect(result.nonChineseTokens).toBeLessThanOrEqual(result.openAiBaseline)
+  })
+
   it('prices the Chinese estimate off the OpenAI baseline, not the estimate', async () => {
     const text = '中文测试内容需要更多的字符来产生差异'
     const result = await analyze({ text, tokenizerId: 'chinese_estimate', wantSpans: false })
 
     expect(result.tokenCount).toBe(result.chineseEfficient)
-    expect(result.tokenCount).toBeLessThan(result.openAiBaseline)
     expect(result.pricingBaseline).toBe(result.openAiBaseline)
+  })
+
+  it('finds no meaningful CJK saving against o200k, but a large one against cl100k', async () => {
+    // o200k_base already encodes Chinese at ~0.64 tokens/char, so a
+    // CJK-optimised vocabulary barely beats it. The inflation story only holds
+    // against the older cl100k_base used by GPT-4-era deployments.
+    const text = '人工智能大模型的推理成本主要由输入和输出的词元数量决定'
+    const [modern, legacy] = await Promise.all([
+      analyze({ text, tokenizerId: 'o200k_base', wantSpans: false }),
+      analyze({ text, tokenizerId: 'cl100k_base', wantSpans: false }),
+    ])
+
+    const saving = (r: typeof modern) =>
+      (r.openAiBaseline - r.chineseEfficient) / r.openAiBaseline
+
+    expect(saving(modern)).toBeLessThan(0.15)
+    expect(saving(legacy)).toBeGreaterThan(0.35)
   })
 
   it('emits one span per token, in order, that reassembles the input', async () => {

@@ -81,21 +81,61 @@ export function hasChinese(text: string): boolean {
 }
 
 /**
- * Heuristic count for CJK-optimised vocabularies (DeepSeek / Qwen), derived
- * from an OpenAI count that has already been computed — never re-encodes.
+ * Estimated tokens per CJK character under a Chinese-optimised vocabulary
+ * (DeepSeek, Qwen). For reference, o200k_base measures ~0.64 and cl100k_base
+ * ~1.10 on ordinary prose, so the advantage over modern OpenAI encodings is
+ * modest — most of the cost difference is price per token, not token count.
  */
-export function estimateChineseEfficientTokens(
-  text: string,
-  openAiCount: number,
-): number {
-  if (!text) return 0
+export const CJK_EFFICIENT_TOKENS_PER_CHAR = 0.6
 
-  const chineseCount = countChineseChars(text)
-  if (chineseCount === 0) return openAiCount
+export interface ScriptProfile {
+  /** CJK characters, which vocabularies tokenize very differently. */
+  chineseChars: number
+  /** Exact token count of everything that is not a CJK character. */
+  nonChineseTokens: number
+}
 
-  const chineseEfficient = Math.ceil(chineseCount * 0.55)
-  const nonChineseTokens = Math.max(0, openAiCount - Math.ceil(chineseCount * 1.8))
-  return chineseEfficient + nonChineseTokens
+/**
+ * Splits text at CJK boundaries and counts the non-CJK runs exactly.
+ *
+ * The previous approach subtracted `chineseChars * 1.8` from the total to infer
+ * the non-CJK part. That constant was calibrated against cl100k_base; against
+ * o200k_base it over-subtracts by ~2.8x, which silently deleted real English
+ * tokens and made English-heavy prompts look like they had huge CJK savings.
+ */
+export function profileScripts(text: string, encoding: EncodingApi): ScriptProfile {
+  let chineseChars = 0
+  let nonChineseTokens = 0
+  let buffer = ''
+
+  const flush = () => {
+    if (!buffer) return
+    nonChineseTokens += encoding.encode(buffer).length
+    buffer = ''
+  }
+
+  for (const char of text) {
+    if (CHINESE_CHAR_RE.test(char)) {
+      chineseChars++
+      flush()
+    } else {
+      buffer += char
+    }
+  }
+  flush()
+
+  return { chineseChars, nonChineseTokens }
+}
+
+/**
+ * Token count under a CJK-optimised vocabulary: the non-CJK part keeps its real
+ * count, only the CJK characters are estimated.
+ */
+export function estimateChineseEfficientTokens(profile: ScriptProfile): number {
+  return Math.round(
+    profile.nonChineseTokens +
+      profile.chineseChars * CJK_EFFICIENT_TOKENS_PER_CHAR,
+  )
 }
 
 export interface AnalysisRequest {
@@ -115,6 +155,8 @@ export interface AnalysisResult {
   chineseEfficient: number
   chineseChars: number
   charCount: number
+  /** Exact token count of the non-CJK part, for script-aware model estimates. */
+  nonChineseTokens: number
   spans: TokenSpan[]
   /** True when spans were cut off at the limit. */
   spansTruncated: boolean
@@ -127,6 +169,7 @@ const EMPTY_RESULT: AnalysisResult = {
   chineseEfficient: 0,
   chineseChars: 0,
   charCount: 0,
+  nonChineseTokens: 0,
   spans: [],
   spansTruncated: false,
 }
@@ -151,7 +194,8 @@ export async function analyze({
   const encoding = await loadEncoding(baselineId)
   const tokenIds = encoding.encode(text)
   const openAiBaseline = tokenIds.length
-  const chineseEfficient = estimateChineseEfficientTokens(text, openAiBaseline)
+  const profile = profileScripts(text, encoding)
+  const chineseEfficient = estimateChineseEfficientTokens(profile)
   const usesOpenAi = isOpenAiEncoding(tokenizerId)
   const tokenCount = usesOpenAi ? openAiBaseline : chineseEfficient
 
@@ -178,8 +222,9 @@ export async function analyze({
     openAiBaseline,
     pricingBaseline: usesOpenAi ? tokenCount : openAiBaseline,
     chineseEfficient,
-    chineseChars: countChineseChars(text),
+    chineseChars: profile.chineseChars,
     charCount: text.length,
+    nonChineseTokens: profile.nonChineseTokens,
     spans,
     spansTruncated,
   }

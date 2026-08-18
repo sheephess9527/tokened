@@ -131,6 +131,8 @@ export function TokenEditor() {
     openAiBaseline,
     pricingBaseline,
     chineseEfficient,
+    chineseChars,
+    nonChineseTokens,
     charCount,
     spans,
     spansTruncated,
@@ -141,8 +143,13 @@ export function TokenEditor() {
   const animatedTokens = useAnimatedNumber(tokenCount)
 
   const costs = useMemo(
-    () => estimateCosts(pricingBaseline, currency, outputTokens),
-    [pricingBaseline, currency, outputTokens],
+    () =>
+      estimateCosts(
+        { openAiTokens: pricingBaseline, chineseChars, nonChineseTokens },
+        currency,
+        outputTokens,
+      ),
+    [pricingBaseline, chineseChars, nonChineseTokens, currency, outputTokens],
   )
   const best = findBestValue(costs)
   const inflation = chineseInflationRate(openAiBaseline, chineseEfficient)

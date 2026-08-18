@@ -61,7 +61,7 @@ export const zh = {
     title: '为什么 LLM Token 计算很重要',
     items: [
       {
-        value: '9',
+        value: '{models}',
         label: '模型对比',
         desc: 'GPT-5.4、Claude 4.6、Gemini 3.5、DeepSeek-V4、Qwen3.7 等同屏比价。',
       },
@@ -71,9 +71,9 @@ export const zh = {
         desc: '分词在浏览器完成，服务器不存储任何 Prompt。',
       },
       {
-        value: '45%',
-        label: '中文节省空间',
-        desc: '相比 OpenAI o200k 基线，DeepSeek-V4 / Qwen3.7 典型可少 45% Token。',
+        value: '{spread}',
+        label: '最贵与最便宜之差',
+        desc: '同一段 Prompt 在各模型间的成本差距——其中绝大部分来自单价，而非 Token 数量。',
       },
       {
         value: '¥0',
@@ -108,9 +108,9 @@ export const zh = {
     subtitle: 'Token 可视化如何在真实场景中省钱、降风险。',
     cases: {
       c1: {
-        stat: '最高省 45% Token',
+        stat: '相比 cl100k 约省 40% Token',
         title: '中文产品团队',
-        desc: '上线前对比 GPT-5.4 vs DeepSeek-V4-Flash / Qwen3.7-Plus。同一段中文在 OpenAI o200k 上可能多花 2 倍 Token。',
+        desc: '中文在 GPT-4 时代的 cl100k_base 上每字约 1.10 个 Token，而在 o200k_base 上只要约 0.64。先确认自己用的是哪个编码，再用总成本做对比。',
       },
       c2: {
         stat: '上线前成本审计',
@@ -186,7 +186,7 @@ export const zh = {
 
 网关在 Cloudflare Workers 边缘运行，代理 OpenAI 兼容请求，缓存相同 Prompt，并在数据到达美国托管模型前拦截 PII。缓存命中时典型延迟低于 50ms。
 
-核心组件包括：路由层、边缘缓存、合规检测模块。中文 Prompt 在 DeepSeek-V4-Flash 与 Qwen3.7-Plus 上通常比 OpenAI o200k 基线少 40–60% Token。
+核心组件包括：路由层、边缘缓存、合规检测模块。切换分词器可以看到中文在 cl100k 与 o200k 上的差距，再对比各模型的实际单价。
 ---`,
     totalTokens: 'Token 总数',
     chars: '字符数',

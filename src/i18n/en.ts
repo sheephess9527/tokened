@@ -59,7 +59,7 @@ export const en = {
     title: 'Why LLM token math matters',
     items: [
       {
-        value: '9',
+        value: '{models}',
         label: 'Models compared',
         desc: 'GPT-5.4, Claude 4.6, Gemini 3.5, DeepSeek-V4, Qwen3.7 and more side by side.',
       },
@@ -69,9 +69,9 @@ export const en = {
         desc: 'Token counting runs in your browser. Zero server-side prompt storage.',
       },
       {
-        value: '45%',
-        label: 'Chinese savings',
-        desc: 'Typical token reduction vs OpenAI o200k when using DeepSeek-V4 / Qwen3.7.',
+        value: '{spread}',
+        label: 'Cheapest to priciest',
+        desc: 'Cost gap across models for the very same prompt — almost all of it is price per token, not token count.',
       },
       {
         value: '$0',
@@ -106,9 +106,9 @@ export const en = {
     subtitle: 'Real scenarios where token visibility saves money and reduces risk.',
     cases: {
       c1: {
-        stat: 'Up to 45% fewer tokens',
+        stat: '~40% fewer tokens vs cl100k',
         title: 'Chinese product teams',
-        desc: 'Compare GPT-5.4 vs DeepSeek-V4-Flash / Qwen3.7-Plus before committing. Chinese prompts often use 2× more tokens on OpenAI o200k than on Chinese-efficient models.',
+        desc: 'Chinese text costs about 1.10 tokens per character on GPT-4-era cl100k_base but only ~0.64 on o200k_base, so check which encoding you are on before assuming a tokenizer win — then compare on total cost.',
       },
       c2: {
         stat: 'Pre-launch cost audit',
@@ -184,7 +184,7 @@ export const en = {
 
 The gateway runs on Cloudflare Workers at the edge. It proxies OpenAI-compatible requests, caches identical prompts, and intercepts PII before data reaches US-hosted models. Typical latency is under 50ms for cache hits.
 
-核心组件包括：路由层、边缘缓存、合规检测模块。中文 Prompt 在 DeepSeek-V4-Flash 与 Qwen3.7-Plus 上通常比 OpenAI o200k 基线少 40–60% Token。
+核心组件包括：路由层、边缘缓存、合规检测模块。切换分词器可以看到中文在 cl100k 与 o200k 上的差距，再对比各模型的实际单价。
 ---`,
     totalTokens: 'Total Tokens',
     chars: 'Characters',
