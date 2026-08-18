@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, type ReactNode } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { LandingPage } from './pages/LandingPage'
 import { AppFallbackBoundary } from './components/AppFallbackBoundary'
@@ -17,11 +17,19 @@ const NotFound = lazy(() =>
   import('./pages/NotFound').then((m) => ({ default: m.NotFound })),
 )
 
-function App() {
+interface AppProps {
+  /** The prerenderer swaps in a StaticRouter; the browser uses BrowserRouter. */
+  router?: (children: ReactNode) => ReactNode
+}
+
+const browserRouter = (children: ReactNode) => <BrowserRouter>{children}</BrowserRouter>
+
+function App({ router = browserRouter }: AppProps) {
   return (
     <I18nProvider>
-      <BrowserRouter>
-        <SkipLink />
+      {router(
+        <>
+          <SkipLink />
         <AppFallbackBoundary>
           <Suspense fallback={<RouteLoading />}>
             <Routes>
@@ -32,7 +40,8 @@ function App() {
             </Routes>
           </Suspense>
         </AppFallbackBoundary>
-      </BrowserRouter>
+        </>,
+      )}
     </I18nProvider>
   )
 }

@@ -102,6 +102,8 @@ function seoAssets(): Plugin {
   return {
     name: 'tokened-seo-assets',
     apply: 'build',
+    // The SSR build is a means to an end; only the client output is deployed.
+    applyToEnvironment: (environment) => environment.name === 'client',
     generateBundle() {
       this.emitFile({ type: 'asset', fileName: 'sitemap.xml', source: sitemapXml() })
       this.emitFile({ type: 'asset', fileName: 'feed.xml', source: feedXml() })
@@ -110,18 +112,20 @@ function seoAssets(): Plugin {
 }
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ isSsrBuild }) => ({
   plugins: [react(), seoAssets()],
   build: {
+    // The SSR bundle only exists to be rendered by scripts/prerender.mjs.
+    copyPublicDir: !isSsrBuild,
     // The BPE rank tables are megabytes of pure data by nature and are loaded
     // lazily, so the default 500kB warning would fire on every build.
     chunkSizeWarningLimit: 2500,
-    rollupOptions: { output: { advancedChunks: chunkGroups } },
+    rollupOptions: { output: { codeSplitting: chunkGroups } },
   },
   // ES-module workers keep their dynamic imports split; the default worker
   // format would inline every encoding into one file.
   worker: {
     format: 'es',
-    rollupOptions: { output: { advancedChunks: chunkGroups } },
+    rollupOptions: { output: { codeSplitting: chunkGroups } },
   },
-})
+}))

@@ -1,19 +1,16 @@
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { Footer } from '../components/Footer'
 import { Header } from '../components/Header'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { useI18n } from '../i18n'
+import { getRouteMeta } from '../lib/routeMeta'
 import styles from './NotFound.module.css'
 
 export function NotFound() {
   const { lang, t } = useI18n()
+  const { pathname } = useLocation()
 
-  usePageMeta({
-    title: `${t.notFound.title} | Tokened`,
-    description: t.notFound.desc,
-    lang,
-    noindex: true,
-  })
+  usePageMeta(getRouteMeta(pathname, lang))
 
   return (
     <>

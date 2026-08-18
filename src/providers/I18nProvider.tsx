@@ -1,4 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react'
+import { useIsomorphicLayoutEffect } from '../hooks/useIsomorphicLayoutEffect'
 import {
   detectLanguage,
   getDictionary,
@@ -14,10 +15,16 @@ interface I18nProviderProps {
 const HTML_LANG: Record<Language, string> = { en: 'en', zh: 'zh-CN' }
 
 export function I18nProvider({ children }: I18nProviderProps) {
-  const [lang, setLang] = useState<Language>(detectLanguage)
+  // Pages are prerendered in English, so the first render must match that on
+  // both sides. The stored/browser language is applied before the first paint
+  // after hydration.
+  const [lang, setLang] = useState<Language>('en')
 
-  // Covers the detected language too — a zh visitor previously got Chinese
-  // copy served under `<html lang="en">` until they touched the switcher.
+  useIsomorphicLayoutEffect(() => {
+    const detected = detectLanguage()
+    if (detected !== 'en') setLang(detected)
+  }, [])
+
   useEffect(() => {
     document.documentElement.lang = HTML_LANG[lang]
   }, [lang])

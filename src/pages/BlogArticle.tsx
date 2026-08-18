@@ -6,6 +6,7 @@ import { Footer } from '../components/Footer'
 import { JsonLd } from '../components/JsonLd'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { useI18n } from '../i18n'
+import { getRouteMeta } from '../lib/routeMeta'
 import {
   blogPostingSchema,
   breadcrumbSchema,
@@ -20,14 +21,7 @@ export function BlogArticle() {
   const { lang, t } = useI18n()
   const article = slug ? getArticle(slug) : undefined
 
-  usePageMeta({
-    title: article ? `${article.title[lang]} | Tokened` : `${t.notFound.title} | Tokened`,
-    description: article?.description[lang] ?? t.notFound.desc,
-    path: article ? `/blog/${article.slug}` : undefined,
-    type: 'article',
-    lang,
-    noindex: !article,
-  })
+  usePageMeta(getRouteMeta(`/blog/${slug ?? ''}`, lang))
 
   if (!article) return <NotFound />
 

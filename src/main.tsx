@@ -1,10 +1,19 @@
 import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
+import { createRoot, hydrateRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 
-createRoot(document.getElementById('root')!).render(
+const container = document.getElementById('root')!
+const tree = (
   <StrictMode>
     <App />
-  </StrictMode>,
+  </StrictMode>
 )
+
+// Routes are prerendered to static HTML at build time; hydrate that markup
+// rather than throwing it away and re-rendering from scratch.
+if (container.firstElementChild) {
+  hydrateRoot(container, tree)
+} else {
+  createRoot(container).render(tree)
+}

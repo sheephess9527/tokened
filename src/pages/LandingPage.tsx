@@ -18,6 +18,7 @@ import { BackToTop } from '../components/BackToTop'
 import { useHashScroll } from '../hooks/useHashScroll'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { useI18n } from '../i18n'
+import { getRouteMeta } from '../lib/routeMeta'
 import {
   faqSchema,
   graph,
@@ -30,27 +31,16 @@ export function LandingPage() {
 
   useHashScroll()
 
-  const description =
-    lang === 'zh'
-      ? '实时 LLM Token 分析与成本优化，多模型对比，100% 浏览器本地运行。'
-      : 'Real-time LLM token analysis and cost optimization. Multi-model comparison. 100% browser-local.'
+  const meta = getRouteMeta('/', lang)
 
-  usePageMeta({
-    title:
-      lang === 'zh'
-        ? 'Tokened | LLM Token 优化与成本控制平台'
-        : 'Tokened | LLM Token Analysis & Cost Optimization',
-    description,
-    path: '/',
-    lang,
-  })
+  usePageMeta(meta)
 
   return (
     <>
       <JsonLd
         data={graph(
           organizationSchema(),
-          webApplicationSchema(lang, description),
+          webApplicationSchema(lang, meta.description ?? ''),
           faqSchema(t.faq.items),
         )}
       />

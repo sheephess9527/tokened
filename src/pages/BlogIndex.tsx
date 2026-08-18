@@ -6,6 +6,7 @@ import { Footer } from '../components/Footer'
 import { JsonLd } from '../components/JsonLd'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { useI18n } from '../i18n'
+import { getRouteMeta } from '../lib/routeMeta'
 import {
   blogIndexSchema,
   breadcrumbSchema,
@@ -17,14 +18,7 @@ import styles from './Blog.module.css'
 export function BlogIndex() {
   const { lang, t } = useI18n()
 
-  const title = lang === 'zh' ? '指南与洞察 | Tokened' : 'Guides & Insights | Tokened'
-
-  usePageMeta({
-    title,
-    description: t.blog.indexDescription,
-    path: '/blog',
-    lang,
-  })
+  usePageMeta(getRouteMeta('/blog', lang))
 
   return (
     <>

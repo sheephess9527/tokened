@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useI18n } from '../i18n'
 import { useAnimatedNumber } from '../hooks/useAnimatedNumber'
+import { useIsomorphicLayoutEffect } from '../hooks/useIsomorphicLayoutEffect'
 import { useMediaQuery } from '../hooks/useMediaQuery'
 import { useTokenAnalysis } from '../hooks/useTokenAnalysis'
 import { formatCost, type Currency } from '../lib/currency'
@@ -37,6 +38,8 @@ const CURRENCY_OPTIONS: Currency[] = ['USD', 'GBP', 'CNY']
 const MOBILE_COST_PREVIEW = 3
 const MOBILE_BREAKPOINT = '(max-width: 900px)'
 
+const DEFAULT_TOKENIZER: TokenizerId = 'o200k_base'
+const DEFAULT_CURRENCY: Currency = 'USD'
 const DEFAULT_OUTPUT_TOKENS = 0
 const DEFAULT_MONTHLY_CALLS = 10_000
 const MAX_OUTPUT_TOKENS = 1_000_000
@@ -52,12 +55,12 @@ function displayAccuracy(
 
 function initialTokenizer(): TokenizerId {
   const raw = readUrlParams().get('t') as TokenizerId | null
-  return raw && TOKENIZER_OPTIONS.includes(raw) ? raw : 'o200k_base'
+  return raw && TOKENIZER_OPTIONS.includes(raw) ? raw : DEFAULT_TOKENIZER
 }
 
 function initialCurrency(): Currency {
   const raw = readUrlParams().get('c') as Currency | null
-  return raw && CURRENCY_OPTIONS.includes(raw) ? raw : 'USD'
+  return raw && CURRENCY_OPTIONS.includes(raw) ? raw : DEFAULT_CURRENCY
 }
 
 function clampInt(value: string, max: number): number {
@@ -68,23 +71,33 @@ function clampInt(value: string, max: number): number {
 
 export function TokenEditor() {
   const { lang, t } = useI18n()
-  const [prompt, setPrompt] = useState(() => {
-    const saved = loadSavedPrompt()
-    return saved ?? t.editor.samplePrompt
-  })
-  const [usingSample, setUsingSample] = useState(() => loadSavedPrompt() === null)
-  const [tokenizer, setTokenizer] = useState<TokenizerId>(initialTokenizer)
-  const [currency, setCurrency] = useState<Currency>(initialCurrency)
-  const [outputTokens, setOutputTokens] = useState(() =>
-    readUrlInt('o', DEFAULT_OUTPUT_TOKENS, MAX_OUTPUT_TOKENS),
-  )
-  const [monthlyCalls, setMonthlyCalls] = useState(() =>
-    readUrlInt('n', DEFAULT_MONTHLY_CALLS, MAX_MONTHLY_CALLS),
-  )
+  // The first render has to match the prerendered HTML, so everything that
+  // depends on the URL or on localStorage is restored after hydration instead
+  // of being read during render.
+  const [prompt, setPrompt] = useState(t.editor.samplePrompt)
+  const [usingSample, setUsingSample] = useState(true)
+  const [tokenizer, setTokenizer] = useState<TokenizerId>(DEFAULT_TOKENIZER)
+  const [currency, setCurrency] = useState<Currency>(DEFAULT_CURRENCY)
+  const [outputTokens, setOutputTokens] = useState(DEFAULT_OUTPUT_TOKENS)
+  const [monthlyCalls, setMonthlyCalls] = useState(DEFAULT_MONTHLY_CALLS)
+  const [restored, setRestored] = useState(false)
   const [showBlocks, setShowBlocks] = useState(true)
   const [costListExpanded, setCostListExpanded] = useState(false)
   const [copied, setCopied] = useState<'summary' | 'link' | null>(null)
   const isMobile = useMediaQuery(MOBILE_BREAKPOINT)
+
+  useIsomorphicLayoutEffect(() => {
+    const saved = loadSavedPrompt()
+    if (saved !== null) {
+      setPrompt(saved)
+      setUsingSample(false)
+    }
+    setTokenizer(initialTokenizer())
+    setCurrency(initialCurrency())
+    setOutputTokens(readUrlInt('o', DEFAULT_OUTPUT_TOKENS, MAX_OUTPUT_TOKENS))
+    setMonthlyCalls(readUrlInt('n', DEFAULT_MONTHLY_CALLS, MAX_MONTHLY_CALLS))
+    setRestored(true)
+  }, [])
 
   useEffect(() => {
     if (usingSample) setPrompt(t.editor.samplePrompt)
@@ -101,15 +114,17 @@ export function TokenEditor() {
     return () => window.clearTimeout(timer)
   }, [prompt, usingSample])
 
-  // Keep the shareable link in step with the controls.
+  // Keep the shareable link in step with the controls — but never before the
+  // incoming link has been read, or it would erase its own parameters.
   useEffect(() => {
+    if (!restored) return
     syncUrlParams({
-      t: tokenizer === 'o200k_base' ? null : tokenizer,
-      c: currency === 'USD' ? null : currency,
+      t: tokenizer === DEFAULT_TOKENIZER ? null : tokenizer,
+      c: currency === DEFAULT_CURRENCY ? null : currency,
       o: outputTokens === DEFAULT_OUTPUT_TOKENS ? null : String(outputTokens),
       n: monthlyCalls === DEFAULT_MONTHLY_CALLS ? null : String(monthlyCalls),
     })
-  }, [tokenizer, currency, outputTokens, monthlyCalls])
+  }, [restored, tokenizer, currency, outputTokens, monthlyCalls])
 
   const {
     tokenCount,
