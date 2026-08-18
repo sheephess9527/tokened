@@ -172,7 +172,7 @@ export const en = {
     analysisLabel: 'Token Analysis',
     tokenizer: 'Tokenizer',
     tokenizers: {
-      o200k_base: 'OpenAI o200k — GPT-5.x / GPT-4o',
+      o200k_base: 'OpenAI o200k — GPT-5.x / GPT-4o (incl. harmony)',
       cl100k_base: 'OpenAI cl100k — GPT-4 / legacy',
       p50k_base: 'OpenAI p50k — legacy models',
       chinese_estimate: 'Chinese-efficient estimate',
@@ -192,7 +192,7 @@ The gateway runs on Cloudflare Workers at the edge. It proxies OpenAI-compatible
     hideBlocks: 'Hide Token Blocks',
     estCost: 'Estimated Cost',
     costDisclaimer:
-      'List prices as of Jun 2026 · non-OpenAI token counts are estimates — verify against your provider billing.',
+      'List prices {pricing} · FX rates {fx} · both are manual snapshots, and non-OpenAI token counts are estimates — verify against your provider billing.',
     costChart: 'Cost comparison',
     bestValue: 'Best Value',
     chineseInflation: 'Chinese Token Inflation',

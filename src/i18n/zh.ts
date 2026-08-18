@@ -174,7 +174,7 @@ export const zh = {
     analysisLabel: 'Token 分析',
     tokenizer: '分词器',
     tokenizers: {
-      o200k_base: 'OpenAI o200k — GPT-5.x / GPT-4o',
+      o200k_base: 'OpenAI o200k — GPT-5.x / GPT-4o（含 harmony）',
       cl100k_base: 'OpenAI cl100k — GPT-4 / 旧版',
       p50k_base: 'OpenAI p50k — 更早模型',
       chinese_estimate: '中文高效估算',
@@ -194,7 +194,7 @@ export const zh = {
     hideBlocks: '隐藏分词',
     estCost: '预估成本',
     costDisclaimer:
-      '价格为 2026 年 6 月官方标价 · 非 OpenAI 的 Token 数为估算值，请以服务商账单为准。',
+      '官方标价 {pricing} · 汇率 {fx} · 两者均为人工快照，且非 OpenAI 的 Token 数为估算值，请以服务商账单为准。',
     costChart: '成本对比',
     bestValue: '最省',
     chineseInflation: '中文 Token 膨胀率',

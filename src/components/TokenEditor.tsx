@@ -14,6 +14,11 @@ import {
 import { MAILTO_ENTERPRISE } from '../lib/contact'
 import { copyToClipboard } from '../lib/clipboard'
 import { scrollBehavior } from '../lib/motion'
+import {
+  formatSnapshot,
+  FX_SNAPSHOT,
+  PRICING_SNAPSHOT,
+} from '../lib/snapshot'
 import { clearSavedPrompt, loadSavedPrompt, savePrompt } from '../lib/promptStorage'
 import { readUrlInt, readUrlParams, syncUrlParams } from '../lib/urlState'
 import { hasChinese, isOpenAiEncoding, type TokenizerId } from '../lib/tokenizer'
@@ -62,7 +67,7 @@ function clampInt(value: string, max: number): number {
 }
 
 export function TokenEditor() {
-  const { t } = useI18n()
+  const { lang, t } = useI18n()
   const [prompt, setPrompt] = useState(() => {
     const saved = loadSavedPrompt()
     return saved ?? t.editor.samplePrompt
@@ -132,6 +137,9 @@ export function TokenEditor() {
     showCostToggle && !costListExpanded ? costs.slice(0, MOBILE_COST_PREVIEW) : costs
   const monthlyFor = (estimate: CostEstimate) =>
     formatCost(estimate.costUsd * monthlyCalls, currency)
+  const disclaimer = t.editor.costDisclaimer
+    .replace('{pricing}', formatSnapshot(PRICING_SNAPSHOT, lang))
+    .replace('{fx}', formatSnapshot(FX_SNAPSHOT, lang))
 
   const flashCopied = (kind: 'summary' | 'link') => {
     setCopied(kind)
@@ -150,7 +158,7 @@ export function TokenEditor() {
           `${estimate.model.name} (${estimate.model.provider}): ${estimate.formatted} ${t.editor.perCall} · ${monthlyFor(estimate)} ${t.editor.perMonth}`,
       ),
       '',
-      t.editor.costDisclaimer,
+      disclaimer,
       window.location.href,
     ]
 
@@ -373,7 +381,7 @@ export function TokenEditor() {
                     </button>
                   </div>
                 </div>
-                <p className={styles.costDisclaimer}>{t.editor.costDisclaimer}</p>
+                <p className={styles.costDisclaimer}>{disclaimer}</p>
 
                 {best && monthlyCalls > 0 && (
                   <p className={styles.monthlyTotal}>
