@@ -7,6 +7,10 @@
   --text: #f9fafb;
   --text-muted: #9ca3af;
   --accent: #7c3aed;
+  /* #7c3aed reads at only ~3.3:1 on these dark backgrounds, so text uses a
+     lighter step of the same hue; --accent stays for fills, borders and
+     gradients where the ratio does not apply. */
+  --accent-text: #a78bfa;
   --accent-secondary: #06b6d4;
   --success: #10b981;
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;

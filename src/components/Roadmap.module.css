@@ -47,7 +47,7 @@
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   background: rgba(124, 58, 237, 0.15);
-  color: var(--accent);
+  color: var(--accent-text);
   margin-bottom: 0.75rem;
 }
 

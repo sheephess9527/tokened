@@ -203,6 +203,12 @@ export default defineConfig(({ isSsrBuild }) => ({
   build: {
     // The SSR bundle only exists to be rendered by scripts/prerender.mjs.
     copyPublicDir: !isSsrBuild,
+    // Route CSS must not be split. Pages are prerendered, so their markup
+    // paints before the lazy route chunk (and its stylesheet) arrives — the
+    // blog index measured a 0.34 CLS painting unstyled and then reflowing.
+    // The whole stylesheet is ~36kB, so one file for every page is the cheap
+    // and drift-proof fix.
+    cssCodeSplit: false,
     // The BPE rank tables are megabytes of pure data by nature and are loaded
     // lazily, so the default 500kB warning would fire on every build.
     chunkSizeWarningLimit: 2500,

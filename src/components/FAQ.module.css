@@ -57,7 +57,7 @@
 }
 
 .question:hover {
-  color: var(--accent);
+  color: var(--accent-text);
 }
 
 .icon {

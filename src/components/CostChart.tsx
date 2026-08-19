@@ -13,7 +13,7 @@ export function CostChart({ estimates, label }: CostChartProps) {
 
   return (
     <div className={styles.chart}>
-      <h4 className={styles.chartLabel}>{label}</h4>
+      <h3 className={styles.chartLabel}>{label}</h3>
       <div className={styles.bars}>
         {estimates.map((est) => {
           const width = Math.max((est.costUsd / maxCost) * 100, 2)

@@ -59,7 +59,7 @@
 .card h3 {
   font-size: 1.1rem;
   margin-bottom: 0.75rem;
-  color: var(--accent);
+  color: var(--accent-text);
 }
 
 .card p {

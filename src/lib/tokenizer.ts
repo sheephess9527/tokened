@@ -270,13 +270,18 @@ function approximateChineseSpans(
   return { spans, truncated: false }
 }
 
+/**
+ * Used as the text colour of each token block over a 13% tint of itself, so
+ * every entry has to clear 4.5:1 against that background. The two violets are
+ * lighter steps than the brand accent for exactly that reason.
+ */
 export const TOKEN_COLORS = [
-  '#7C3AED',
+  '#A78BFA',
   '#06B6D4',
   '#10B981',
   '#F59E0B',
   '#EC4899',
-  '#8B5CF6',
+  '#C4B5FD',
   '#14B8A6',
   '#F97316',
 ]

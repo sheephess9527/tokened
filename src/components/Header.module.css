@@ -30,7 +30,7 @@
 }
 
 .logoMark {
-  color: var(--accent);
+  color: var(--accent-text);
   font-size: 0.9rem;
   filter: drop-shadow(0 0 6px rgba(124, 58, 237, 0.6));
 }

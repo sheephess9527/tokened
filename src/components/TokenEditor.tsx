@@ -309,7 +309,7 @@ export function TokenEditor() {
 
         <div className={styles.pane}>
           <div className={styles.paneHeader}>
-            <span>{t.editor.analysisLabel}</span>
+            <h2 className={styles.paneTitle}>{t.editor.analysisLabel}</h2>
             <div className={styles.controls}>
               <select
                 value={currency}
@@ -378,7 +378,13 @@ export function TokenEditor() {
 
               {showBlocks && (
                 <>
-                  <div className={styles.highlightBox}>
+                  {/* Scrollable, so it must be reachable and named for keyboard users. */}
+                  <div
+                    className={styles.highlightBox}
+                    tabIndex={0}
+                    role="group"
+                    aria-label={t.editor.showBlocks}
+                  >
                     <TokenHighlight spans={spans} />
                   </div>
                   {spansTruncated && (
@@ -416,7 +422,11 @@ export function TokenEditor() {
                   </p>
                 )}
 
-                <ul className={styles.costList}>
+                <ul
+                  className={styles.costList}
+                  tabIndex={0}
+                  aria-label={t.editor.estCost}
+                >
                   {visibleCosts.map((est) => {
                     const isBest = best?.model.id === est.model.id
                     const accuracy = displayAccuracy(est.model, tokenizer)

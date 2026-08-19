@@ -24,6 +24,9 @@ export function useTokenAnalysis(
   const [result, setResult] = useState<AnalysisResult | null>(null)
   const [stale, setStale] = useState(true)
   const requestRef = useRef(0)
+  // The first analysis has nothing to coalesce — the prompt is already there
+  // when the editor mounts, so waiting out the debounce just delays the number.
+  const hasResultRef = useRef(false)
 
   useEffect(() => {
     if (!prompt) {
@@ -40,6 +43,7 @@ export function useTokenAnalysis(
       void runAnalysis({ text: prompt, tokenizerId, wantSpans: showBlocks })
         .then((next) => {
           if (requestRef.current !== requestId) return
+          hasResultRef.current = true
           setResult(next)
           setStale(false)
         })
@@ -47,7 +51,7 @@ export function useTokenAnalysis(
           if (requestRef.current !== requestId) return
           setStale(false)
         })
-    }, DEBOUNCE_MS)
+    }, hasResultRef.current ? DEBOUNCE_MS : 0)
 
     return () => window.clearTimeout(timer)
   }, [prompt, tokenizerId, showBlocks])
