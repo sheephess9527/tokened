@@ -24,3 +24,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# The gateway installs its own deps (npm run gateway:install).
+workers/gateway/node_modules
+workers/gateway/package-lock.json
