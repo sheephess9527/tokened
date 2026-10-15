@@ -17,13 +17,21 @@ export function convertFromUsd(amountUsd: number, currency: Currency): number {
   return amountUsd * FX_FROM_USD[currency]
 }
 
+/** Enough precision to stay meaningful for sub-cent per-call figures. */
+function fractionDigits(value: number): number {
+  if (value === 0) return 2
+  if (value < 0.0001) return 6
+  if (value < 0.01) return 5
+  if (value < 1) return 4
+  return 2
+}
+
 export function formatCost(amountUsd: number, currency: Currency): string {
   const converted = convertFromUsd(amountUsd, currency)
-  const symbol = CURRENCY_SYMBOL[currency]
+  const digits = fractionDigits(converted)
 
-  if (converted === 0) return `${symbol}0.00`
-  if (converted < 0.0001) return `${symbol}${converted.toFixed(6)}`
-  if (converted < 0.01) return `${symbol}${converted.toFixed(5)}`
-  if (converted < 1) return `${symbol}${converted.toFixed(4)}`
-  return `${symbol}${converted.toFixed(2)}`
+  return `${CURRENCY_SYMBOL[currency]}${converted.toLocaleString('en-US', {
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
+  })}`
 }

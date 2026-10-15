@@ -1,3 +1,5 @@
+import { detectPii } from './pii'
+
 export interface Env {
   OPENAI_API_KEY: string
   OPENAI_BASE_URL?: string
@@ -6,15 +8,6 @@ export interface Env {
 }
 
 const DEFAULT_UPSTREAM = 'https://api.openai.com'
-
-const PII_PATTERNS: { name: string; regex: RegExp }[] = [
-  { name: 'email', regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/ },
-  { name: 'uk_ni', regex: /\b[A-Z]{2}\d{6}[A-Z]?\b/i },
-  { name: 'uk_postcode', regex: /\b[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}\b/i },
-  { name: 'cn_id', regex: /\b\d{17}[\dXx]\b/ },
-  { name: 'cn_mobile', regex: /\b1[3-9]\d{9}\b/ },
-  { name: 'credit_card', regex: /\b(?:\d[ -]*?){13,19}\b/ },
-]
 
 function corsHeaders(origin: string | null): HeadersInit {
   return {
@@ -25,14 +18,6 @@ function corsHeaders(origin: string | null): HeadersInit {
     'Access-Control-Expose-Headers':
       'X-Tokened-Cache, X-Tokened-PII-Warning, X-Tokened-Gateway',
   }
-}
-
-function detectPii(text: string): string[] {
-  const found: string[] = []
-  for (const { name, regex } of PII_PATTERNS) {
-    if (regex.test(text)) found.push(name)
-  }
-  return found
 }
 
 function extractTexts(body: unknown): string {
@@ -115,7 +100,13 @@ export default {
     const upstreamUrl = `${upstream}${url.pathname}${url.search}`
 
     const useCache = request.headers.get('X-Tokened-Cache') !== 'false'
-    const cacheKey = useCache ? await sha256(`${upstreamUrl}:${rawBody}`) : null
+    const clientAuth = request.headers.get('Authorization')
+    // The credential is part of the cache identity: `caches.default` is shared
+    // across every caller, so keying on URL + body alone would serve one
+    // tenant's completion to another (and skip their upstream billing).
+    const cacheKey = useCache
+      ? await sha256(`${await sha256(clientAuth ?? env.OPENAI_API_KEY)}:${upstreamUrl}:${rawBody}`)
+      : null
 
     if (cacheKey) {
       const cache = caches.default
@@ -130,7 +121,6 @@ export default {
       }
     }
 
-    const clientAuth = request.headers.get('Authorization')
     const upstreamResponse = await fetch(upstreamUrl, {
       method: 'POST',
       headers: {

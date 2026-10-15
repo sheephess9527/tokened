@@ -1,3 +1,5 @@
+@import './fonts.css';
+
 :root {
   --bg: #0b0b0c;
   --bg-elevated: #121214;
@@ -5,10 +7,15 @@
   --text: #f9fafb;
   --text-muted: #9ca3af;
   --accent: #7c3aed;
+  /* #7c3aed reads at only ~3.3:1 on these dark backgrounds, so text uses a
+     lighter step of the same hue; --accent stays for fills, borders and
+     gradients where the ratio does not apply. */
+  --accent-text: #a78bfa;
   --accent-secondary: #06b6d4;
   --success: #10b981;
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  color-scheme: dark;
 }
 
 *,
@@ -62,4 +69,31 @@ select {
 
 a {
   color: inherit;
+}
+
+/* One visible focus ring for every interactive element, keyboard users only. */
+:where(a, button, select, textarea, input, [tabindex]):focus-visible {
+  outline: 2px solid var(--accent-secondary);
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}
+
+img,
+svg {
+  max-width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

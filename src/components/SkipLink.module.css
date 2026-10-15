@@ -1,0 +1,21 @@
+.link {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translate(-50%, -150%);
+  z-index: 100;
+  padding: 0.65rem 1.25rem;
+  border: 1px solid var(--accent);
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+  background: var(--bg-elevated);
+  color: var(--text);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: transform 0.15s ease;
+}
+
+.link:focus-visible {
+  transform: translate(-50%, 0);
+}

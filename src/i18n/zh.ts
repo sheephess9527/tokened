@@ -7,6 +7,16 @@ export const zh = {
     copied: '已复制',
     copyFailed: '复制失败',
     backToTop: '回到顶部',
+    skipToContent: '跳到主要内容',
+    loading: '加载中…',
+    errorTitle: '页面出错了',
+    errorBody: '页面遇到意外错误，刷新一般即可恢复。',
+    errorRetry: '刷新页面',
+  },
+  notFound: {
+    title: '页面不存在',
+    desc: '该地址无效。Token 计算器只需一步即可到达。',
+    cta: '返回计算器',
   },
   contact: {
     title: '联系我们',
@@ -51,7 +61,7 @@ export const zh = {
     title: '为什么 LLM Token 计算很重要',
     items: [
       {
-        value: '9',
+        value: '{models}',
         label: '模型对比',
         desc: 'GPT-5.4、Claude 4.6、Gemini 3.5、DeepSeek-V4、Qwen3.7 等同屏比价。',
       },
@@ -61,9 +71,9 @@ export const zh = {
         desc: '分词在浏览器完成，服务器不存储任何 Prompt。',
       },
       {
-        value: '45%',
-        label: '中文节省空间',
-        desc: '相比 OpenAI o200k 基线，DeepSeek-V4 / Qwen3.7 典型可少 45% Token。',
+        value: '{spread}',
+        label: '最贵与最便宜之差',
+        desc: '同一段 Prompt 在各模型间的成本差距——其中绝大部分来自单价，而非 Token 数量。',
       },
       {
         value: '¥0',
@@ -98,9 +108,9 @@ export const zh = {
     subtitle: 'Token 可视化如何在真实场景中省钱、降风险。',
     cases: {
       c1: {
-        stat: '最高省 45% Token',
+        stat: '相比 cl100k 约省 40% Token',
         title: '中文产品团队',
-        desc: '上线前对比 GPT-5.4 vs DeepSeek-V4-Flash / Qwen3.7-Plus。同一段中文在 OpenAI o200k 上可能多花 2 倍 Token。',
+        desc: '中文在 GPT-4 时代的 cl100k_base 上每字约 1.10 个 Token，而在 o200k_base 上只要约 0.64。先确认自己用的是哪个编码，再用总成本做对比。',
       },
       c2: {
         stat: '上线前成本审计',
@@ -164,7 +174,7 @@ export const zh = {
     analysisLabel: 'Token 分析',
     tokenizer: '分词器',
     tokenizers: {
-      o200k_base: 'OpenAI o200k — GPT-5.x / GPT-4o',
+      o200k_base: 'OpenAI o200k — GPT-5.x / GPT-4o（含 harmony）',
       cl100k_base: 'OpenAI cl100k — GPT-4 / 旧版',
       p50k_base: 'OpenAI p50k — 更早模型',
       chinese_estimate: '中文高效估算',
@@ -176,20 +186,20 @@ export const zh = {
 
 网关在 Cloudflare Workers 边缘运行，代理 OpenAI 兼容请求，缓存相同 Prompt，并在数据到达美国托管模型前拦截 PII。缓存命中时典型延迟低于 50ms。
 
-核心组件包括：路由层、边缘缓存、合规检测模块。中文 Prompt 在 DeepSeek-V4-Flash 与 Qwen3.7-Plus 上通常比 OpenAI o200k 基线少 40–60% Token。
+核心组件包括：路由层、边缘缓存、合规检测模块。切换分词器可以看到中文在 cl100k 与 o200k 上的差距，再对比各模型的实际单价。
 ---`,
     totalTokens: 'Token 总数',
     chars: '字符数',
     showBlocks: '显示分词',
     hideBlocks: '隐藏分词',
-    estCost: '预估成本（单次调用）',
+    estCost: '预估成本',
     costDisclaimer:
-      '仅含输入 Token · 价格截至 2026 年 6 月 · 非 OpenAI 为估算值，请以服务商账单为准。',
+      '官方标价 {pricing} · 汇率 {fx} · 两者均为人工快照，且非 OpenAI 的 Token 数为估算值，请以服务商账单为准。',
     costChart: '成本对比',
     bestValue: '最省',
     chineseInflation: '中文 Token 膨胀率',
     chineseInflationHint:
-      '同一段中文在 DeepSeek-V4 / Qwen3.7 上通常比 OpenAI o200k_base 占用更少 Token。',
+      '同一段中文在 DeepSeek-V4 / Qwen3.7 上通常比所选的 OpenAI 分词器占用更少 Token。',
     inflationVsOpenAI: '相对 OpenAI 基线',
     currency: '货币',
     currencies: {
@@ -207,6 +217,18 @@ export const zh = {
     loadSample: '加载示例',
     showAllModels: '显示全部模型',
     showFewerModels: '收起列表',
+    updating: '更新中…',
+    spansTruncated: '仅显示前 {n} 个 Token 块（共 {total} 个）。',
+    assumptions: '用量假设',
+    outputTokens: '每次调用的输出 Token',
+    outputTokensHint: '输出 Token 单价更高，计入后才接近真实账单。',
+    monthlyCalls: '每月调用次数',
+    perCall: '每次调用',
+    perMonth: '每月',
+    monthlyTotal: '预计月度成本',
+    copySummary: '复制分析摘要',
+    shareLink: '复制链接',
+    linkCopied: '链接已复制',
   },
   saas: {
     title: '规划中：生产级 LLM 基础设施',

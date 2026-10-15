@@ -1,18 +1,28 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useI18n } from '../i18n'
 import { useAnimatedNumber } from '../hooks/useAnimatedNumber'
+import { useIsomorphicLayoutEffect } from '../hooks/useIsomorphicLayoutEffect'
 import { useMediaQuery } from '../hooks/useMediaQuery'
 import { useTokenAnalysis } from '../hooks/useTokenAnalysis'
-import type { Currency } from '../lib/currency'
+import { formatCost, type Currency } from '../lib/currency'
 import {
   chineseInflationRate,
   estimateCosts,
   findBestValue,
+  type CostEstimate,
+  type ModelPricing,
 } from '../lib/pricing'
 import { MAILTO_ENTERPRISE } from '../lib/contact'
+import { copyToClipboard } from '../lib/clipboard'
+import { scrollBehavior } from '../lib/motion'
+import {
+  formatSnapshot,
+  FX_SNAPSHOT,
+  PRICING_SNAPSHOT,
+} from '../lib/snapshot'
 import { clearSavedPrompt, loadSavedPrompt, savePrompt } from '../lib/promptStorage'
+import { readUrlInt, readUrlParams, syncUrlParams } from '../lib/urlState'
 import { hasChinese, isOpenAiEncoding, type TokenizerId } from '../lib/tokenizer'
-import type { ModelPricing } from '../lib/pricing'
 import { CostChart } from './CostChart'
 import { TokenHighlight } from './TokenHighlight'
 import styles from './TokenEditor.module.css'
@@ -28,6 +38,13 @@ const CURRENCY_OPTIONS: Currency[] = ['USD', 'GBP', 'CNY']
 const MOBILE_COST_PREVIEW = 3
 const MOBILE_BREAKPOINT = '(max-width: 900px)'
 
+const DEFAULT_TOKENIZER: TokenizerId = 'o200k_base'
+const DEFAULT_CURRENCY: Currency = 'USD'
+const DEFAULT_OUTPUT_TOKENS = 0
+const DEFAULT_MONTHLY_CALLS = 10_000
+const MAX_OUTPUT_TOKENS = 1_000_000
+const MAX_MONTHLY_CALLS = 100_000_000
+
 function displayAccuracy(
   model: ModelPricing,
   tokenizer: TokenizerId,
@@ -36,18 +53,51 @@ function displayAccuracy(
   return model.provider === 'OpenAI' && model.accuracy === 'exact' ? 'exact' : 'estimate'
 }
 
+function initialTokenizer(): TokenizerId {
+  const raw = readUrlParams().get('t') as TokenizerId | null
+  return raw && TOKENIZER_OPTIONS.includes(raw) ? raw : DEFAULT_TOKENIZER
+}
+
+function initialCurrency(): Currency {
+  const raw = readUrlParams().get('c') as Currency | null
+  return raw && CURRENCY_OPTIONS.includes(raw) ? raw : DEFAULT_CURRENCY
+}
+
+function clampInt(value: string, max: number): number {
+  const parsed = Number.parseInt(value, 10)
+  if (!Number.isFinite(parsed) || parsed < 0) return 0
+  return Math.min(parsed, max)
+}
+
 export function TokenEditor() {
-  const { t } = useI18n()
-  const [prompt, setPrompt] = useState(() => {
-    const saved = loadSavedPrompt()
-    return saved ?? t.editor.samplePrompt
-  })
-  const [usingSample, setUsingSample] = useState(() => loadSavedPrompt() === null)
-  const [tokenizer, setTokenizer] = useState<TokenizerId>('o200k_base')
-  const [currency, setCurrency] = useState<Currency>('USD')
+  const { lang, t } = useI18n()
+  // The first render has to match the prerendered HTML, so everything that
+  // depends on the URL or on localStorage is restored after hydration instead
+  // of being read during render.
+  const [prompt, setPrompt] = useState(t.editor.samplePrompt)
+  const [usingSample, setUsingSample] = useState(true)
+  const [tokenizer, setTokenizer] = useState<TokenizerId>(DEFAULT_TOKENIZER)
+  const [currency, setCurrency] = useState<Currency>(DEFAULT_CURRENCY)
+  const [outputTokens, setOutputTokens] = useState(DEFAULT_OUTPUT_TOKENS)
+  const [monthlyCalls, setMonthlyCalls] = useState(DEFAULT_MONTHLY_CALLS)
+  const [restored, setRestored] = useState(false)
   const [showBlocks, setShowBlocks] = useState(true)
   const [costListExpanded, setCostListExpanded] = useState(false)
+  const [copied, setCopied] = useState<'summary' | 'link' | null>(null)
   const isMobile = useMediaQuery(MOBILE_BREAKPOINT)
+
+  useIsomorphicLayoutEffect(() => {
+    const saved = loadSavedPrompt()
+    if (saved !== null) {
+      setPrompt(saved)
+      setUsingSample(false)
+    }
+    setTokenizer(initialTokenizer())
+    setCurrency(initialCurrency())
+    setOutputTokens(readUrlInt('o', DEFAULT_OUTPUT_TOKENS, MAX_OUTPUT_TOKENS))
+    setMonthlyCalls(readUrlInt('n', DEFAULT_MONTHLY_CALLS, MAX_MONTHLY_CALLS))
+    setRestored(true)
+  }, [])
 
   useEffect(() => {
     if (usingSample) setPrompt(t.editor.samplePrompt)
@@ -64,14 +114,42 @@ export function TokenEditor() {
     return () => window.clearTimeout(timer)
   }, [prompt, usingSample])
 
-  const { tokenCount, openAiBaseline, pricingBaseline, chineseEfficient, spans, loading } =
-    useTokenAnalysis(prompt, tokenizer, showBlocks)
+  // Keep the shareable link in step with the controls — but never before the
+  // incoming link has been read, or it would erase its own parameters.
+  useEffect(() => {
+    if (!restored) return
+    syncUrlParams({
+      t: tokenizer === DEFAULT_TOKENIZER ? null : tokenizer,
+      c: currency === DEFAULT_CURRENCY ? null : currency,
+      o: outputTokens === DEFAULT_OUTPUT_TOKENS ? null : String(outputTokens),
+      n: monthlyCalls === DEFAULT_MONTHLY_CALLS ? null : String(monthlyCalls),
+    })
+  }, [restored, tokenizer, currency, outputTokens, monthlyCalls])
+
+  const {
+    tokenCount,
+    openAiBaseline,
+    pricingBaseline,
+    chineseEfficient,
+    chineseChars,
+    nonChineseTokens,
+    charCount,
+    spans,
+    spansTruncated,
+    loading,
+    stale,
+  } = useTokenAnalysis(prompt, tokenizer, showBlocks)
 
   const animatedTokens = useAnimatedNumber(tokenCount)
 
   const costs = useMemo(
-    () => estimateCosts(pricingBaseline, currency),
-    [pricingBaseline, currency],
+    () =>
+      estimateCosts(
+        { openAiTokens: pricingBaseline, chineseChars, nonChineseTokens },
+        currency,
+        outputTokens,
+      ),
+    [pricingBaseline, chineseChars, nonChineseTokens, currency, outputTokens],
   )
   const best = findBestValue(costs)
   const inflation = chineseInflationRate(openAiBaseline, chineseEfficient)
@@ -79,10 +157,45 @@ export function TokenEditor() {
   const showCostToggle = isMobile && costs.length > MOBILE_COST_PREVIEW
   const visibleCosts =
     showCostToggle && !costListExpanded ? costs.slice(0, MOBILE_COST_PREVIEW) : costs
+  const monthlyFor = (estimate: CostEstimate) =>
+    formatCost(estimate.costUsd * monthlyCalls, currency)
+  const disclaimer = t.editor.costDisclaimer
+    .replace('{pricing}', formatSnapshot(PRICING_SNAPSHOT, lang))
+    .replace('{fx}', formatSnapshot(FX_SNAPSHOT, lang))
+
+  const flashCopied = (kind: 'summary' | 'link') => {
+    setCopied(kind)
+    window.setTimeout(() => setCopied(null), 2000)
+  }
+
+  const copySummary = async () => {
+    const lines = [
+      `${t.editor.analysisLabel} — tokened.uk`,
+      `${t.editor.tokenizer}: ${t.editor.tokenizers[tokenizer]}`,
+      `${t.editor.totalTokens}: ${tokenCount} · ${t.editor.chars}: ${charCount}`,
+      `${t.editor.outputTokens}: ${outputTokens} · ${t.editor.monthlyCalls}: ${monthlyCalls}`,
+      '',
+      ...costs.map(
+        (estimate) =>
+          `${estimate.model.name} (${estimate.model.provider}): ${estimate.formatted} ${t.editor.perCall} · ${monthlyFor(estimate)} ${t.editor.perMonth}`,
+      ),
+      '',
+      disclaimer,
+      window.location.href,
+    ]
+
+    if (await copyToClipboard(lines.join('\n'))) flashCopied('summary')
+  }
+
+  const copyLink = async () => {
+    if (await copyToClipboard(window.location.href)) flashCopied('link')
+  }
 
   const scrollToTool = () => {
     document.getElementById('prompt-input')?.focus()
-    document.getElementById('tool')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    document
+      .getElementById('tool')
+      ?.scrollIntoView({ behavior: scrollBehavior(), block: 'start' })
   }
 
   return (
@@ -157,11 +270,46 @@ export function TokenEditor() {
             placeholder={t.editor.inputPlaceholder}
             spellCheck={false}
           />
+
+          <fieldset className={styles.assumptions}>
+            <legend>{t.editor.assumptions}</legend>
+            <div className={styles.assumptionRow}>
+              <label htmlFor="output-tokens">{t.editor.outputTokens}</label>
+              <input
+                id="output-tokens"
+                type="number"
+                inputMode="numeric"
+                min={0}
+                max={MAX_OUTPUT_TOKENS}
+                step={50}
+                value={outputTokens}
+                onChange={(e) =>
+                  setOutputTokens(clampInt(e.target.value, MAX_OUTPUT_TOKENS))
+                }
+              />
+            </div>
+            <div className={styles.assumptionRow}>
+              <label htmlFor="monthly-calls">{t.editor.monthlyCalls}</label>
+              <input
+                id="monthly-calls"
+                type="number"
+                inputMode="numeric"
+                min={0}
+                max={MAX_MONTHLY_CALLS}
+                step={1000}
+                value={monthlyCalls}
+                onChange={(e) =>
+                  setMonthlyCalls(clampInt(e.target.value, MAX_MONTHLY_CALLS))
+                }
+              />
+            </div>
+            <p className={styles.assumptionHint}>{t.editor.outputTokensHint}</p>
+          </fieldset>
         </div>
 
         <div className={styles.pane}>
           <div className={styles.paneHeader}>
-            <span>{t.editor.analysisLabel}</span>
+            <h2 className={styles.paneTitle}>{t.editor.analysisLabel}</h2>
             <div className={styles.controls}>
               <select
                 value={currency}
@@ -178,6 +326,7 @@ export function TokenEditor() {
                 type="button"
                 className={styles.btnToggle}
                 onClick={() => setShowBlocks((v) => !v)}
+                aria-pressed={showBlocks}
               >
                 {showBlocks ? t.editor.hideBlocks : t.editor.showBlocks}
               </button>
@@ -190,15 +339,20 @@ export function TokenEditor() {
             <p className={styles.empty}>{t.editor.empty}</p>
           ) : (
             <>
-              <div className={styles.stats}>
+              <div
+                className={stale ? `${styles.stats} ${styles.statsStale}` : styles.stats}
+                role="status"
+                aria-live="polite"
+              >
                 <div className={styles.stat}>
                   <span className={styles.statLabel}>{t.editor.totalTokens}</span>
                   <span className={styles.statValue}>{animatedTokens}</span>
                 </div>
                 <div className={styles.stat}>
                   <span className={styles.statLabel}>{t.editor.chars}</span>
-                  <span className={styles.statValue}>{prompt.length}</span>
+                  <span className={styles.statValue}>{charCount}</span>
                 </div>
+                {stale && <span className={styles.updating}>{t.editor.updating}</span>}
               </div>
 
               {showInflation && (
@@ -223,15 +377,56 @@ export function TokenEditor() {
               <CostChart estimates={costs} label={t.editor.costChart} />
 
               {showBlocks && (
-                <div className={styles.highlightBox}>
-                  <TokenHighlight spans={spans} />
-                </div>
+                <>
+                  {/* Scrollable, so it must be reachable and named for keyboard users. */}
+                  <div
+                    className={styles.highlightBox}
+                    tabIndex={0}
+                    role="group"
+                    aria-label={t.editor.showBlocks}
+                  >
+                    <TokenHighlight spans={spans} />
+                  </div>
+                  {spansTruncated && (
+                    <p className={styles.truncated}>
+                      {t.editor.spansTruncated
+                        .replace('{n}', String(spans.length))
+                        .replace('{total}', String(tokenCount))}
+                    </p>
+                  )}
+                </>
               )}
 
               <div className={styles.costSection}>
-                <h3>{t.editor.estCost}</h3>
-                <p className={styles.costDisclaimer}>{t.editor.costDisclaimer}</p>
-                <ul className={styles.costList}>
+                <div className={styles.costHeader}>
+                  <h3>{t.editor.estCost}</h3>
+                  <div className={styles.costActions}>
+                    <button type="button" className={styles.btnAction} onClick={copySummary}>
+                      {copied === 'summary' ? t.common.copied : t.editor.copySummary}
+                    </button>
+                    <button type="button" className={styles.btnAction} onClick={copyLink}>
+                      {copied === 'link' ? t.editor.linkCopied : t.editor.shareLink}
+                    </button>
+                  </div>
+                </div>
+                <p className={styles.costDisclaimer}>{disclaimer}</p>
+
+                {best && monthlyCalls > 0 && (
+                  <p className={styles.monthlyTotal}>
+                    {t.editor.monthlyTotal}:{' '}
+                    <strong>{monthlyFor(best)}</strong>{' '}
+                    <span className={styles.monthlyMeta}>
+                      ({best.model.name} · {monthlyCalls.toLocaleString('en-US')}{' '}
+                      {t.editor.monthlyCalls.toLowerCase()})
+                    </span>
+                  </p>
+                )}
+
+                <ul
+                  className={styles.costList}
+                  tabIndex={0}
+                  aria-label={t.editor.estCost}
+                >
                   {visibleCosts.map((est) => {
                     const isBest = best?.model.id === est.model.id
                     const accuracy = displayAccuracy(est.model, tokenizer)
@@ -245,8 +440,19 @@ export function TokenEditor() {
                           <span className={styles.provider}>{est.model.provider}</span>
                         </div>
                         <div className={styles.costRight}>
-                          <span className={styles.costTokens}>{est.tokens} tok</span>
-                          <span className={styles.costPrice}>{est.formatted}</span>
+                          <span className={styles.costTokens}>
+                            {est.tokens.toLocaleString('en-US')} tok
+                            {est.outputTokens > 0 &&
+                              ` + ${est.outputTokens.toLocaleString('en-US')} out`}
+                          </span>
+                          <span className={styles.costPriceGroup}>
+                            <span className={styles.costPrice}>{est.formatted}</span>
+                            {monthlyCalls > 0 && (
+                              <span className={styles.costMonthly}>
+                                {monthlyFor(est)} / mo
+                              </span>
+                            )}
+                          </span>
                           {isBest && (
                             <span className={styles.bestBadge}>{t.editor.bestValue}</span>
                           )}
@@ -269,6 +475,7 @@ export function TokenEditor() {
                     type="button"
                     className={styles.costToggle}
                     onClick={() => setCostListExpanded((v) => !v)}
+                    aria-expanded={costListExpanded}
                   >
                     {costListExpanded ? t.editor.showFewerModels : t.editor.showAllModels}
                   </button>

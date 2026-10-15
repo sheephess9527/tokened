@@ -149,6 +149,7 @@
 }
 
 .paneHeader label,
+.paneTitle,
 .paneHeader > span {
   font-size: 0.8rem;
   font-weight: 600;
@@ -199,6 +200,61 @@
   display: flex;
   gap: 0.75rem;
   flex-wrap: wrap;
+}
+
+.assumptions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem 1rem;
+  padding: 0.85rem 1rem 0.95rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+}
+
+.assumptions legend {
+  padding: 0 0.4rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.assumptionRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.assumptionRow label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.assumptionRow input {
+  width: 100%;
+  padding: 0.4rem 0.55rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+
+.assumptionRow input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+}
+
+.assumptionHint {
+  grid-column: 1 / -1;
+  font-size: 0.7rem;
+  line-height: 1.5;
+  color: var(--text-muted);
 }
 
 .btnGhost,
@@ -289,6 +345,19 @@
 .stats {
   display: flex;
   gap: 1.5rem;
+  align-items: flex-end;
+  transition: opacity 0.2s ease;
+}
+
+.statsStale {
+  opacity: 0.65;
+}
+
+.updating {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--accent-secondary);
+  padding-bottom: 0.4rem;
 }
 
 .stat {
@@ -308,7 +377,7 @@
   font-size: 2rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
-  color: var(--accent);
+  color: var(--accent-text);
   text-shadow: 0 0 20px rgba(124, 58, 237, 0.4);
 }
 
@@ -364,12 +433,64 @@
   border-radius: 8px;
 }
 
+.truncated {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.costHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.35rem;
+}
+
+.costActions {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.monthlyTotal {
+  font-size: 0.85rem;
+  margin-bottom: 0.75rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 8px;
+  background: rgba(124, 58, 237, 0.08);
+  border: 1px solid rgba(124, 58, 237, 0.25);
+}
+
+.monthlyTotal strong {
+  font-family: var(--font-mono);
+  color: var(--accent-secondary);
+}
+
+.monthlyMeta {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.costPriceGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.1rem;
+}
+
+.costMonthly {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
 .costSection h3 {
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--text-muted);
-  margin-bottom: 0.35rem;
 }
 
 .costDisclaimer {
@@ -486,5 +607,22 @@
 
   .pane {
     min-height: auto;
+  }
+}
+
+@media (max-width: 520px) {
+  .assumptions {
+    grid-template-columns: 1fr;
+  }
+
+  .costItem,
+  .costItemBest {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .costRight {
+    justify-content: flex-start;
   }
 }

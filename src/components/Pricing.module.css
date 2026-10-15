@@ -163,5 +163,5 @@
 }
 
 .roadmapLink:hover {
-  color: var(--accent);
+  color: var(--accent-text);
 }

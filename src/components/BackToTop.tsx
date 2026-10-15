@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useI18n } from '../i18n'
+import { scrollBehavior } from '../lib/motion'
 import styles from './BackToTop.module.css'
 
 export function BackToTop() {
@@ -20,7 +21,7 @@ export function BackToTop() {
       type="button"
       className={styles.btn}
       aria-label={t.common.backToTop}
-      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      onClick={() => window.scrollTo({ top: 0, behavior: scrollBehavior() })}
     >
       ↑
     </button>

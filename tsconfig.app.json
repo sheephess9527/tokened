@@ -21,5 +21,7 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"]
+  // entry-server.tsx needs Node globals and is checked by tsconfig.ssr.json.
+  "include": ["src"],
+  "exclude": ["src/entry-server.tsx"]
 }

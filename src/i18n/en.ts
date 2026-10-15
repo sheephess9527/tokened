@@ -5,6 +5,16 @@ export const en = {
     copied: 'Copied',
     copyFailed: 'Copy failed',
     backToTop: 'Back to top',
+    skipToContent: 'Skip to main content',
+    loading: 'Loading…',
+    errorTitle: 'Something went wrong',
+    errorBody: 'This page hit an unexpected error. Reloading usually clears it.',
+    errorRetry: 'Reload page',
+  },
+  notFound: {
+    title: 'Page not found',
+    desc: 'That URL does not exist. The token calculator is one click away.',
+    cta: 'Back to the calculator',
   },
   contact: {
     title: 'Get in touch',
@@ -49,7 +59,7 @@ export const en = {
     title: 'Why LLM token math matters',
     items: [
       {
-        value: '9',
+        value: '{models}',
         label: 'Models compared',
         desc: 'GPT-5.4, Claude 4.6, Gemini 3.5, DeepSeek-V4, Qwen3.7 and more side by side.',
       },
@@ -59,9 +69,9 @@ export const en = {
         desc: 'Token counting runs in your browser. Zero server-side prompt storage.',
       },
       {
-        value: '45%',
-        label: 'Chinese savings',
-        desc: 'Typical token reduction vs OpenAI o200k when using DeepSeek-V4 / Qwen3.7.',
+        value: '{spread}',
+        label: 'Cheapest to priciest',
+        desc: 'Cost gap across models for the very same prompt — almost all of it is price per token, not token count.',
       },
       {
         value: '$0',
@@ -96,9 +106,9 @@ export const en = {
     subtitle: 'Real scenarios where token visibility saves money and reduces risk.',
     cases: {
       c1: {
-        stat: 'Up to 45% fewer tokens',
+        stat: '~40% fewer tokens vs cl100k',
         title: 'Chinese product teams',
-        desc: 'Compare GPT-5.4 vs DeepSeek-V4-Flash / Qwen3.7-Plus before committing. Chinese prompts often use 2× more tokens on OpenAI o200k than on Chinese-efficient models.',
+        desc: 'Chinese text costs about 1.10 tokens per character on GPT-4-era cl100k_base but only ~0.64 on o200k_base, so check which encoding you are on before assuming a tokenizer win — then compare on total cost.',
       },
       c2: {
         stat: 'Pre-launch cost audit',
@@ -162,7 +172,7 @@ export const en = {
     analysisLabel: 'Token Analysis',
     tokenizer: 'Tokenizer',
     tokenizers: {
-      o200k_base: 'OpenAI o200k — GPT-5.x / GPT-4o',
+      o200k_base: 'OpenAI o200k — GPT-5.x / GPT-4o (incl. harmony)',
       cl100k_base: 'OpenAI cl100k — GPT-4 / legacy',
       p50k_base: 'OpenAI p50k — legacy models',
       chinese_estimate: 'Chinese-efficient estimate',
@@ -174,20 +184,20 @@ export const en = {
 
 The gateway runs on Cloudflare Workers at the edge. It proxies OpenAI-compatible requests, caches identical prompts, and intercepts PII before data reaches US-hosted models. Typical latency is under 50ms for cache hits.
 
-核心组件包括：路由层、边缘缓存、合规检测模块。中文 Prompt 在 DeepSeek-V4-Flash 与 Qwen3.7-Plus 上通常比 OpenAI o200k 基线少 40–60% Token。
+核心组件包括：路由层、边缘缓存、合规检测模块。切换分词器可以看到中文在 cl100k 与 o200k 上的差距，再对比各模型的实际单价。
 ---`,
     totalTokens: 'Total Tokens',
     chars: 'Characters',
     showBlocks: 'Show Token Blocks',
     hideBlocks: 'Hide Token Blocks',
-    estCost: 'Estimated Cost (per call)',
+    estCost: 'Estimated Cost',
     costDisclaimer:
-      'Input tokens only · prices as of Jun 2026 · non-OpenAI counts are estimates — verify with your provider billing.',
+      'List prices {pricing} · FX rates {fx} · both are manual snapshots, and non-OpenAI token counts are estimates — verify against your provider billing.',
     costChart: 'Cost comparison',
     bestValue: 'Best Value',
     chineseInflation: 'Chinese Token Inflation',
     chineseInflationHint:
-      'Same Chinese text often uses fewer tokens on DeepSeek-V4 / Qwen3.7 than on OpenAI o200k_base.',
+      'Same Chinese text often uses fewer tokens on DeepSeek-V4 / Qwen3.7 than on the selected OpenAI tokenizer.',
     inflationVsOpenAI: 'vs OpenAI baseline',
     currency: 'Currency',
     currencies: {
@@ -205,6 +215,18 @@ The gateway runs on Cloudflare Workers at the edge. It proxies OpenAI-compatible
     loadSample: 'Load sample',
     showAllModels: 'Show all models',
     showFewerModels: 'Show fewer',
+    updating: 'Updating…',
+    spansTruncated: 'Showing the first {n} token blocks of {total}.',
+    assumptions: 'Usage assumptions',
+    outputTokens: 'Output tokens per call',
+    outputTokensHint: 'Completions are billed at a higher rate — include them for a realistic figure.',
+    monthlyCalls: 'Calls per month',
+    perCall: 'per call',
+    perMonth: 'per month',
+    monthlyTotal: 'Projected monthly cost',
+    copySummary: 'Copy summary',
+    shareLink: 'Copy link',
+    linkCopied: 'Link copied',
   },
   saas: {
     title: 'Planned: production-grade LLM infrastructure',
@@ -345,6 +367,16 @@ export type Locale = {
     copied: string
     copyFailed: string
     backToTop: string
+    skipToContent: string
+    loading: string
+    errorTitle: string
+    errorBody: string
+    errorRetry: string
+  }
+  notFound: {
+    title: string
+    desc: string
+    cta: string
   }
   contact: {
     title: string
@@ -434,6 +466,18 @@ export type Locale = {
     loadSample: string
     showAllModels: string
     showFewerModels: string
+    updating: string
+    spansTruncated: string
+    assumptions: string
+    outputTokens: string
+    outputTokensHint: string
+    monthlyCalls: string
+    perCall: string
+    perMonth: string
+    monthlyTotal: string
+    copySummary: string
+    shareLink: string
+    linkCopied: string
   }
   saas: {
     title: string
