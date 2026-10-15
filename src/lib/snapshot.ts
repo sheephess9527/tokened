@@ -5,8 +5,8 @@ import type { Language } from '../i18n'
  * taken rather than implying a live feed. Update these whenever the numbers in
  * `pricing.ts` / `currency.ts` change.
  */
-export const PRICING_SNAPSHOT = '2026-06'
-export const FX_SNAPSHOT = '2026-06'
+export const PRICING_SNAPSHOT = '2026-10'
+export const FX_SNAPSHOT = '2026-10'
 
 const MONTHS_EN = [
   'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',

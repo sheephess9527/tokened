@@ -116,11 +116,12 @@ describe('estimateCosts', () => {
     expect(estimateCosts(english(0), 'USD').every((e) => e.costUsd === 0)).toBe(true)
   })
 
-  it('still ranks the APAC models cheapest on English, on price alone', () => {
-    // With the token discount gone, their advantage has to come from the
-    // per-token price — which it does.
+  it('ranks an all-English prompt by input price, not by a token discount', () => {
     const cheapest = estimateCosts(english(10_000), 'USD')[0]
-    expect(cheapest.model.region).toBe('apac')
+    const lowestInput = MODELS.reduce((best, model) =>
+      model.inputPer1M < best.inputPer1M ? model : best,
+    )
+    expect(cheapest.model.id).toBe(lowestInput.id)
     expect(cheapest.tokens).toBe(10_000)
   })
 })

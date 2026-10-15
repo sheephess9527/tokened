@@ -1,5 +1,4 @@
-import type { Currency } from './currency'
-import { formatCost } from './currency'
+import { formatCost, FX_FROM_USD, type Currency } from './currency'
 
 export interface ModelPricing {
   id: string
@@ -26,8 +25,10 @@ export interface ModelPricing {
 }
 
 /**
- * USD per 1M tokens (input / output).
- * Snapshot: June 2026 — OpenAI, Anthropic, Google, DeepSeek, Alibaba official pricing.
+ * USD per 1M tokens (input / output). Standard tier — not batch, not cache hits.
+ * Snapshot: October 2026 — OpenAI, Anthropic, Google, DeepSeek, Alibaba.
+ * DeepSeek is the peak cache-miss rate (off-peak is half). Qwen numerators are
+ * the China list price in CNY for prompts ≤256K, divided by FX_FROM_USD.CNY.
  */
 export const MODELS: ModelPricing[] = [
   {
@@ -35,7 +36,7 @@ export const MODELS: ModelPricing[] = [
     name: 'GPT-5.4',
     provider: 'OpenAI',
     inputPer1M: 2.5,
-    outputPer1M: 10,
+    outputPer1M: 15,
     latinFactor: 1,
     cjkTokensPerChar: 0.64,
     usesOpenAiVocabulary: true,
@@ -47,7 +48,7 @@ export const MODELS: ModelPricing[] = [
     name: 'GPT-5.4 mini',
     provider: 'OpenAI',
     inputPer1M: 0.75,
-    outputPer1M: 3,
+    outputPer1M: 4.5,
     latinFactor: 1,
     cjkTokensPerChar: 0.64,
     usesOpenAiVocabulary: true,
@@ -59,7 +60,7 @@ export const MODELS: ModelPricing[] = [
     name: 'GPT-5.4 nano',
     provider: 'OpenAI',
     inputPer1M: 0.2,
-    outputPer1M: 0.8,
+    outputPer1M: 1.25,
     latinFactor: 1,
     cjkTokensPerChar: 0.64,
     usesOpenAiVocabulary: true,
@@ -118,8 +119,9 @@ export const MODELS: ModelPricing[] = [
     id: 'deepseek-v4-flash',
     name: 'DeepSeek-V4-Flash',
     provider: 'DeepSeek',
-    inputPer1M: 0.14,
-    outputPer1M: 0.28,
+    // Legacy id, billed as V4.1-Flash. Peak cache-miss; off-peak is $0.15 / $0.60.
+    inputPer1M: 0.3,
+    outputPer1M: 1.2,
     latinFactor: 1,
     cjkTokensPerChar: 0.6,
     usesOpenAiVocabulary: false,
@@ -130,8 +132,9 @@ export const MODELS: ModelPricing[] = [
     id: 'qwen3.7-plus',
     name: 'Qwen3.7-Plus',
     provider: 'Alibaba',
-    inputPer1M: 2 / 7.25,
-    outputPer1M: 8 / 7.25,
+    // ¥2 / ¥8 per 1M (China, ≤256K). Divisor must stay equal to FX_FROM_USD.CNY.
+    inputPer1M: 2 / FX_FROM_USD.CNY,
+    outputPer1M: 8 / FX_FROM_USD.CNY,
     latinFactor: 1,
     cjkTokensPerChar: 0.58,
     usesOpenAiVocabulary: false,
