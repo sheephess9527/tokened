@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url'
 import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import { ARTICLES } from './src/data/articles.js'
+import { absoluteUrl } from './src/lib/site.js'
 
 const SITE_URL = 'https://tokened.uk'
 // Each BPE rank table is ~0.5–2MB. Isolating each one — and the shared
@@ -63,12 +64,12 @@ function sitemapXml(): string {
         const alternates = (['en', 'zh'] as const)
           .map(
             (other) =>
-              `    <xhtml:link rel="alternate" hreflang="${HREFLANG[other]}" href="${SITE_URL}${localized(page.path, other)}" />`,
+              `    <xhtml:link rel="alternate" hreflang="${HREFLANG[other]}" href="${absoluteUrl(localized(page.path, other))}" />`,
           )
           .join('\n')
 
         return (
-          `  <url>\n    <loc>${SITE_URL}${localized(page.path, lang)}</loc>\n` +
+          `  <url>\n    <loc>${absoluteUrl(localized(page.path, lang))}</loc>\n` +
           `    <lastmod>${page.lastmod}</lastmod>\n    <changefreq>${page.changefreq}</changefreq>\n` +
           `    <priority>${page.priority}</priority>\n${alternates}\n  </url>`
         )
@@ -85,7 +86,7 @@ function sitemapXml(): string {
 
 function feedXml(lang: 'en' | 'zh'): string {
   const items = ARTICLES.map((article) => {
-    const url = `${SITE_URL}${localized(`/blog/${article.slug}`, lang)}`
+    const url = absoluteUrl(localized(`/blog/${article.slug}`, lang))
     const body = article.sections
       .map(
         (section) =>
@@ -113,7 +114,7 @@ function feedXml(lang: 'en' | 'zh'): string {
     `<?xml version="1.0" encoding="UTF-8"?>\n` +
     `<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">\n` +
     `  <channel>\n    <title>${escapeXml(lang === 'en' ? SITE_TITLE : SITE_TITLE_ZH)}</title>\n` +
-    `    <link>${SITE_URL}${localized('/blog', lang)}</link>\n` +
+    `    <link>${absoluteUrl(localized('/blog', lang))}</link>\n` +
     `    <description>${escapeXml(lang === 'en' ? SITE_DESCRIPTION : SITE_DESCRIPTION_ZH)}</description>\n` +
     `    <language>${lang === 'en' ? 'en' : 'zh-CN'}</language>\n    <lastBuildDate>${rfc822(latest)}</lastBuildDate>\n` +
     `    <atom:link href="${SITE_URL}${self}" rel="self" type="application/rss+xml" />\n` +
