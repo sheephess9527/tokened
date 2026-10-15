@@ -6,6 +6,7 @@ import { ARTICLES } from './data/articles'
 import { LANGUAGES } from './i18n'
 import { localizePath } from './i18n/paths'
 import { getRouteMeta } from './lib/routeMeta'
+export { absoluteUrl } from './lib/site'
 import type { PageMeta } from './hooks/usePageMeta'
 
 const NEUTRAL_PATHS = ['/', '/blog', ...ARTICLES.map((a) => `/blog/${a.slug}`)]

@@ -14,7 +14,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const DIST = join(ROOT, 'dist')
 const SSR_ENTRY = pathToFileURL(join(ROOT, 'dist-ssr/entry-server.js')).href
 
-const { render, PRERENDER_PATHS } = await import(SSR_ENTRY)
+const { render, PRERENDER_PATHS, absoluteUrl } = await import(SSR_ENTRY)
 const HREFLANG = { en: 'en', zh: 'zh-Hans' }
 
 const template = await readFile(join(DIST, 'index.html'), 'utf8')
@@ -39,11 +39,11 @@ function alternateLinks(alternates) {
   if (!alternates) return ''
   const links = Object.entries(alternates).map(
     ([lang, path]) =>
-      `    <link rel="alternate" hreflang="${HREFLANG[lang]}" href="${SITE_URL}${path === '/' ? '/' : path}" />`,
+      `    <link rel="alternate" hreflang="${HREFLANG[lang]}" href="${absoluteUrl(path)}" />`,
   )
   if (alternates.en) {
     links.push(
-      `    <link rel="alternate" hreflang="x-default" href="${SITE_URL}${alternates.en === '/' ? '/' : alternates.en}" />`,
+      `    <link rel="alternate" hreflang="x-default" href="${absoluteUrl(alternates.en)}" />`,
     )
   }
   return links.join('\n') + '\n'
@@ -122,7 +122,7 @@ const NOT_FOUND_PATH = '/404'
 
 async function emit(route, outFile) {
   const { html, meta } = await render(route)
-  const url = route === '/' ? `${SITE_URL}/` : `${SITE_URL}${route}`
+  const url = absoluteUrl(route)
 
   let page = applyMeta(template, meta, url)
   page = page.replace('<div id="root"></div>', `<div id="root">${html}</div>`)
