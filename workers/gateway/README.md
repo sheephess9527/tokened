@@ -15,7 +15,6 @@ OpenAI-compatible proxy with response caching and PII pre-check.
 ```bash
 cd workers/gateway
 npm install
-npx wrangler secret put OPENAI_API_KEY
 npm run dev
 ```
 
@@ -45,4 +44,4 @@ Or in your app:
 OPENAI_BASE_URL=https://api.tokened.uk/v1
 ```
 
-Note: Gateway uses Worker-level `OPENAI_API_KEY` secret. Client Authorization header is forwarded in future versions; MVP uses server-side key.
+Note: the gateway does **not** hold an OpenAI key. Every request must send `Authorization`. A server-side fallback would be an open proxy (the site is static, so a shared secret in the browser is public, and CORS does not authenticate non-browser clients).

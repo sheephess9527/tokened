@@ -6,11 +6,13 @@ export const CURRENCY_SYMBOL: Record<Currency, string> = {
   CNY: '¥',
 }
 
-/** Static FX rates relative to USD (MVP — update manually) */
+/** Static FX rates relative to USD. ECB reference, 14 Oct 2026. */
 export const FX_FROM_USD: Record<Currency, number> = {
   USD: 1,
-  GBP: 0.79,
-  CNY: 7.25,
+  // EURGBP 0.8439 / EURUSD 1.1195 = 0.7538, rounded to 3 d.p.
+  GBP: 0.754,
+  // ECB USD/CNY 6.6927, rounded to 3 d.p.
+  CNY: 6.693,
 }
 
 export function convertFromUsd(amountUsd: number, currency: Currency): number {

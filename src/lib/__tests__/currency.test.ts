@@ -7,8 +7,8 @@ describe('convertFromUsd', () => {
   })
 
   it('applies the snapshot rate for other currencies', () => {
-    expect(convertFromUsd(100, 'GBP')).toBeCloseTo(79, 6)
-    expect(convertFromUsd(100, 'CNY')).toBeCloseTo(725, 6)
+    expect(convertFromUsd(100, 'GBP')).toBeCloseTo(75.4, 6)
+    expect(convertFromUsd(100, 'CNY')).toBeCloseTo(669.3, 6)
   })
 })
 

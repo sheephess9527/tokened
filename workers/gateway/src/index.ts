@@ -1,7 +1,8 @@
 import { detectPii } from './pii'
 
 export interface Env {
-  OPENAI_API_KEY: string
+  /** Unused. The gateway never spends a server-side key. */
+  OPENAI_API_KEY?: string
   OPENAI_BASE_URL?: string
   CACHE_TTL_SECONDS?: string
   PII_BLOCK?: string
@@ -25,6 +26,16 @@ function extractTexts(body: unknown): string {
   const messages = (body as { messages?: { content?: string }[] }).messages
   if (!Array.isArray(messages)) return JSON.stringify(body)
   return messages.map((m) => m.content ?? '').join('\n')
+}
+
+/**
+ * Clients must bring their own key. A server-side fallback would make this
+ * worker an open proxy: the site is static, so any shared secret shipped to
+ * the browser is public, and CORS does not stop non-browser clients.
+ */
+export function upstreamAuthorization(clientAuth: string | null): string | null {
+  const value = clientAuth?.trim() ?? ''
+  return value.length > 0 ? value : null
 }
 
 async function sha256(input: string): Promise<string> {
@@ -60,13 +71,14 @@ export default {
       return Response.json({ error: 'Not found' }, { status: 404, headers })
     }
 
-    if (!env.OPENAI_API_KEY && !request.headers.get('Authorization')) {
+    const clientAuth = upstreamAuthorization(request.headers.get('Authorization'))
+    if (!clientAuth) {
       return Response.json(
         {
           error:
-            'Gateway requires OPENAI_API_KEY secret or client Authorization header',
+            'Authorization header is required. This gateway does not spend a server-side key.',
         },
-        { status: 503, headers },
+        { status: 401, headers },
       )
     }
 
@@ -100,12 +112,11 @@ export default {
     const upstreamUrl = `${upstream}${url.pathname}${url.search}`
 
     const useCache = request.headers.get('X-Tokened-Cache') !== 'false'
-    const clientAuth = request.headers.get('Authorization')
     // The credential is part of the cache identity: `caches.default` is shared
     // across every caller, so keying on URL + body alone would serve one
-    // tenant's completion to another (and skip their upstream billing).
+    // tenant's completion to another.
     const cacheKey = useCache
-      ? await sha256(`${await sha256(clientAuth ?? env.OPENAI_API_KEY)}:${upstreamUrl}:${rawBody}`)
+      ? await sha256(`${await sha256(clientAuth)}:${upstreamUrl}:${rawBody}`)
       : null
 
     if (cacheKey) {
@@ -125,7 +136,7 @@ export default {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: clientAuth ?? `Bearer ${env.OPENAI_API_KEY}`,
+        Authorization: clientAuth,
       },
       body: rawBody,
     })

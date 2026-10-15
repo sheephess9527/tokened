@@ -47,8 +47,8 @@ export const ARTICLES: Article[] = [
         },
         paragraphs: [
           {
-            en: 'The bigger lever today is price per token, not token count. DeepSeek-V4-Flash lists at $0.14 per million input tokens against $2.50 for GPT-5.4 — roughly 18x, dwarfing any tokenizer difference. So: 1. Audit prompts with a local tokenizer before shipping, and check which encoding you are actually on. 2. Compare on total cost, not token count. 3. Trim system prompts — redundant instructions multiply across every call.',
-            zh: '今天更大的杠杆是单价，而不是 Token 数量。DeepSeek-V4-Flash 的输入价是每百万 Token $0.14，GPT-5.4 是 $2.50——约 18 倍差距，远超任何分词器差异。所以：1. 上线前用本地分词器审计 Prompt，并确认你实际用的是哪个编码。2. 用总成本而不是 Token 数量做对比。3. 精简系统 Prompt——冗余指令会在每次调用中成倍放大。',
+            en: 'The bigger lever today is price per token, not token count. As of October 2026, DeepSeek-V4-Flash (served as V4.1-Flash) lists a peak cache-miss input price of $0.30 per million tokens against $2.50 for GPT-5.4 — about 8×, and off-peak hours are half of that. Either way the gap dwarfs any tokenizer difference. So: 1. Audit prompts with a local tokenizer before shipping, and check which encoding you are actually on. 2. Compare on total cost, not token count. 3. Trim system prompts — redundant instructions multiply across every call.',
+            zh: '今天更大的杠杆是单价，而不是 Token 数量。截至 2026 年 10 月，DeepSeek-V4-Flash（实际由 V4.1-Flash 承接）在高峰、缓存未命中时的输入价是每百万 Token $0.30，GPT-5.4 是 $2.50——约 8 倍；非高峰减半。无论取哪一档，差距都远超任何分词器差异。所以：1. 上线前用本地分词器审计 Prompt，并确认你实际用的是哪个编码。2. 用总成本而不是 Token 数量做对比。3. 精简系统 Prompt——冗余指令会在每次调用中成倍放大。',
           },
           {
             en: 'Tokened.uk runs entirely in your browser so you can compare models side-by-side without sending data to our servers.',
