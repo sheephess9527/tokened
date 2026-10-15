@@ -104,6 +104,11 @@ npm run lint      # oxlint
 
 CI runs lint, tests and the build on every push and pull request.
 
+## Deployment
+
+Cloudflare Pages, connected through its dashboard — build command `npm run build`,
+output directory `dist`. See [DEPLOY.md](DEPLOY.md).
+
 ## Roadmap
 
 - **Phase 1** (current): Local token counting + cost comparison
