@@ -78,8 +78,10 @@ takes over on the next visit rather than swapping chunks under a running page.
 the calculator installable and usable offline.
 
 **Fonts are self-hosted** under `public/fonts` (regenerate with
-`node scripts/fetch-fonts.mjs`). With no third-party origins left, `public/_headers`
-can enforce a Content-Security-Policy with `script-src 'self'` and no wildcards.
+`node scripts/fetch-fonts.mjs`). The Content-Security-Policy in `public/_headers`
+allows Cloudflare Web Analytics to load its script from
+`https://static.cloudflareinsights.com` and send beacons to
+`https://cloudflareinsights.com`, without wildcards.
 
 ## Quick Start
 

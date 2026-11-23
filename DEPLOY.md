@@ -45,12 +45,11 @@ hreflang targets that redirect, and a sitemap of redirecting URLs is reported as
 
 ### Cloudflare features that inject scripts
 
-The CSP in `public/_headers` allows no third-party origins. Cloudflare **Web
-Analytics** auto-injection adds `static.cloudflareinsights.com/beacon.min.js`,
-which the policy blocks — the beacon never runs, and every page load logs a CSP
-violation. Leave it switched off for this zone rather than widening the policy;
-the same applies to Rocket Loader, Email Obfuscation and any other feature that
-rewrites HTML.
+The CSP in `public/_headers` allows Cloudflare **Web Analytics** to load
+`beacon.min.js` from `https://static.cloudflareinsights.com` (`script-src`) and
+send measurements to `https://cloudflareinsights.com` (`connect-src`). No other
+third-party origins are allowed. Leave Rocket Loader, Email Obfuscation and
+other HTML-rewriting features switched off for this zone.
 
 ## What the build produces
 
@@ -73,9 +72,9 @@ under a misleading 200.
 2. `curl -I https://tokened.uk/nope` returns **404**, not 200.
 3. `curl -I https://tokened.uk/assets/<any hashed file>` returns
    `Cache-Control: public, max-age=31536000, immutable`.
-4. The browser console is free of Content-Security-Policy violations — the policy
-   in `_headers` allows no third-party origins, so anything added later that loads
-   from one will be blocked until the policy is updated.
+4. The browser console is free of Content-Security-Policy violations. If Web
+   Analytics is enabled, check in the Network tab that `beacon.min.js` loads and
+   its measurement request is not blocked.
 5. `https://tokened.uk/sitemap.xml` lists both language trees, and every `<loc>`
    returns 200 rather than a redirect.
 
