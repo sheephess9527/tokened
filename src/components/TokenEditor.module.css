@@ -602,11 +602,32 @@
 
 @media (max-width: 900px) {
   .editor {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .pane {
+    min-width: 0;
     min-height: auto;
+  }
+
+  .paneActions {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .paneHeader select {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .textarea,
+  .assumptions {
+    min-width: 0;
+  }
+
+  .stats,
+  .controls {
+    flex-wrap: wrap;
   }
 }
 

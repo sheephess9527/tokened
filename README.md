@@ -109,6 +109,24 @@ CI runs lint, tests and the build on every push and pull request.
 Cloudflare Pages, connected through its dashboard — build command `npm run build`,
 output directory `dist`. See [DEPLOY.md](DEPLOY.md).
 
+## Responsive layout maintenance
+
+The mobile header (≤768px) keeps navigation in the existing menu drawer. Its
+closed state uses `display: none`: translating the
+drawer alone adds its width to the document's scroll area and leaves off-screen
+links keyboard-focusable. Opening the menu restores the flex layout, including the
+language controls. Desktop navigation is unchanged.
+
+Single-column editor and documentation grids use zero-minimum tracks on mobile
+so intrinsic select and code widths cannot widen the page. Editor controls wrap;
+code examples retain their own horizontal scrollers.
+
+Mobile overflow fix: checked the landing page, blog index, all three articles,
+and not-found pages in both languages at 320, 390 and 430px, plus 1440px desktop.
+For future layout changes, check `document.documentElement.scrollWidth <=
+innerWidth` with the menu both closed and open, and verify every menu control
+is reachable.
+
 ## Roadmap
 
 - **Phase 1** (current): Local token counting + cost comparison
